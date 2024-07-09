@@ -187,3 +187,79 @@ class Clip_settings:
             "transform": {"x": self.transform_x, "y": self.transform_y}
         }
         return clip_settings_json
+
+class Timerange:
+    start: int
+    duration: int
+
+    def __init__(self, start: int, duration: int):
+        self.start = start
+        self.duration = duration
+
+    def export_json(self) -> Dict[str, int]:
+        return {"start": self.start, "duration": self.duration}
+
+class Keyframe:
+    """关键帧"""
+    kf_id: str
+    time_offset: int
+    """相对于素材起始时间的偏移量"""
+    values: List[float]
+
+    def __init__(self, time_offset: int, value: float):
+        self.kf_id = uuid.uuid4().hex
+
+        self.time_offset = time_offset
+        self.values = [value]
+
+    def export_json(self) -> Dict[str, Any]:
+        return {
+            # 定义一致字段的默认值
+            "curveType": "Line",
+            "graphID": "",
+            "left_control": {"x": 0.0, "y": 0.0},
+            "right_control": {"x": 0.0, "y": 0.0},
+            # 自定义属性
+            "id": self.kf_id,
+            "time_offset": self.time_offset,
+            "values": self.values
+        }
+
+class Keyframe_property(Enum):
+    KFTypePositionX = "position_x",
+    KFTypePositionY = "position_y",
+    KFTypeRotation = "rotation",
+    KFTypeScaleX = "scale_x",
+    KFTypeScaleY = "scale_y",
+    KFTypeAlpha = "alpha",
+    KFTypeSaturation = "saturation",
+    KFTypeContrast = "contrast",
+    KFTypeBrightness = "brightness",
+
+class Keyframe_list:
+    """关键帧列表，记录某个特定属性的一系列关键帧"""
+    list_id: str
+
+    keyframe_property: Keyframe_property
+    keyframes: List[Keyframe]
+
+    def __init__(self, keyframe_property: Keyframe_property):
+        self.list_id = uuid.uuid4().hex
+
+        self.keyframe_property = keyframe_property
+        self.keyframes = []
+
+    def add_keyframe(self, time_offset: int, value: float):
+        keyframe = Keyframe(time_offset, value)
+        self.keyframes.append(keyframe)
+        self.keyframes.sort(key=lambda x: x.time_offset)
+
+    def export_json(self) -> Dict[str, Any]:
+        keyframe_list_json = {
+            "id": self.list_id,
+            "keyframe_list": [kf.export_json() for kf in self.keyframes],
+            "material_id": "",
+            "property_type": self.keyframe_property.name
+        }
+        return keyframe_list_json
+
