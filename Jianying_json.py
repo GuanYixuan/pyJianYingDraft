@@ -263,3 +263,100 @@ class Keyframe_list:
         }
         return keyframe_list_json
 
+class Track_segment:
+    """安放在轨道上的一个片段"""
+    segment_id: str
+    material_id: str
+    source_timerange: Timerange
+    target_timerange: Timerange
+
+    common_keyframes: List[Keyframe_list]
+    keyframe_refs: List[str]
+    extra_material_refs: List[str]
+    clip_settings: Clip_settings
+
+    def __init__(self, material: Video_material,
+                 target_timerange: Timerange,
+                 source_timerange: Timerange = Timerange(0, 5000000),
+                 clip_settings: Clip_settings = Clip_settings()):
+        self.segment_id = uuid.uuid4().hex
+        self.material_id = material.material_id
+
+        self.clip_settings = clip_settings
+
+        self.common_keyframes = []
+        self.keyframe_refs = []
+        self.extra_material_refs = []
+        self.source_timerange = source_timerange
+        self.target_timerange = target_timerange
+
+    def export_json(self) -> Dict[str, Any]:
+        fields = {
+            # 定义一致字段的默认值
+            "caption_info": None,
+            "cartoon": False,
+            "enable_adjust": True,
+            "enable_color_correct_adjust": False,
+            "enable_color_curves": True,
+            "enable_color_match_adjust": False,
+            "enable_color_wheels": True,
+            "enable_lut": True,
+            "enable_smart_color_adjust": False,
+            "group_id": "",
+            "hdr_settings": {"intensity": 1.0, "mode": 1, "nits": 1000},
+            "intensifies_audio": False,
+            "is_placeholder": False,
+            "is_tone_modify": False,
+            "last_nonzero_volume": 1.0,
+            "render_index": 0,
+            "responsive_layout": {"enable": False, "horizontal_pos_layout": 0, "size_layout": 0, "vertical_pos_layout": 0, "target_follow": ""},
+            "reverse": False,
+            "speed": 1.0,
+            "template_id": "",
+            "template_scene": "default",
+            "track_attribute": 0,
+            "track_render_index": 0,
+            "uniform_scale": {"on": True, "value": 1.0},
+            "visible": True,
+            "volume": 1.0,
+            # 写入自定义字段
+            "id": self.segment_id,
+            "material_id": self.material_id,
+            "common_keyframes": [kf_list.export_json() for kf_list in self.common_keyframes],
+            "extra_material_refs": self.extra_material_refs,
+            "keyframe_refs": self.keyframe_refs,
+            "source_timerange": self.source_timerange.export_json(),
+            "target_timerange": self.target_timerange.export_json(),
+            "clip": self.clip_settings.export_json(),
+        }
+
+        return fields
+
+    def add_keyframe(self, _property: Keyframe_property, time_offset: int, value: float):
+        for kf_list in self.common_keyframes:
+            if kf_list.keyframe_property == _property:
+                kf_list.add_keyframe(time_offset, value)
+                return
+        kf_list = Keyframe_list(_property)
+        kf_list.add_keyframe(time_offset, value)
+        self.common_keyframes.append(kf_list)
+
+class Script_file:
+
+    content: Dict[str, Any]
+
+    TEMPLATE_FILE = "draft_content_template.json"
+
+    def __init__(self):
+        with open(self.TEMPLATE_FILE, "r", encoding="utf-8") as f:
+            self.content = json.load(f)
+
+    def add_material(self, material: Video_material):
+        self.content["materials"]["videos"].append(material.export_json())
+
+    def add_segment(self, segment: Track_segment):
+        self.content["tracks"][0]["segments"].append(segment.export_json())
+        self.content["duration"] = max(self.content["duration"], segment.target_timerange.start + segment.target_timerange.duration)
+
+    def dumps(self) -> str:
+        return json.dumps(self.content, ensure_ascii=False, indent=4)
