@@ -3,7 +3,9 @@ import json, uuid
 import imageio
 
 from enum import Enum
-from typing import Optional, Dict, List, Any
+from typing import Optional, Union, Dict, List, Any
+
+from animation_meta import Video_intro_type, Video_outro_type
 
 class Crop_settings:
     """素材的裁剪设置, 各属性均在0-1之间"""
@@ -263,6 +265,90 @@ class Keyframe_list:
         }
         return keyframe_list_json
 
+
+class Animation:
+    """一个动画效果"""
+    name: str
+    effect_id: str
+    animation_type: str
+    resource_id: str
+
+    start: int
+    duration: int
+
+    category_id: str
+    category_name: str
+
+    is_video_animation: bool
+
+    def __init__(self, animation_type: Union[Video_intro_type, Video_outro_type], start: Optional[int] = None, duration: Optional[int] = None):
+        type_meta = animation_type.value
+        self.name = type_meta.title
+        self.effect_id = type_meta.effect_id
+        self.resource_id = type_meta.resource_id
+
+        if isinstance(animation_type, Video_intro_type):
+            self.animation_type = "in"
+            self.category_id = "in"
+            self.category_name = "入场"
+
+            if start is None: start = 0
+            if duration is None: duration = int(round(type_meta.duration * 1e6))
+            self.is_video_animation = True
+        elif isinstance(animation_type, Video_outro_type):
+            self.animation_type = "out"
+            self.category_id = "out"
+            self.category_name = "出场"
+
+            if duration is None: duration = int(round(type_meta.duration * 1e6))
+            if start is None: raise ValueError("Outro animation must have a start time")
+            self.is_video_animation = True
+
+        self.start = start
+        self.duration = duration
+
+    def export_json(self) -> Dict[str, Any]:
+        return {
+            "anim_adjust_params": None,
+            "platform": "all",
+            "panel": "video" if self.is_video_animation else "",
+            "material_type": "video" if self.is_video_animation else "sticker",
+
+            "name": self.name,
+            "id": self.effect_id,
+            "type": self.animation_type,
+            "resource_id": self.resource_id,
+            "category_id": self.category_id,
+            "category_name": self.category_name,
+
+            "start": self.start,
+            "duration": self.duration,
+            # 不导出path和request_id字段
+        }
+
+class Segment_animations:
+    """附加于某素材上的一系列动画（一般是入场、出场）"""
+    animation_id: str
+    animation_type: str
+
+    animations: List[Animation]
+
+    def __init__(self, animation_type: str = "sticker_animation"):
+        self.animation_id = uuid.uuid4().hex
+        self.animation_type = animation_type
+        self.animations = []
+
+    def add_animation(self, animation: Animation):
+        self.animations.append(animation)
+
+    def export_json(self) -> Dict[str, Any]:
+        return {
+            "id": self.animation_id,
+            "type": self.animation_type,
+            "multi_language_current": "none",
+            "animations": [animation.export_json() for animation in self.animations]
+        }
+
 class Track_segment:
     """安放在轨道上的一个片段"""
     segment_id: str
@@ -289,6 +375,9 @@ class Track_segment:
         self.extra_material_refs = []
         self.source_timerange = source_timerange
         self.target_timerange = target_timerange
+
+    def attach_animation(self, animation: Segment_animations):
+        self.extra_material_refs.append(animation.animation_id)
 
     def export_json(self) -> Dict[str, Any]:
         fields = {
@@ -357,6 +446,9 @@ class Script_file:
     def add_segment(self, segment: Track_segment):
         self.content["tracks"][0]["segments"].append(segment.export_json())
         self.content["duration"] = max(self.content["duration"], segment.target_timerange.start + segment.target_timerange.duration)
+
+    def add_animation(self, animation: Segment_animations):
+        self.content["materials"]["material_animations"].append(animation.export_json())
 
     def dumps(self) -> str:
         return json.dumps(self.content, ensure_ascii=False, indent=4)
