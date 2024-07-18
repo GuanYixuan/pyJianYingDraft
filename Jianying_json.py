@@ -351,14 +351,14 @@ class Animation:
             self.category_name = "入场"
 
             if start is None: start = 0
-            if duration is None: duration = int(round(type_meta.duration * 1e6))
+            if duration is None: duration = type_meta.duration
             self.is_video_animation = True
         elif isinstance(animation_type, Video_outro_type):
             self.animation_type = "out"
             self.category_id = "out"
             self.category_name = "出场"
 
-            if duration is None: duration = int(round(type_meta.duration * 1e6))
+            if duration is None: duration = type_meta.duration
             if start is None: raise ValueError("Outro animation must have a start time")
             self.is_video_animation = True
 
@@ -386,17 +386,23 @@ class Animation:
 
 class Segment_animations:
     """附加于某素材上的一系列动画（一般是入场、出场）"""
+
     animation_id: str
+    """动画系列全局id, 自动生成"""
     animation_type: str
 
+
     animations: List[Animation]
+    """动画列表"""
 
     def __init__(self, animation_type: str = "sticker_animation"):
         self.animation_id = uuid.uuid4().hex
         self.animation_type = animation_type
         self.animations = []
 
-    def add_animation(self, animation: Animation):
+    def add_animation(self, animation: Animation) -> None:
+        if animation.animation_type in [ani.animation_type for ani in self.animations]:
+            raise ValueError(f"Duplicate animation type '{animation.animation_type}'")
         self.animations.append(animation)
 
     def export_json(self) -> Dict[str, Any]:
@@ -421,8 +427,6 @@ class Track_segment:
 
     common_keyframes: List[Keyframe_list]
     """各属性的关键帧列表"""
-    keyframe_refs: List[str]
-    """意义不明"""
     extra_material_refs: List[str]
     """附加的素材id列表, 用于链接动画等"""
     clip_settings: Clip_settings
@@ -430,10 +434,12 @@ class Track_segment:
 
     uniform_scale: bool
     """是否锁定XY轴缩放比例"""
+    animations_instance: Optional[Segment_animations]
+    """动画实例, 可能为空"""
 
     def __init__(self, material: Video_material,
                  target_timerange: Timerange,
-                 source_timerange: Timerange = Timerange(0, 5000000),
+                 source_timerange: Optional[Timerange] = None,
                  clip_settings: Clip_settings = Clip_settings()):
         self.segment_id = uuid.uuid4().hex
         self.material_id = material.material_id
@@ -441,15 +447,34 @@ class Track_segment:
         self.clip_settings = clip_settings
 
         self.common_keyframes = []
-        self.keyframe_refs = []
         self.extra_material_refs = []
         self.uniform_scale = True
-        self.source_timerange = source_timerange
-        self.target_timerange = target_timerange
+        self.animations_instance = None
 
-    def attach_animation(self, animation: Segment_animations):
+        self.target_timerange = target_timerange
+        self.source_timerange = source_timerange if source_timerange is not None else Timerange(0, material.duration)
+
+    def attach_animation(self, animation: Segment_animations) -> None:
         """将给定的动画链接到此片段, 你仍然需要调用`Script_file.add_animation`来将动画添加到素材列表中"""
+        assert self.animations_instance is None
+        self.animations_instance = animation
         self.extra_material_refs.append(animation.animation_id)
+
+    def add_animation(self, animation_type: Union[Video_intro_type, Video_outro_type]) -> None:
+        """将给定的入场/出场动画添加到此片段的动画列表中, 此方法不支持手动调节动画参数"""
+        if not isinstance(animation_type, (Video_intro_type, Video_outro_type)):
+            raise ValueError("Invalid animation type")
+        is_intro = isinstance(animation_type, Video_intro_type)
+
+        if self.animations_instance is None:
+            self.animations_instance = Segment_animations()
+            self.extra_material_refs.append(self.animations_instance.animation_id)
+
+        self.animations_instance.add_animation(
+            Animation(animation_type,
+                      start= 0 if is_intro else self.target_timerange.duration - animation_type.value.duration,
+                      duration=animation_type.value.duration
+        ))
 
     def add_keyframe(self, _property: Keyframe_property, time_offset: int, value: float):
         """为给定属性创建一个关键帧, 并自动加入到关键帧列表中
@@ -506,7 +531,7 @@ class Track_segment:
             "material_id": self.material_id,
             "common_keyframes": [kf_list.export_json() for kf_list in self.common_keyframes],
             "extra_material_refs": self.extra_material_refs,
-            "keyframe_refs": self.keyframe_refs,
+            "keyframe_refs": [], # 意义不明
             "source_timerange": self.source_timerange.export_json(),
             "target_timerange": self.target_timerange.export_json(),
             "clip": self.clip_settings.export_json(),
@@ -518,10 +543,26 @@ class Track_segment:
 class Script_file:
 
     content: Dict[str, Any]
+    """脚本文件内容"""
+
+    width: int
+    """视频的宽度, 单位为像素"""
+    height: int
+    """视频的高度, 单位为像素"""
+    fps: int
+    """视频的帧率"""
+
+    material_animations: List[Segment_animations]
 
     TEMPLATE_FILE = "draft_content_template.json"
 
-    def __init__(self):
+    def __init__(self, width: int, height: int, fps: int = 30):
+        self.width = width
+        self.height = height
+        self.fps = fps
+
+        self.material_animations = []
+
         with open(self.TEMPLATE_FILE, "r", encoding="utf-8") as f:
             self.content = json.load(f)
 
@@ -532,8 +573,14 @@ class Script_file:
         self.content["tracks"][0]["segments"].append(segment.export_json())
         self.content["duration"] = max(self.content["duration"], segment.target_timerange.start + segment.target_timerange.duration)
 
+        if (segment.animations_instance is not None) and segment.animations_instance.animation_id not in [ani.animation_id for ani in self.material_animations]:
+            self.add_animation(segment.animations_instance)
+
     def add_animation(self, animation: Segment_animations):
-        self.content["materials"]["material_animations"].append(animation.export_json())
+        self.material_animations.append(animation)
 
     def dumps(self) -> str:
+        self.content["fps"] = self.fps
+        self.content["canvas_config"] = {"width": self.width, "height": self.height, "ratio": "original"}
+        self.content["materials"]["material_animations"] = [ani.export_json() for ani in self.material_animations]
         return json.dumps(self.content, ensure_ascii=False, indent=4)
