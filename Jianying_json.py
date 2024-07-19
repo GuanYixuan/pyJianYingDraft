@@ -3,7 +3,8 @@ import json, uuid
 import imageio
 
 from enum import Enum
-from typing import Optional, Literal, Union, Dict, List, Any
+from typing import Optional, Literal, Union
+from typing import Dict, List, Any
 
 from animation_meta import Video_intro_type, Video_outro_type
 
@@ -46,7 +47,7 @@ class Crop_settings:
         }
 
 class Video_material:
-    """视频素材（视频或图片）"""
+    """视频素材（视频或图片）, 一份素材可以在多个片段中使用"""
 
     material_id: str
     """素材全局id, 自动生成"""
@@ -339,7 +340,8 @@ class Animation:
 
     is_video_animation: bool
 
-    def __init__(self, animation_type: Union[Video_intro_type, Video_outro_type], start: Optional[int] = None, duration: Optional[int] = None):
+    def __init__(self, animation_type: Union[Video_intro_type, Video_outro_type],
+                 start: Optional[int] = None, duration: Optional[int] = None):
         type_meta = animation_type.value
         self.name = type_meta.title
         self.effect_id = type_meta.effect_id
@@ -390,7 +392,7 @@ class Segment_animations:
     animation_id: str
     """动画系列全局id, 自动生成"""
     animation_type: str
-
+    """animation_type字段, 似乎总是'sticker_animation'"""
 
     animations: List[Animation]
     """动画列表"""
@@ -440,11 +442,21 @@ class Track_segment:
     def __init__(self, material: Video_material,
                  target_timerange: Timerange,
                  source_timerange: Optional[Timerange] = None,
-                 clip_settings: Clip_settings = Clip_settings()):
+                 clip_settings: Optional[Clip_settings] = None):
+        """利用给定的素材构建一个轨道片段, 并指定其时间信息及图像调节设置
+
+        片段创建完成后, 可通过`Script_file.add_segment`方法将其添加到轨道中
+
+        Args:
+            material (`Video_material`): 素材实例, 注意你仍然需要为其调用`Script_file.add_material`来将其添加到素材列表中
+            target_timerange (`Timerange`): 片段在轨道上的目标时间范围
+            source_timerange (`Timerange`, optional): 截取的素材片段的时间范围, 默认从开头截取与`target_timerange`等长的一部分
+            clip_settings (`Clip_settings`, optional): 图像调节设置, 默认不作任何变换
+        """
         self.segment_id = uuid.uuid4().hex
         self.material_id = material.material_id
 
-        self.clip_settings = clip_settings
+        self.clip_settings = clip_settings if clip_settings is not None else Clip_settings()
 
         self.common_keyframes = []
         self.extra_material_refs = []
@@ -452,7 +464,7 @@ class Track_segment:
         self.animations_instance = None
 
         self.target_timerange = target_timerange
-        self.source_timerange = source_timerange if source_timerange is not None else Timerange(0, material.duration)
+        self.source_timerange = source_timerange if source_timerange is not None else Timerange(0, target_timerange.duration)
 
     def attach_animation(self, animation: Segment_animations) -> None:
         """将给定的动画链接到此片段, 你仍然需要调用`Script_file.add_animation`来将动画添加到素材列表中"""
@@ -483,6 +495,10 @@ class Track_segment:
             _property (`Keyframe_property`): 要控制的属性
             time_offset (`int`): 关键帧的时间偏移量, 单位为微秒
             value (`float`): 属性在`time_offset`处的值
+
+        Raises:
+            `ValueError`: 试图同时设置`uniform_scale`以及`scale_x`或`scale_y`其中一者
+
         """
         if (_property == Keyframe_property.scale_x or _property == Keyframe_property.scale_y) and self.uniform_scale:
             self.uniform_scale = False
@@ -540,6 +556,76 @@ class Track_segment:
 
         return fields
 
+class Script_material:
+    """脚本文件中的素材信息部分"""
+
+    videos: List[Video_material]
+    """视频素材列表"""
+
+    animations: List[Segment_animations]
+    """动画素材列表"""
+
+    def __init__(self):
+        self.videos = []
+        self.animations = []
+
+    def __contains__(self, item: Union[Video_material, Segment_animations]) -> bool:
+        if isinstance(item, Video_material):
+            return item.material_id in [video.material_id for video in self.videos]
+        elif isinstance(item, Segment_animations):
+            return item.animation_id in [ani.animation_id for ani in self.animations]
+        else:
+            raise TypeError("Invalid argument type '%s'" % type(item))
+
+    def export_json(self) -> Dict[str, List[Any]]:
+        return {
+            "ai_translates": [],
+            "audio_balances": [],
+            "audio_effects": [],
+            "audio_fades": [],
+            "audio_track_indexes": [],
+            "audios": [],
+            "beats": [],
+            "canvases": [],
+            "chromas": [],
+            "color_curves": [],
+            "digital_humans": [],
+            "drafts": [],
+            "effects": [],
+            "flowers": [],
+            "green_screens": [],
+            "handwrites": [],
+            "hsl": [],
+            "images": [],
+            "log_color_wheels": [],
+            "loudnesses": [],
+            "manual_deformations": [],
+            "masks": [],
+            "material_animations": [ani.export_json() for ani in self.animations],
+            "material_colors": [],
+            "multi_language_refs": [],
+            "placeholders": [],
+            "plugin_effects": [],
+            "primary_color_wheels": [],
+            "realtime_denoises": [],
+            "shapes": [],
+            "smart_crops": [],
+            "smart_relights": [],
+            "sound_channel_mappings": [],
+            "speeds": [],
+            "stickers": [],
+            "tail_leaders": [],
+            "text_templates": [],
+            "texts": [],
+            "time_marks": [],
+            "transitions": [],
+            "video_effects": [],
+            "video_trackings": [],
+            "videos": [video.export_json() for video in self.videos],
+            "vocal_beautifys": [],
+            "vocal_separations": []
+        }
+
 class Script_file:
 
     content: Dict[str, Any]
@@ -551,8 +637,10 @@ class Script_file:
     """视频的高度, 单位为像素"""
     fps: int
     """视频的帧率"""
+    duration: int
 
-    material_animations: List[Segment_animations]
+    materials: Script_material
+    """脚本文件中的素材信息部分"""
 
     TEMPLATE_FILE = "draft_content_template.json"
 
@@ -560,27 +648,29 @@ class Script_file:
         self.width = width
         self.height = height
         self.fps = fps
+        self.duration = 0
 
-        self.material_animations = []
+        self.materials = Script_material()
 
         with open(self.TEMPLATE_FILE, "r", encoding="utf-8") as f:
             self.content = json.load(f)
 
     def add_material(self, material: Video_material):
-        self.content["materials"]["videos"].append(material.export_json())
+        self.materials.videos.append(material)
 
     def add_segment(self, segment: Track_segment):
         self.content["tracks"][0]["segments"].append(segment.export_json())
-        self.content["duration"] = max(self.content["duration"], segment.target_timerange.start + segment.target_timerange.duration)
+        self.duration = max(self.duration, segment.target_timerange.start + segment.target_timerange.duration)
 
-        if (segment.animations_instance is not None) and segment.animations_instance.animation_id not in [ani.animation_id for ani in self.material_animations]:
+        if (segment.animations_instance is not None) and (segment.animations_instance not in self.materials):
             self.add_animation(segment.animations_instance)
 
     def add_animation(self, animation: Segment_animations):
-        self.material_animations.append(animation)
+        self.materials.animations.append(animation)
 
     def dumps(self) -> str:
         self.content["fps"] = self.fps
+        self.content["duration"] = self.duration
         self.content["canvas_config"] = {"width": self.width, "height": self.height, "ratio": "original"}
-        self.content["materials"]["material_animations"] = [ani.export_json() for ani in self.material_animations]
+        self.content["materials"] = self.materials.export_json()
         return json.dumps(self.content, ensure_ascii=False, indent=4)
