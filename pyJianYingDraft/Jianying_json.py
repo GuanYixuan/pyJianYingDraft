@@ -1,3 +1,4 @@
+import os
 import json, uuid
 
 from enum import Enum
@@ -241,8 +242,8 @@ class Segment_animations:
             "animations": [animation.export_json() for animation in self.animations]
         }
 
-class Track_segment:
-    """安放在轨道上的一个片段"""
+class Video_segment:
+    """安放在轨道上的一个视频/图片片段"""
 
     segment_id: str
     """片段全局id, 自动生成"""
@@ -269,7 +270,7 @@ class Track_segment:
                  target_timerange: Timerange,
                  source_timerange: Optional[Timerange] = None,
                  clip_settings: Optional[Clip_settings] = None):
-        """利用给定的素材构建一个轨道片段, 并指定其时间信息及图像调节设置
+        """利用给定的视频/图片素材构建一个轨道片段, 并指定其时间信息及图像调节设置
 
         片段创建完成后, 可通过`Script_file.add_segment`方法将其添加到轨道中
 
@@ -301,7 +302,7 @@ class Track_segment:
     def add_animation(self, animation_type: Union[Video_intro_type, Video_outro_type]) -> None:
         """将给定的入场/出场动画添加到此片段的动画列表中, 此方法不支持手动调节动画参数"""
         if not isinstance(animation_type, (Video_intro_type, Video_outro_type)):
-            raise ValueError("Invalid animation type")
+            raise TypeError("Invalid animation type")
         is_intro = isinstance(animation_type, Video_intro_type)
 
         if self.animations_instance is None:
@@ -478,13 +479,13 @@ class Script_file:
 
         self.materials = Script_material()
 
-        with open(self.TEMPLATE_FILE, "r", encoding="utf-8") as f:
+        with open(os.path.join(os.path.dirname(__file__), self.TEMPLATE_FILE), "r", encoding="utf-8") as f:
             self.content = json.load(f)
 
     def add_material(self, material: Video_material):
         self.materials.videos.append(material)
 
-    def add_segment(self, segment: Track_segment):
+    def add_segment(self, segment: Video_segment):
         self.content["tracks"][0]["segments"].append(segment.export_json())
         self.duration = max(self.duration, segment.target_timerange.start + segment.target_timerange.duration)
 
