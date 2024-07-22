@@ -6,7 +6,7 @@ from typing import Optional, Literal, Union
 from typing import Dict, List, Any
 
 from .local_materials import Video_material
-from .animation_meta import Video_intro_type, Video_outro_type
+from .animation_meta import Video_intro_type, Video_outro_type, Video_group_animation_type
 
 class Clip_settings:
     """素材片段的图像调节设置"""
@@ -153,7 +153,7 @@ class Animation:
     """动画名称, 默认取为动画效果的名称"""
     effect_id: str
     """另一种动画id, 由剪映本身提供"""
-    animation_type: str
+    animation_type: Literal["in", "out", "group"]
     resource_id: str
     """资源id, 由剪映本身提供"""
 
@@ -167,8 +167,8 @@ class Animation:
 
     is_video_animation: bool
 
-    def __init__(self, animation_type: Union[Video_intro_type, Video_outro_type],
-                 start: Optional[int] = None, duration: Optional[int] = None):
+    def __init__(self, animation_type: Union[Video_intro_type, Video_outro_type, Video_group_animation_type],
+                 start: int, duration: int):
         type_meta = animation_type.value
         self.name = type_meta.title
         self.effect_id = type_meta.effect_id
@@ -179,16 +179,18 @@ class Animation:
             self.category_id = "in"
             self.category_name = "入场"
 
-            if start is None: start = 0
-            if duration is None: duration = type_meta.duration
             self.is_video_animation = True
         elif isinstance(animation_type, Video_outro_type):
             self.animation_type = "out"
             self.category_id = "out"
             self.category_name = "出场"
 
-            if duration is None: duration = type_meta.duration
-            if start is None: raise ValueError("Outro animation must have a start time")
+            self.is_video_animation = True
+        elif isinstance(animation_type, Video_group_animation_type):
+            self.animation_type = "group"
+            self.category_id = "group"
+            self.category_name = "组合"
+
             self.is_video_animation = True
 
         self.start = start
@@ -230,8 +232,15 @@ class Segment_animations:
         self.animations = []
 
     def add_animation(self, animation: Animation) -> None:
+        # 不允许添加超过一个同类型的动画（如两个入场动画）
         if animation.animation_type in [ani.animation_type for ani in self.animations]:
             raise ValueError(f"Duplicate animation type '{animation.animation_type}'")
+        # 不允许组合动画与出入场动画同时出现
+        if any(ani.animation_type == "group" for ani in self.animations):
+            raise ValueError("Group animation contradicts with any other animation")
+        if animation.animation_type == "group" and len(self.animations) > 0:
+            raise ValueError("Cannot add group animation when there are animations exist")
+
         self.animations.append(animation)
 
     def export_json(self) -> Dict[str, Any]:
@@ -299,21 +308,25 @@ class Video_segment:
         self.animations_instance = animation
         self.extra_material_refs.append(animation.animation_id)
 
-    def add_animation(self, animation_type: Union[Video_intro_type, Video_outro_type]) -> None:
-        """将给定的入场/出场动画添加到此片段的动画列表中, 此方法不支持手动调节动画参数"""
-        if not isinstance(animation_type, (Video_intro_type, Video_outro_type)):
-            raise TypeError("Invalid animation type")
-        is_intro = isinstance(animation_type, Video_intro_type)
+    def add_animation(self, animation_type: Union[Video_intro_type, Video_outro_type, Video_group_animation_type]) -> None:
+        """将给定的入场/出场/组合动画添加到此片段的动画列表中, 动画的起止时间自动确定"""
+        if isinstance(animation_type, Video_intro_type):
+            start = 0
+            duration = animation_type.value.duration
+        elif isinstance(animation_type, Video_outro_type):
+            start = self.target_timerange.duration - animation_type.value.duration
+            duration = animation_type.value.duration
+        elif isinstance(animation_type, Video_group_animation_type):
+            start = 0
+            duration = self.target_timerange.duration
+        else:
+            raise TypeError("Invalid animation type %s" % type(animation_type))
 
         if self.animations_instance is None:
             self.animations_instance = Segment_animations()
             self.extra_material_refs.append(self.animations_instance.animation_id)
 
-        self.animations_instance.add_animation(
-            Animation(animation_type,
-                      start= 0 if is_intro else self.target_timerange.duration - animation_type.value.duration,
-                      duration=animation_type.value.duration
-        ))
+        self.animations_instance.add_animation(Animation(animation_type, start, duration))
 
     def add_keyframe(self, _property: Keyframe_property, time_offset: int, value: float):
         """为给定属性创建一个关键帧, 并自动加入到关键帧列表中
