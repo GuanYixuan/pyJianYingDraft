@@ -52,6 +52,8 @@ class Keyframe_property(Enum):
     contrast = "KFTypeContrast"
     brightness = "KFTypeBrightness"
 
+    volume = "KFTypeVolume"
+
 class Keyframe_list:
     """关键帧列表, 记录与某个特定属性相关的一系列关键帧"""
 

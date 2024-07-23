@@ -1,9 +1,9 @@
 import os
 import uuid
 import imageio
+import pymediainfo
 
-from enum import Enum
-from typing import Optional, Literal, Union
+from typing import Optional, Literal
 from typing import Dict, List, Any
 
 class Crop_settings:
@@ -178,3 +178,80 @@ class Video_material:
             "width": self.width
         }
         return video_material_json
+
+class Audio_material:
+    """本地音频素材"""
+
+    material_id: str
+    """素材全局id, 自动生成"""
+    material_name: str
+    """素材名称"""
+    path: str
+    """素材文件路径"""
+
+    duration: int
+    """素材时长, 单位为微秒"""
+
+    def __init__(self, path: str, material_name: Optional[str] = None):
+        """从指定位置加载音频素材
+
+        Args:
+            path (`str`): 素材文件路径, 支持mp3, wav等常见音频文件.
+            material_name (`str`, optional): 素材名称, 如果不指定, 默认使用文件名作为素材名称.
+
+        Raises:
+            `FileNotFoundError`: 素材文件不存在.
+            `ValueError`: 不支持的素材文件类型.
+        """
+        if not os.path.exists(path):
+            raise FileNotFoundError(f"File {path} does not exist")
+
+        self.material_name = material_name if material_name else os.path.basename(path)
+        self.material_id = uuid.uuid3(uuid.NAMESPACE_DNS, self.material_name).hex
+        self.path = path
+
+        if not pymediainfo.MediaInfo.can_parse():
+            raise ValueError("Unsupported file type %s" % os.path.splitext(path)[1])
+        info: pymediainfo.MediaInfo = pymediainfo.MediaInfo.parse(path)  # type: ignore
+        self.duration = int(info.audio_tracks[0].duration * 1e3)  # type: ignore
+
+    def export_json(self) -> Dict[str, Any]:
+        return {
+            "app_id": 0,
+            "category_id": "",
+            "category_name": "local",
+            "check_flag": 1,
+            "copyright_limit_type": "none",
+            "duration": self.duration,
+            "effect_id": "",
+            "formula_id": "",
+            "id": self.material_id,
+            "intensifies_path": "",
+            "is_ai_clone_tone": False,
+            "is_text_edit_overdub": False,
+            "is_ugc": False,
+            "local_material_id": self.material_id,
+            "music_id": self.material_id,
+            "name": self.material_name,
+            "path": self.path,
+            "query": "",
+            "request_id": "",
+            "resource_id": "",
+            "search_id": "",
+            "source_from": "",
+            "source_platform": 0,
+            "team_id": "",
+            "text_id": "",
+            "tone_category_id": "",
+            "tone_category_name": "",
+            "tone_effect_id": "",
+            "tone_effect_name": "",
+            "tone_platform": "",
+            "tone_second_category_id": "",
+            "tone_second_category_name": "",
+            "tone_speaker": "",
+            "tone_type": "",
+            "type": "extract_music",
+            "video_id": "",
+            "wave_points": []
+        }

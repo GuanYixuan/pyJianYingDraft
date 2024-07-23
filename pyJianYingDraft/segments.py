@@ -4,7 +4,7 @@ from enum import Enum
 from typing import Optional, Literal, Union
 from typing import Dict, List, Any
 
-from .local_materials import Video_material
+from .local_materials import Video_material, Audio_material
 from .keyframe import Keyframe_property, Keyframe_list
 from .animation_meta import Video_intro_type, Video_outro_type, Video_group_animation_type
 
@@ -169,6 +169,77 @@ class Segment_animations:
             "animations": [animation.export_json() for animation in self.animations]
         }
 
+class Base_segment:
+    """片段基类"""
+
+    segment_id: str
+    """片段全局id, 自动生成"""
+    material_id: str
+    """使用的素材id"""
+    source_timerange: Timerange
+    """截取的素材片段的时间范围"""
+    target_timerange: Timerange
+    """片段在轨道上的时间范围"""
+    speed: float
+    """播放速度"""
+    volume: float
+    """音量"""
+
+    common_keyframes: List[Keyframe_list]
+    """各属性的关键帧列表"""
+    extra_material_refs: List[str]
+    """附加的素材id列表, 用于链接动画/特效等"""
+
+    def __init__(self, material_id: str, source_timerange: Timerange, target_timerange: Timerange, speed: float, volume: float):
+        self.segment_id = uuid.uuid4().hex
+        self.material_id = material_id
+        self.source_timerange = source_timerange
+        self.target_timerange = target_timerange
+        self.speed = speed
+        self.volume = volume
+
+        self.common_keyframes = []
+        self.extra_material_refs = []
+
+    def export_json(self) -> Dict[str, Any]:
+        """返回通用于音频和视频片段的默认属性"""
+        return {
+            "caption_info": None,
+            "cartoon": False,
+            "enable_adjust": True,
+            "enable_color_correct_adjust": False,
+            "enable_color_curves": True,
+            "enable_color_match_adjust": False,
+            "enable_color_wheels": True,
+            "enable_lut": True,
+            "enable_smart_color_adjust": False,
+            "group_id": "",
+            # "hdr_settings"
+            "intensifies_audio": False,
+            "is_placeholder": False,
+            "is_tone_modify": False,
+            "last_nonzero_volume": 1.0,
+            # "render_index": 0,
+            "responsive_layout": {"enable": False, "horizontal_pos_layout": 0, "size_layout": 0, "vertical_pos_layout": 0, "target_follow": ""},
+            "reverse": False,
+            "template_id": "",
+            "template_scene": "default",
+            "track_attribute": 0,
+            "track_render_index": 0,
+            "visible": True,
+            # 写入自定义字段
+            "id": self.segment_id,
+            "material_id": self.material_id,
+            "source_timerange": self.source_timerange.export_json(),
+            "target_timerange": self.target_timerange.export_json(),
+            "speed": self.speed,
+            "volume": self.volume,
+
+            "common_keyframes": [kf_list.export_json() for kf_list in self.common_keyframes],
+            "extra_material_refs": self.extra_material_refs,
+            "keyframe_refs": [], # 意义不明
+        }
+
 class Video_segment:
     """安放在轨道上的一个视频/图片片段"""
 
@@ -186,7 +257,7 @@ class Video_segment:
     extra_material_refs: List[str]
     """附加的素材id列表, 用于链接动画等"""
     clip_settings: Clip_settings
-    """图像调节设置"""
+    """图像调节设置, 其效果可被关键帧覆盖"""
 
     uniform_scale: bool
     """是否锁定XY轴缩放比例"""
@@ -313,3 +384,53 @@ class Video_segment:
         }
 
         return fields
+
+class Audio_segment(Base_segment):
+    """安放在轨道上的一个音频片段"""
+
+    def __init__(self, material: Audio_material, target_timerange: Timerange, *,
+                 source_timerange: Optional[Timerange] = None, speed: Optional[float] = None, volume: float = 1.0):
+        """利用给定的音频素材构建一个轨道片段, 并指定其时间信息及播放速度/音量
+
+        片段创建完成后, 可通过`Script_file.add_segment`方法将其添加到轨道中
+
+        Args:
+            material (`Audio_material`): 素材实例, 注意你仍然需要为其调用`Script_file.add_material`来将其添加到素材列表中
+            target_timerange (`Timerange`): 片段在轨道上的目标时间范围
+            source_timerange (`Timerange`, optional): 截取的素材片段的时间范围, 默认从开头根据`speed`截取与`target_timerange`等长的一部分
+            speed (`float`, optional): 播放速度, 默认为1.0. 此项与`source_timerange`同时指定时, 将覆盖`target_timerange`中的时长
+            volume (`float`, optional): 音量, 默认为1.0
+        """
+        if source_timerange is not None and speed is not None:
+            target_timerange = Timerange(target_timerange.start, round(source_timerange.duration / speed))
+        elif source_timerange is not None and speed is None:
+            speed = source_timerange.duration / target_timerange.duration
+        else: # source_timerange is None
+            speed = speed if speed is not None else 1.0
+            source_timerange = Timerange(0, round(target_timerange.duration * speed))
+
+        super().__init__(material.material_id, source_timerange, target_timerange, speed, volume)
+
+    def add_keyframe(self, time_offset: int, volume: float):
+        """为音频片段创建一个*控制音量*的关键帧, 并自动加入到关键帧列表中
+
+        Args:
+            time_offset (`int`): 关键帧的时间偏移量, 单位为微秒
+            volume (`float`): 音量在`time_offset`处的值
+        """
+        _property = Keyframe_property.volume
+        for kf_list in self.common_keyframes:
+            if kf_list.keyframe_property == _property:
+                kf_list.add_keyframe(time_offset, volume)
+                return
+        kf_list = Keyframe_list(_property)
+        kf_list.add_keyframe(time_offset, volume)
+        self.common_keyframes.append(kf_list)
+
+    def export_json(self) -> Dict[str, Any]:
+        json_dict = super().export_json()
+        json_dict.update({
+            "clip": None,
+            "hdr_settings": None
+        })
+        return json_dict
