@@ -317,7 +317,7 @@ class Video_segment:
 
         self.animations_instance.add_animation(Animation(animation_type, start, duration))
 
-    def add_keyframe(self, _property: Keyframe_property, time_offset: int, value: float):
+    def add_keyframe(self, _property: Keyframe_property, time_offset: int, value: float) -> None:
         """为给定属性创建一个关键帧, 并自动加入到关键帧列表中
 
         Args:
@@ -385,8 +385,38 @@ class Video_segment:
 
         return fields
 
+class Audio_fade:
+    """音频淡入淡出效果"""
+
+    fade_id: str
+    """淡入淡出效果的全局id, 自动生成"""
+
+    in_duration: int
+    """淡入时长, 单位为微秒"""
+    out_duration: int
+    """淡出时长, 单位为微秒"""
+
+    def __init__(self, in_duration: int, out_duration: int):
+        """根据给定的淡入/淡出时长构造一个淡入淡出效果"""
+
+        self.fade_id = uuid.uuid4().hex
+        self.in_duration = in_duration
+        self.out_duration = out_duration
+
+    def export_json(self) -> Dict[str, Any]:
+        return {
+            "id": self.fade_id,
+            "fade_in_duration": self.in_duration,
+            "fade_out_duration": self.out_duration,
+            "fade_type": 0,
+            "type": "audio_fade"
+        }
+
 class Audio_segment(Base_segment):
     """安放在轨道上的一个音频片段"""
+
+    fade: Optional[Audio_fade]
+    """音频淡入淡出效果, 可能为空"""
 
     def __init__(self, material: Audio_material, target_timerange: Timerange, *,
                  source_timerange: Optional[Timerange] = None, speed: Optional[float] = None, volume: float = 1.0):
@@ -411,7 +441,24 @@ class Audio_segment(Base_segment):
 
         super().__init__(material.material_id, source_timerange, target_timerange, speed, volume)
 
-    def add_keyframe(self, time_offset: int, volume: float):
+        self.fade = None
+
+    def add_fade(self, in_duration: int, out_duration: int) -> None:
+        """为音频片段添加淡入淡出效果
+
+        Args:
+            in_duration (`int`): 音频淡入时长, 单位为微秒
+            out_duration (`int`): 音频淡出时长, 单位为微秒
+
+        Raises:
+            `ValueError`: 当前片段已存在淡入淡出效果
+        """
+        if self.fade is not None:
+            raise ValueError("Audio segment already has a fade")
+        self.fade = Audio_fade(in_duration, out_duration)
+        self.extra_material_refs.append(self.fade.fade_id)
+
+    def add_keyframe(self, time_offset: int, volume: float) -> None:
         """为音频片段创建一个*控制音量*的关键帧, 并自动加入到关键帧列表中
 
         Args:

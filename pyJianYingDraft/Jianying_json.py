@@ -6,7 +6,8 @@ from typing import Optional, Literal, Union
 from typing import Dict, List, Any
 
 from .local_materials import Video_material, Audio_material
-from .segments import Segment_animations, Video_segment, Audio_segment
+from .segments import Audio_segment, Audio_fade
+from .segments import Video_segment, Segment_animations
 
 class Script_material:
     """脚本文件中的素材信息部分"""
@@ -16,19 +17,24 @@ class Script_material:
     videos: List[Video_material]
     """视频素材列表"""
 
+    audio_fades: List[Audio_fade]
+    """音频淡入淡出效果列表"""
     animations: List[Segment_animations]
     """动画素材列表"""
 
     def __init__(self):
         self.audios = []
         self.videos = []
+        self.audio_fades = []
         self.animations = []
 
-    def __contains__(self, item: Union[Video_material, Audio_material, Segment_animations]) -> bool:
+    def __contains__(self, item: Union[Audio_material, Video_material, Audio_fade, Segment_animations]) -> bool:
         if isinstance(item, Video_material):
             return item.material_id in [video.material_id for video in self.videos]
         elif isinstance(item, Audio_material):
             return item.material_id in [audio.material_id for audio in self.audios]
+        elif isinstance(item, Audio_fade):
+            return item.fade_id in [fade.fade_id for fade in self.audio_fades]
         elif isinstance(item, Segment_animations):
             return item.animation_id in [ani.animation_id for ani in self.animations]
         else:
@@ -39,7 +45,7 @@ class Script_material:
             "ai_translates": [],
             "audio_balances": [],
             "audio_effects": [],
-            "audio_fades": [],
+            "audio_fades": [fade.export_json() for fade in self.audio_fades],
             "audio_track_indexes": [],
             "audios": [audio.export_json() for audio in self.audios],
             "beats": [],
@@ -130,6 +136,9 @@ class Script_file:
         elif isinstance(segment, Audio_segment):
             self.content["tracks"][1]["segments"].append(segment.export_json())
             self.duration = max(self.duration, segment.target_timerange.start + segment.target_timerange.duration)
+
+            if (segment.fade is not None) and (segment.fade not in self.materials):
+                self.materials.audio_fades.append(segment.fade)
         else:
             raise TypeError("Invalid argument type '%s'" % type(segment))
 
