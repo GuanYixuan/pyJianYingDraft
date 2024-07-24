@@ -6,7 +6,7 @@ from typing import Dict, List, Any
 
 from .local_materials import Video_material, Audio_material
 from .keyframe import Keyframe_property, Keyframe_list
-from .animation_meta import Video_intro_type, Video_outro_type, Video_group_animation_type
+from .metadata.animation_meta import Video_intro_type, Video_outro_type, Video_group_animation_type
 
 class Clip_settings:
     """素材片段的图像调节设置"""
@@ -81,7 +81,8 @@ class Animation:
     """动画持续时间, 单位为微秒, 各动画有其默认值"""
 
     category_id: str
-    category_name: str
+    category_name: Literal["入场", "出场", "组合"]
+    """动画类型, 入场/出场/组合"""
 
     is_video_animation: bool
 
