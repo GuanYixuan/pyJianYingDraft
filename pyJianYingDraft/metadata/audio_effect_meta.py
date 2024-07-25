@@ -1,50 +1,7 @@
-from enum import Enum
-from typing import List
+from .effect_meta import Effect_enum
+from .effect_meta import Effect_meta, Effect_param
 
-class Effect_param:
-    """特效参数信息"""
-
-    name: str
-    """参数名称"""
-    default_value: float
-    """默认值"""
-    min_value: float
-    """最小值"""
-    max_value: float
-    """最大值"""
-
-    def __init__(self, name: str, default_value: float, min_value: float, max_value: float):
-        self.name = name
-        self.default_value = default_value
-        self.min_value = min_value
-        self.max_value = max_value
-
-class Effect_meta:
-    """特效元数据"""
-
-    name: str
-    """效果名称"""
-    is_vip: bool
-    """是否为VIP特权"""
-
-    resource_id: str
-    """资源ID"""
-    effect_id: str
-    """效果ID"""
-    md5: str
-
-    params: List[Effect_param]
-    """效果的参数信息"""
-
-    def __init__(self, name: str, is_vip: bool, resource_id: str, effect_id: str, md5: str, params: List[Effect_param]):
-        self.name = name
-        self.is_vip = is_vip
-        self.resource_id = resource_id
-        self.effect_id = effect_id
-        self.md5 = md5
-        self.params = params
-
-class Audio_tone_effect_type(Enum):
+class Tone_effect_type(Effect_enum):
     """剪映自带的音频“音色”效果类型"""
 
     # 免费
@@ -149,7 +106,7 @@ class Audio_tone_effect_type(Enum):
     顾姐        = Effect_meta("顾姐", True, "7250403134923608631", "16627197", "8dd8889045e6c065177df791ddb3dfb8", [])
     黛玉        = Effect_meta("黛玉", True, "7255565592093004343", "18149634", "8dd8889045e6c065177df791ddb3dfb8", [])
 
-class Audio_scene_effect_type(Enum):
+class Audio_scene_effect_type(Effect_enum):
     """剪映自带的音频“场景音”效果类型"""
 
     # 免费
@@ -399,15 +356,7 @@ class Audio_scene_effect_type(Enum):
         - noise: 默认0.74, 0.00 ~ 1.00
     """
 
-    @classmethod
-    def from_name(cls, name: str) -> "Audio_scene_effect_type":
-        name = name.lower().replace(" ", "").replace("_", "")
-        for effect in cls.__members__.values():
-            if effect.name.lower().replace(" ", "").replace("_", "") == name:
-                return effect
-        raise ValueError(f"Audio effect {name} not found.")
-
-class Audio_style_effect_type(Enum):
+class Speech_to_song_type(Effect_enum):
     """剪映自带的音频“声音成曲”效果类型"""
 
     Lofi        = Effect_meta("Lofi", False, "7252917861948068410", "17345060", "8dd8889045e6c065177df791ddb3dfb8", [])
