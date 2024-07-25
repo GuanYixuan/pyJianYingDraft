@@ -1,6 +1,6 @@
 from enum import Enum
 
-from typing import List
+from typing import List, Dict, Any
 from typing import TypeVar
 
 class Effect_param:
@@ -20,6 +20,30 @@ class Effect_param:
         self.default_value = default_value
         self.min_value = min_value
         self.max_value = max_value
+
+class Effect_param_instance(Effect_param):
+    """特效参数实例"""
+
+    index: int
+    """参数索引"""
+    value: float
+    """当前值"""
+
+    def __init__(self, meta: Effect_param, index: int, value: float):
+        super().__init__(meta.name, meta.default_value, meta.min_value, meta.max_value)
+        self.index = index
+        self.value = value
+
+    def export_json(self) -> Dict[str, Any]:
+        return {
+            "default_value": self.default_value,
+            "max_value": self.max_value,
+            "min_value": self.min_value,
+            "name": self.name,
+            "parameterIndex": self.index,
+            "portIndex": 0,
+            "value": self.value
+        }
 
 class Effect_meta:
     """特效元数据"""

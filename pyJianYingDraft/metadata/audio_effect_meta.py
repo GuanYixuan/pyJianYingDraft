@@ -357,7 +357,7 @@ class Audio_scene_effect_type(Effect_enum):
     """
 
 class Speech_to_song_type(Effect_enum):
-    """剪映自带的音频“声音成曲”效果类型"""
+    """剪映自带的音频“声音成曲”效果类型, 此类效果目前不能自动被剪映所识别"""
 
     Lofi        = Effect_meta("Lofi", False, "7252917861948068410", "17345060", "8dd8889045e6c065177df791ddb3dfb8", [])
     民谣        = Effect_meta("民谣", False, "7251868698170888759", "17046923", "8dd8889045e6c065177df791ddb3dfb8", [])

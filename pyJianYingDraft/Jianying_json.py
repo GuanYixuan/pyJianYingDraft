@@ -6,7 +6,7 @@ from typing import Optional, Literal, Union
 from typing import Dict, List, Any
 
 from .local_materials import Video_material, Audio_material
-from .segments import Audio_segment, Audio_fade
+from .segments import Audio_segment, Audio_fade, Audio_effect
 from .segments import Video_segment, Segment_animations
 
 class Script_material:
@@ -17,6 +17,8 @@ class Script_material:
     videos: List[Video_material]
     """视频素材列表"""
 
+    audio_effects: List[Audio_effect]
+    """音频特效列表"""
     audio_fades: List[Audio_fade]
     """音频淡入淡出效果列表"""
     animations: List[Segment_animations]
@@ -25,16 +27,19 @@ class Script_material:
     def __init__(self):
         self.audios = []
         self.videos = []
+        self.audio_effects = []
         self.audio_fades = []
         self.animations = []
 
-    def __contains__(self, item: Union[Audio_material, Video_material, Audio_fade, Segment_animations]) -> bool:
+    def __contains__(self, item: Union[Audio_material, Video_material, Audio_fade, Audio_effect, Segment_animations]) -> bool:
         if isinstance(item, Video_material):
             return item.material_id in [video.material_id for video in self.videos]
         elif isinstance(item, Audio_material):
             return item.material_id in [audio.material_id for audio in self.audios]
         elif isinstance(item, Audio_fade):
             return item.fade_id in [fade.fade_id for fade in self.audio_fades]
+        elif isinstance(item, Audio_effect):
+            return item.effect_id in [effect.effect_id for effect in self.audio_effects]
         elif isinstance(item, Segment_animations):
             return item.animation_id in [ani.animation_id for ani in self.animations]
         else:
@@ -44,7 +49,7 @@ class Script_material:
         return {
             "ai_translates": [],
             "audio_balances": [],
-            "audio_effects": [],
+            "audio_effects": [effect.export_json() for effect in self.audio_effects],
             "audio_fades": [fade.export_json() for fade in self.audio_fades],
             "audio_track_indexes": [],
             "audios": [audio.export_json() for audio in self.audios],
@@ -101,6 +106,7 @@ class Script_file:
     fps: int
     """视频的帧率"""
     duration: int
+    """视频的总时长, 单位为微秒"""
 
     materials: Script_material
     """脚本文件中的素材信息部分"""
@@ -118,15 +124,16 @@ class Script_file:
         with open(os.path.join(os.path.dirname(__file__), self.TEMPLATE_FILE), "r", encoding="utf-8") as f:
             self.content = json.load(f)
 
-    def add_material(self, material: Union[Video_material, Audio_material]):
+    def add_material(self, material: Union[Video_material, Audio_material]) -> "Script_file":
         if isinstance(material, Video_material):
             self.materials.videos.append(material)
         elif isinstance(material, Audio_material):
             self.materials.audios.append(material)
         else:
             raise TypeError("Invalid argument type '%s'" % type(material))
+        return self
 
-    def add_segment(self, segment: Union[Video_segment, Audio_segment]):
+    def add_segment(self, segment: Union[Video_segment, Audio_segment]) -> "Script_file":
         if isinstance(segment, Video_segment):
             self.content["tracks"][0]["segments"].append(segment.export_json())
             self.duration = max(self.duration, segment.target_timerange.start + segment.target_timerange.duration)
@@ -139,8 +146,12 @@ class Script_file:
 
             if (segment.fade is not None) and (segment.fade not in self.materials):
                 self.materials.audio_fades.append(segment.fade)
+            for effect in segment.effects:
+                if effect not in self.materials:
+                    self.materials.audio_effects.append(effect)
         else:
             raise TypeError("Invalid argument type '%s'" % type(segment))
+        return self
 
     def add_animation(self, animation: Segment_animations):
         self.materials.animations.append(animation)
