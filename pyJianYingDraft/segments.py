@@ -10,6 +10,7 @@ from .keyframe import Keyframe_property, Keyframe_list
 from .metadata.effect_meta import Effect_param_instance
 from .metadata.animation_meta import Video_intro_type, Video_outro_type, Video_group_animation_type
 from .metadata.audio_effect_meta import Audio_scene_effect_type, Tone_effect_type, Speech_to_song_type
+from .metadata.video_effect_meta import Video_scene_effect_type
 
 class Clip_settings:
     """素材片段的图像调节设置"""
@@ -83,7 +84,7 @@ class Animation:
     duration: int
     """动画持续时间, 单位为微秒, 各动画有其默认值"""
 
-    category_id: Literal["in", "out", "group"]
+    category_id: Literal["ruchang", "chuchang", "group"]
     category_name: Literal["入场", "出场", "组合"]
     """动画类型, 入场/出场/组合"""
 
@@ -98,13 +99,13 @@ class Animation:
 
         if isinstance(animation_type, Video_intro_type):
             self.animation_type = "in"
-            self.category_id = "in"
+            self.category_id = "ruchang"
             self.category_name = "入场"
 
             self.is_video_animation = True
         elif isinstance(animation_type, Video_outro_type):
             self.animation_type = "out"
-            self.category_id = "out"
+            self.category_id = "chuchang"
             self.category_name = "出场"
 
             self.is_video_animation = True
@@ -173,11 +174,74 @@ class Segment_animations:
             "animations": [animation.export_json() for animation in self.animations]
         }
 
+class Video_effect:
+    """视频特效对象"""
+
+    name: str
+    """特效名称"""
+    global_id: str
+    """特效全局id, 由程序自动生成"""
+    effect_id: str
+    """某种特效id, 由剪映本身提供"""
+    resource_id: str
+    """资源id, 由剪映本身提供"""
+
+    adjust_params: List[Effect_param_instance]
+
+    def __init__(self, effect_meta: Video_scene_effect_type,
+                 params: Optional[List[Optional[float]]] = None):
+        """根据给定的特效元数据及参数列表构造一个视频特效对象, params的范围是0~100"""
+
+        self.name = effect_meta.value.name
+        self.global_id = uuid.uuid4().hex
+        self.effect_id = effect_meta.value.effect_id
+        self.resource_id = effect_meta.value.resource_id
+        self.adjust_params = []
+
+        effect_meta.value.effect_id
+
+        if params is None: params = []
+        for i, param in enumerate(effect_meta.value.params):
+            val = param.default_value
+            if i < len(params):
+                input_v = params[i]
+                if input_v is not None:
+                    if input_v < 0 or input_v > 100:
+                        raise ValueError("Invalid parameter value %f within %s" % (input_v, str(param)))
+                    val = param.min_value + (param.max_value - param.min_value) * input_v / 100.0 # 从0~100映射到实际值
+            self.adjust_params.append(Effect_param_instance(param, i, val))
+
+    def export_json(self) -> Dict[str, Any]:
+        return {
+            "adjust_params": [param.export_json() for param in self.adjust_params],
+            "algorithm_artifact_path": "",
+            "apply_target_type": 2,
+            "apply_time_range": None,
+            "category_id": "", # 一律设为空
+            "category_name": "", # 一律设为空
+            "common_keyframes": [],
+            "disable_effect_faces": [],
+            "effect_id": self.effect_id,
+            "formula_id": "",
+            "id": self.global_id,
+            "name": self.name,
+            "platform": "all",
+            "render_index": 0,
+            "resource_id": self.resource_id,
+            "source_platform": 0,
+            "time_range": None,
+            "track_render_index": 0,
+            "type": "video_effect",
+            "value": 1.0,
+            "version": ""
+            # 不导出path和request_id字段
+        }
+
 class Base_segment:
     """片段基类"""
 
     segment_id: str
-    """片段全局id, 自动生成"""
+    """片段全局id, 由程序自动生成"""
     material_id: str
     """使用的素材id"""
     source_timerange: Timerange
@@ -250,8 +314,17 @@ class Video_segment(Base_segment):
 
     uniform_scale: bool
     """是否锁定XY轴缩放比例"""
+
+    effects: List[Video_effect]
+    """特效列表
+
+    在放入轨道时自动添加到素材列表中
+    """
     animations_instance: Optional[Segment_animations]
-    """动画实例, 可能为空"""
+    """动画实例, 可能为空
+
+    在放入轨道时自动添加到素材列表中
+    """
 
     def __init__(self, material: Video_material, target_timerange: Timerange, *,
                  source_timerange: Optional[Timerange] = None, speed: Optional[float] = None, volume: float = 1.0,
@@ -280,15 +353,10 @@ class Video_segment(Base_segment):
 
         self.clip_settings = clip_settings if clip_settings is not None else Clip_settings()
         self.uniform_scale = True
+        self.effects = []
         self.animations_instance = None
 
-    def attach_animation(self, animation: Segment_animations) -> None:
-        """将给定的动画链接到此片段, 你仍然需要调用`Script_file.add_animation`来将动画添加到素材列表中"""
-        assert self.animations_instance is None
-        self.animations_instance = animation
-        self.extra_material_refs.append(animation.animation_id)
-
-    def add_animation(self, animation_type: Union[Video_intro_type, Video_outro_type, Video_group_animation_type]) -> None:
+    def add_animation(self, animation_type: Union[Video_intro_type, Video_outro_type, Video_group_animation_type]) -> "Video_segment":
         """将给定的入场/出场/组合动画添加到此片段的动画列表中, 动画的起止时间自动确定"""
         if isinstance(animation_type, Video_intro_type):
             start = 0
@@ -308,7 +376,20 @@ class Video_segment(Base_segment):
 
         self.animations_instance.add_animation(Animation(animation_type, start, duration))
 
-    def add_keyframe(self, _property: Keyframe_property, time_offset: int, value: float) -> None:
+        return self
+
+    def add_effect(self, effect_type: Video_scene_effect_type, params: Optional[List[Optional[float]]] = None) -> "Video_segment":
+        """为视频片段添加一个作用于整个片段的特效"""
+        if params is not None and len(params) > len(effect_type.value.params):
+            raise ValueError("Too many parameters for effect %s" % effect_type.value.name)
+
+        effect_inst = Video_effect(effect_type, params)
+        self.effects.append(effect_inst)
+        self.extra_material_refs.append(effect_inst.global_id)
+
+        return self
+
+    def add_keyframe(self, _property: Keyframe_property, time_offset: int, value: float) -> "Video_segment":
         """为给定属性创建一个关键帧, 并自动加入到关键帧列表中
 
         Args:
@@ -329,10 +410,11 @@ class Video_segment(Base_segment):
         for kf_list in self.common_keyframes:
             if kf_list.keyframe_property == _property:
                 kf_list.add_keyframe(time_offset, value)
-                return
+                return self
         kf_list = Keyframe_list(_property)
         kf_list.add_keyframe(time_offset, value)
         self.common_keyframes.append(kf_list)
+        return self
 
     def export_json(self) -> Dict[str, Any]:
         json_dict = super().export_json()

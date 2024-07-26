@@ -7,7 +7,7 @@ from typing import Dict, List, Any
 
 from .local_materials import Video_material, Audio_material
 from .segments import Audio_segment, Audio_fade, Audio_effect
-from .segments import Video_segment, Segment_animations
+from .segments import Video_segment, Segment_animations, Video_effect
 
 class Script_material:
     """脚本文件中的素材信息部分"""
@@ -23,6 +23,8 @@ class Script_material:
     """音频淡入淡出效果列表"""
     animations: List[Segment_animations]
     """动画素材列表"""
+    video_effects: List[Video_effect]
+    """视频特效列表"""
 
     def __init__(self):
         self.audios = []
@@ -30,8 +32,9 @@ class Script_material:
         self.audio_effects = []
         self.audio_fades = []
         self.animations = []
+        self.video_effects = []
 
-    def __contains__(self, item: Union[Audio_material, Video_material, Audio_fade, Audio_effect, Segment_animations]) -> bool:
+    def __contains__(self, item: Union[Audio_material, Video_material, Audio_fade, Audio_effect, Segment_animations, Video_effect]) -> bool:
         if isinstance(item, Video_material):
             return item.material_id in [video.material_id for video in self.videos]
         elif isinstance(item, Audio_material):
@@ -42,6 +45,8 @@ class Script_material:
             return item.effect_id in [effect.effect_id for effect in self.audio_effects]
         elif isinstance(item, Segment_animations):
             return item.animation_id in [ani.animation_id for ani in self.animations]
+        elif isinstance(item, Video_effect):
+            return item.global_id in [effect.global_id for effect in self.video_effects]
         else:
             raise TypeError("Invalid argument type '%s'" % type(item))
 
@@ -87,7 +92,7 @@ class Script_material:
             "texts": [],
             "time_marks": [],
             "transitions": [],
-            "video_effects": [],
+            "video_effects": [effect.export_json() for effect in self.video_effects],
             "video_trackings": [],
             "videos": [video.export_json() for video in self.videos],
             "vocal_beautifys": [],
@@ -140,6 +145,9 @@ class Script_file:
 
             if (segment.animations_instance is not None) and (segment.animations_instance not in self.materials):
                 self.add_animation(segment.animations_instance)
+            for effect in segment.effects:
+                if effect not in self.materials:
+                    self.materials.video_effects.append(effect)
         elif isinstance(segment, Audio_segment):
             self.content["tracks"][1]["segments"].append(segment.export_json())
             self.duration = max(self.duration, segment.target_timerange.start + segment.target_timerange.duration)
