@@ -1,0 +1,213 @@
+"""定义音频片段及其相关类
+
+包含淡入淡出效果、音频特效等相关类
+"""
+
+import uuid
+
+from typing import Optional, Literal, Union
+from typing import Dict, List, Any
+
+from .segment import Base_segment, Timerange
+from .local_materials import Audio_material
+from .keyframe import Keyframe_property, Keyframe_list
+
+from .metadata.effect_meta import Effect_param_instance
+from .metadata.audio_effect_meta import Audio_scene_effect_type, Tone_effect_type, Speech_to_song_type
+
+class Audio_fade:
+    """音频淡入淡出效果"""
+
+    fade_id: str
+    """淡入淡出效果的全局id, 自动生成"""
+
+    in_duration: int
+    """淡入时长, 单位为微秒"""
+    out_duration: int
+    """淡出时长, 单位为微秒"""
+
+    def __init__(self, in_duration: int, out_duration: int):
+        """根据给定的淡入/淡出时长构造一个淡入淡出效果"""
+
+        self.fade_id = uuid.uuid4().hex
+        self.in_duration = in_duration
+        self.out_duration = out_duration
+
+    def export_json(self) -> Dict[str, Any]:
+        return {
+            "id": self.fade_id,
+            "fade_in_duration": self.in_duration,
+            "fade_out_duration": self.out_duration,
+            "fade_type": 0,
+            "type": "audio_fade"
+        }
+
+class Audio_effect:
+    """音频特效对象"""
+
+    name: str
+    """特效名称"""
+    effect_id: str
+    """特效全局id, 由剪映本身提供"""
+    resource_id: str
+    """资源id, 由剪映本身提供"""
+
+    category_id: Literal["sound_effect", "tone", "speech_to_song"]
+    category_name: Literal["场景音", "音色", "声音成曲"]
+
+    audio_adjust_params: List[Effect_param_instance]
+
+    def __init__(self, effect_meta: Union[Audio_scene_effect_type, Tone_effect_type, Speech_to_song_type],
+                 params: Optional[List[Optional[float]]] = None):
+        """根据给定的音效元数据及参数列表构造一个音频特效对象, params的范围是0~100"""
+
+        self.name = effect_meta.value.name
+        self.effect_id = uuid.uuid4().hex
+        self.resource_id = effect_meta.value.resource_id
+        self.audio_adjust_params = []
+
+        if isinstance(effect_meta, Audio_scene_effect_type):
+            self.category_id = "sound_effect"
+            self.category_name = "场景音"
+        elif isinstance(effect_meta, Tone_effect_type):
+            self.category_id = "tone"
+            self.category_name = "音色"
+        elif isinstance(effect_meta, Speech_to_song_type):
+            self.category_id = "speech_to_song"
+            self.category_name = "声音成曲"
+        else:
+            raise TypeError("Invalid effect meta type %s" % type(effect_meta))
+
+        if params is None: params = []
+        for i, param in enumerate(effect_meta.value.params):
+            val = param.default_value
+            if i < len(params):
+                input_v = params[i]
+                if input_v is not None:
+                    if input_v < 0 or input_v > 100:
+                        raise ValueError("Invalid parameter value %f within %s" % (input_v, str(param)))
+                    val = param.min_value + (param.max_value - param.min_value) * input_v / 100.0 # 从0~100映射到实际值
+            self.audio_adjust_params.append(Effect_param_instance(param, i, val))
+
+    def export_json(self) -> Dict[str, Any]:
+        return {
+            "audio_adjust_params": [param.export_json() for param in self.audio_adjust_params],
+            "category_id": self.category_id,
+            "category_name": self.category_name,
+            "id": self.effect_id,
+            "is_ugc": False,
+            "name": self.name,
+            "production_path": "",
+            "resource_id": self.resource_id,
+            "speaker_id": "",
+            "sub_type": 1,
+            "time_range": {"duration": 0, "start": 0}, # 似乎并未用到
+            "type": "audio_effect"
+            # 不导出path和constant_material_id
+        }
+
+class Audio_segment(Base_segment):
+    """安放在轨道上的一个音频片段"""
+
+    fade: Optional[Audio_fade]
+    """音频淡入淡出效果, 可能为空
+
+    在放入轨道时自动添加到素材列表中
+    """
+
+    effects: List[Audio_effect]
+    """音频特效列表
+
+    在放入轨道时自动添加到素材列表中
+    """
+
+    def __init__(self, material: Audio_material, target_timerange: Timerange, *,
+                 source_timerange: Optional[Timerange] = None, speed: Optional[float] = None, volume: float = 1.0):
+        """利用给定的音频素材构建一个轨道片段, 并指定其时间信息及播放速度/音量
+
+        片段创建完成后, 可通过`Script_file.add_segment`方法将其添加到轨道中
+
+        Args:
+            material (`Audio_material`): 素材实例, 注意你仍然需要为其调用`Script_file.add_material`来将其添加到素材列表中
+            target_timerange (`Timerange`): 片段在轨道上的目标时间范围
+            source_timerange (`Timerange`, optional): 截取的素材片段的时间范围, 默认从开头根据`speed`截取与`target_timerange`等长的一部分
+            speed (`float`, optional): 播放速度, 默认为1.0. 此项与`source_timerange`同时指定时, 将覆盖`target_timerange`中的时长
+            volume (`float`, optional): 音量, 默认为1.0
+        """
+        if source_timerange is not None and speed is not None:
+            target_timerange = Timerange(target_timerange.start, round(source_timerange.duration / speed))
+        elif source_timerange is not None and speed is None:
+            speed = source_timerange.duration / target_timerange.duration
+        else: # source_timerange is None
+            speed = speed if speed is not None else 1.0
+            source_timerange = Timerange(0, round(target_timerange.duration * speed))
+
+        super().__init__(material.material_id, source_timerange, target_timerange, speed, volume)
+
+        self.fade = None
+        self.effects = []
+
+    def add_effect(self, effect_type: Union[Audio_scene_effect_type, Tone_effect_type, Speech_to_song_type],
+                   params: Optional[List[Optional[float]]] = None) -> "Audio_segment":
+        """为音频片段添加一个作用于整个片段的音频效果, 目前“声音成曲”效果不能自动被剪映所识别
+
+        Args:
+            effect_type (`Audio_scene_effect_type` | `Tone_effect_type` | `Speech_to_song_type`): 音效类型, 一类音效只能添加一个.
+            params (`List[Optional[float]]`, optional): 音效参数列表, 参数列表中未提供或为None的项使用默认值.
+                参数列表的顺序及参数取值范围(0~100)均与剪映中一致. 音效类型可查阅枚举类的具体定义.
+
+        Raises:
+            `ValueError`: 试图添加一个已经存在的音效类型, 或提供的参数数量超过了该音效类型的参数数量.
+        """
+        if params is not None and len(params) > len(effect_type.value.params):
+            raise ValueError("Too many parameters for effect %s" % effect_type.value.name)
+
+        effect_inst = Audio_effect(effect_type, params)
+        if effect_inst.category_id in [eff.category_id for eff in self.effects]:
+            raise ValueError("Audio segment already has an effect of this category (%s)" % effect_inst.category_name)
+        self.effects.append(effect_inst)
+        self.extra_material_refs.append(effect_inst.effect_id)
+
+        return self
+
+    def add_fade(self, in_duration: int, out_duration: int) -> "Audio_segment":
+        """为音频片段添加淡入淡出效果
+
+        Args:
+            in_duration (`int`): 音频淡入时长, 单位为微秒
+            out_duration (`int`): 音频淡出时长, 单位为微秒
+
+        Raises:
+            `ValueError`: 当前片段已存在淡入淡出效果
+        """
+        if self.fade is not None:
+            raise ValueError("Audio segment already has a fade")
+        self.fade = Audio_fade(in_duration, out_duration)
+        self.extra_material_refs.append(self.fade.fade_id)
+
+        return self
+
+    def add_keyframe(self, time_offset: int, volume: float) -> "Audio_segment":
+        """为音频片段创建一个*控制音量*的关键帧, 并自动加入到关键帧列表中
+
+        Args:
+            time_offset (`int`): 关键帧的时间偏移量, 单位为微秒
+            volume (`float`): 音量在`time_offset`处的值
+        """
+        _property = Keyframe_property.volume
+        for kf_list in self.common_keyframes:
+            if kf_list.keyframe_property == _property:
+                kf_list.add_keyframe(time_offset, volume)
+                return self
+        kf_list = Keyframe_list(_property)
+        kf_list.add_keyframe(time_offset, volume)
+        self.common_keyframes.append(kf_list)
+        return self
+
+    def export_json(self) -> Dict[str, Any]:
+        json_dict = super().export_json()
+        json_dict.update({
+            "clip": None,
+            "hdr_settings": None
+        })
+        return json_dict

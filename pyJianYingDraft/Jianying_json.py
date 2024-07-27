@@ -6,8 +6,8 @@ from typing import Optional, Literal, Union
 from typing import Dict, List, Any
 
 from .local_materials import Video_material, Audio_material
-from .segments import Audio_segment, Audio_fade, Audio_effect
-from .segments import Video_segment, Segment_animations, Video_effect
+from .audio_segment import Audio_segment, Audio_fade, Audio_effect
+from .video_segment import Video_segment, Segment_animations, Video_effect
 
 class Script_material:
     """脚本文件中的素材信息部分"""
