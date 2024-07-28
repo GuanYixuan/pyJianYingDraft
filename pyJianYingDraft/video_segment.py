@@ -14,7 +14,7 @@ from .keyframe import Keyframe_property, Keyframe_list
 
 from .metadata.effect_meta import Effect_param_instance
 from .metadata.animation_meta import Video_intro_type, Video_outro_type, Video_group_animation_type
-from .metadata.video_effect_meta import Video_scene_effect_type
+from .metadata.video_effect_meta import Video_scene_effect_type, Video_character_effect_type
 
 class Clip_settings:
     """素材片段的图像调节设置"""
@@ -176,9 +176,11 @@ class Video_effect:
     resource_id: str
     """资源id, 由剪映本身提供"""
 
+    effect_type: Literal["video_effect", "face_effect"]
+
     adjust_params: List[Effect_param_instance]
 
-    def __init__(self, effect_meta: Video_scene_effect_type,
+    def __init__(self, effect_meta: Union[Video_scene_effect_type, Video_character_effect_type],
                  params: Optional[List[Optional[float]]] = None):
         """根据给定的特效元数据及参数列表构造一个视频特效对象, params的范围是0~100"""
 
@@ -188,7 +190,12 @@ class Video_effect:
         self.resource_id = effect_meta.value.resource_id
         self.adjust_params = []
 
-        effect_meta.value.effect_id
+        if isinstance(effect_meta, Video_scene_effect_type):
+            self.effect_type = "video_effect"
+        elif isinstance(effect_meta, Video_character_effect_type):
+            self.effect_type = "face_effect"
+        else:
+            raise TypeError("Invalid effect meta type %s" % type(effect_meta))
 
         if params is None: params = []
         for i, param in enumerate(effect_meta.value.params):
@@ -204,8 +211,7 @@ class Video_effect:
     def export_json(self) -> Dict[str, Any]:
         return {
             "adjust_params": [param.export_json() for param in self.adjust_params],
-            "algorithm_artifact_path": "",
-            "apply_target_type": 2,
+            "apply_target_type": 0,
             "apply_time_range": None,
             "category_id": "", # 一律设为空
             "category_name": "", # 一律设为空
@@ -216,15 +222,15 @@ class Video_effect:
             "id": self.global_id,
             "name": self.name,
             "platform": "all",
-            "render_index": 0,
+            "render_index": 11000,
             "resource_id": self.resource_id,
             "source_platform": 0,
             "time_range": None,
             "track_render_index": 0,
-            "type": "video_effect",
+            "type": self.effect_type,
             "value": 1.0,
             "version": ""
-            # 不导出path和request_id字段
+            # 不导出path、request_id和algorithm_artifact_path字段
         }
 
 class Video_segment(Base_segment):
@@ -299,7 +305,7 @@ class Video_segment(Base_segment):
 
         return self
 
-    def add_effect(self, effect_type: Video_scene_effect_type, params: Optional[List[Optional[float]]] = None) -> "Video_segment":
+    def add_effect(self, effect_type: Union[Video_scene_effect_type, Video_character_effect_type], params: Optional[List[Optional[float]]] = None) -> "Video_segment":
         """为视频片段添加一个作用于整个片段的特效"""
         if params is not None and len(params) > len(effect_type.value.params):
             raise ValueError("Too many parameters for effect %s" % effect_type.value.name)

@@ -45,7 +45,10 @@ class Timerange:
         return {"start": self.start, "duration": self.duration}
 
 def trange(start: Union[str, int], duration: Union[str, int]) -> Timerange:
-        """Timerange的简便构造函数, 接受字符串或整数作为参数"""
+        """Timerange的简便构造函数, 接受字符串或整数作为参数
+
+        支持类似 "1h52m3s" 或 "0.15s" 这样的格式
+        """
         return Timerange(tim(start), tim(duration))
 
 

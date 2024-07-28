@@ -139,9 +139,9 @@ class Script_file:
         return self
 
     def add_segment(self, segment: Union[Video_segment, Audio_segment]) -> "Script_file":
+        self.duration = max(self.duration, segment.target_timerange.start + segment.target_timerange.duration)
         if isinstance(segment, Video_segment):
             self.content["tracks"][0]["segments"].append(segment.export_json())
-            self.duration = max(self.duration, segment.target_timerange.start + segment.target_timerange.duration)
 
             if (segment.animations_instance is not None) and (segment.animations_instance not in self.materials):
                 self.add_animation(segment.animations_instance)
@@ -150,7 +150,6 @@ class Script_file:
                     self.materials.video_effects.append(effect)
         elif isinstance(segment, Audio_segment):
             self.content["tracks"][1]["segments"].append(segment.export_json())
-            self.duration = max(self.duration, segment.target_timerange.start + segment.target_timerange.duration)
 
             if (segment.fade is not None) and (segment.fade not in self.materials):
                 self.materials.audio_fades.append(segment.fade)
