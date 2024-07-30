@@ -1,6 +1,6 @@
 """定义视频片段及其相关类
 
-包含图像调节设置、动画效果、特效等相关类
+包含图像调节设置、动画效果、特效、转场等相关类
 """
 
 import uuid
@@ -15,6 +15,7 @@ from .keyframe import Keyframe_property, Keyframe_list
 from .metadata.effect_meta import Effect_param_instance
 from .metadata.animation_meta import Video_intro_type, Video_outro_type, Video_group_animation_type
 from .metadata.video_effect_meta import Video_scene_effect_type, Video_character_effect_type
+from .metadata.transition_meta import Transition_type
 
 class Clip_settings:
     """素材片段的图像调节设置"""
@@ -231,6 +232,48 @@ class Video_effect:
             "value": 1.0,
             "version": ""
             # 不导出path、request_id和algorithm_artifact_path字段
+        }
+
+class Transition:
+    """转场对象"""
+
+    name: str
+    """转场名称"""
+    global_id: str
+    """转场全局id, 由程序自动生成"""
+    effect_id: str
+    """转场效果id, 由剪映本身提供"""
+    resource_id: str
+    """资源id, 由剪映本身提供"""
+
+    duration: int
+    """转场持续时间, 单位为微秒"""
+    is_overlap: bool
+    """是否与上一个片段重叠(?)"""
+
+    def __init__(self, effect_meta: Transition_type, *, duration: Optional[int] = None):
+        """根据给定的转场元数据及持续时间构造一个转场对象"""
+        self.name = effect_meta.value.name
+        self.global_id = uuid.uuid4().hex
+        self.effect_id = effect_meta.value.effect_id
+        self.resource_id = effect_meta.value.resource_id
+
+        self.duration = duration if duration is not None else effect_meta.value.default_duration
+        self.is_overlap = effect_meta.value.is_overlap
+
+    def export_json(self) -> Dict[str, Any]:
+        return {
+            "category_id": "", # 一律设为空
+            "category_name": "", # 一律设为空
+            "duration": self.duration,
+            "effect_id": self.effect_id,
+            "id": self.global_id,
+            "is_overlap": self.is_overlap,
+            "name": self.name,
+            "platform": "all",
+            "resource_id": self.resource_id,
+            "type": "transition"
+            # 不导出path和request_id字段
         }
 
 class Video_segment(Base_segment):

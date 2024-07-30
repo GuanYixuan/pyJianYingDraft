@@ -5,6 +5,7 @@
 
 import uuid
 
+from abc import ABC
 from typing import Union
 from typing import Dict, List, Any
 
@@ -52,7 +53,7 @@ def trange(start: Union[str, int], duration: Union[str, int]) -> Timerange:
         return Timerange(tim(start), tim(duration))
 
 
-class Base_segment:
+class Base_segment(ABC):
     """片段基类"""
 
     segment_id: str
@@ -83,6 +84,11 @@ class Base_segment:
 
         self.common_keyframes = []
         self.extra_material_refs = []
+
+    def overlaps(self, other: "Base_segment") -> bool:
+        """判断是否与另一个片段有重叠"""
+        return not (self.target_timerange.start + self.target_timerange.duration <= other.target_timerange.start or
+                    self.target_timerange.start >= other.target_timerange.start + other.target_timerange.duration)
 
     def export_json(self) -> Dict[str, Any]:
         """返回通用于音频和视频片段的默认属性"""
