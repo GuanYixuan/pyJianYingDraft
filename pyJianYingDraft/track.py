@@ -49,7 +49,15 @@ class Track(Generic[Seg_type]):
         return cls(track_type, name)
 
     def add_segment(self, segment: Seg_type) -> "Track[Seg_type]":
-        """向轨道中添加一个片段, 添加的片段必须匹配轨道类型且不与现有片段重叠"""
+        """向轨道中添加一个片段, 添加的片段必须匹配轨道类型且不与现有片段重叠
+
+        Args:
+            segment (Seg_type): 要添加的片段
+
+        Raises:
+            `TypeError`: 新片段类型与轨道类型不匹配
+            `ValueError`: 新片段与现有片段重叠
+        """
         if not isinstance(segment, self.track_type.value):
             raise TypeError("New segment (%s) is not of the same type as the track (%s)" % (type(segment), self.track_type.value))
 
@@ -57,7 +65,7 @@ class Track(Generic[Seg_type]):
         for seg in self.segments:
             if seg.overlaps(segment):
                 raise ValueError("New segment overlaps with existing segment [start: {}, duration: {}]" \
-                                .format(segment.target_timerange.start, segment.target_timerange.duration))
+                                .format(seg.target_timerange.start, seg.target_timerange.duration))
 
         self.segments.append(segment)
         return self
@@ -66,7 +74,7 @@ class Track(Generic[Seg_type]):
         return {
             "attribute": 0,
             "flag": 0,
-            "id": "C1A399B6-BEAD-40cc-8951-4BFBB4A72BB2",
+            "id": self.track_id,
             "is_default_name": len(self.name) == 0,
             "name": self.name,
             "segments": [seg.export_json() for seg in self.segments],

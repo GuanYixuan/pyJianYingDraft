@@ -1,13 +1,13 @@
 import os
 import json, uuid
 
-from enum import Enum
 from typing import Optional, Literal, Union
 from typing import Dict, List, Any
 
 from .local_materials import Video_material, Audio_material
 from .audio_segment import Audio_segment, Audio_fade, Audio_effect
 from .video_segment import Video_segment, Segment_animations, Video_effect
+from .track import Track_type, Track
 
 class Script_material:
     """脚本文件中的素材信息部分"""
@@ -115,6 +115,8 @@ class Script_file:
 
     materials: Script_material
     """脚本文件中的素材信息部分"""
+    tracks: Dict[str, Track]
+    """轨道信息"""
 
     TEMPLATE_FILE = "draft_content_template.json"
 
@@ -125,6 +127,7 @@ class Script_file:
         self.duration = 0
 
         self.materials = Script_material()
+        self.tracks = {}
 
         with open(os.path.join(os.path.dirname(__file__), self.TEMPLATE_FILE), "r", encoding="utf-8") as f:
             self.content = json.load(f)
@@ -138,26 +141,70 @@ class Script_file:
             raise TypeError("Invalid argument type '%s'" % type(material))
         return self
 
-    def add_segment(self, segment: Union[Video_segment, Audio_segment]) -> "Script_file":
-        self.duration = max(self.duration, segment.target_timerange.start + segment.target_timerange.duration)
-        if isinstance(segment, Video_segment):
-            self.content["tracks"][0]["segments"].append(segment.export_json())
+    def add_track(self, track_type: Track_type, track_name: Optional[str] = None) -> "Script_file":
+        """向脚本文件中添加一个指定类型、指定名称的轨道
 
+        为避免混淆, 仅在创建第一个同类型轨道时允许不指定名称
+
+        Args:
+            track_type (Track_type): 轨道类型
+            track_name (str, optional): 轨道名称. 仅在创建第一个同类型轨道时允许不指定.
+
+        Raises:
+            `NameError`: 已存在同类型轨道且未指定名称, 或已存在同名轨道
+        """
+
+        if track_name is None:
+            if track_type in [track.track_type for track in self.tracks.values()]:
+                raise NameError("Track of type '%s' already exists, please specify a name" % track_type)
+            track_name = track_type.name
+        if track_name in [track.name for track in self.tracks.values()]:
+            raise NameError("Track with name '%s' already exists" % track_name)
+
+        self.tracks[track_name] = Track(track_type, track_name)
+        return self
+
+    def add_segment(self, segment: Union[Video_segment, Audio_segment], track_name: Optional[str] = None) -> "Script_file":
+        """向指定轨道中添加一个片段
+
+        Args:
+            segment (Union[Video_segment, Audio_segment]): 要添加的片段
+            track_name (str, optional): 添加到的轨道名称. 当此类型的轨道仅有一条时可省略.
+
+        Raises:
+            `NameError`: 未找到指定名称的轨道, 或必须提供`track_name`参数时未提供
+            `TypeError`: 片段类型不匹配轨道类型
+            `ValueError`: 新片段与已有片段重叠
+        """
+        target: Track
+        if track_name is not None: # 指定轨道名称
+            if track_name not in self.tracks: raise NameError("Track with name '%s' not found" % track_name)
+            target = self.tracks[track_name]
+        else: # 寻找唯一的同类型的轨道
+            count = sum([1 for track in self.tracks.values() if isinstance(segment, track.track_type.value)])
+            if count == 0: raise NameError("No track of type '%s' found" % type(segment))
+            if count > 1: raise NameError("Multiple tracks of type '%s' found, please specify a track name" % type(segment))
+
+            target = next(track for track in self.tracks.values() if isinstance(segment, track.track_type.value))
+
+        # 加入轨道并更新时长
+        target.add_segment(segment)
+        self.duration = max(self.duration, segment.target_timerange.start + segment.target_timerange.duration)
+
+        # 自动添加相关素材
+        if isinstance(segment, Video_segment):
             if (segment.animations_instance is not None) and (segment.animations_instance not in self.materials):
                 self.add_animation(segment.animations_instance)
             for effect in segment.effects:
                 if effect not in self.materials:
                     self.materials.video_effects.append(effect)
         elif isinstance(segment, Audio_segment):
-            self.content["tracks"][1]["segments"].append(segment.export_json())
-
             if (segment.fade is not None) and (segment.fade not in self.materials):
                 self.materials.audio_fades.append(segment.fade)
             for effect in segment.effects:
                 if effect not in self.materials:
                     self.materials.audio_effects.append(effect)
-        else:
-            raise TypeError("Invalid argument type '%s'" % type(segment))
+
         return self
 
     def add_animation(self, animation: Segment_animations):
@@ -168,4 +215,5 @@ class Script_file:
         self.content["duration"] = self.duration
         self.content["canvas_config"] = {"width": self.width, "height": self.height, "ratio": "original"}
         self.content["materials"] = self.materials.export_json()
+        self.content["tracks"] = [track.export_json() for track in self.tracks.values()]
         return json.dumps(self.content, ensure_ascii=False, indent=4)
