@@ -107,24 +107,6 @@
     "static_cover_image_path": "",
     "time_marks": null,
     "tracks": [
-        {
-            "attribute": 0,
-            "flag": 0,
-            "id": "C1D97AEF-1E47-4b06-BCCD-690BD0784F5E",
-            "is_default_name": true,
-            "name": "",
-            "segments": [],
-            "type": "video"
-        },
-        {
-            "attribute": 0,
-            "flag": 0,
-            "id": "7D224541-03A5-4b9e-A709-80E22B534317",
-            "is_default_name": true,
-            "name": "",
-            "segments": [],
-            "type": "audio"
-        }
     ],
     "update_time": 0,
     "version": 360000

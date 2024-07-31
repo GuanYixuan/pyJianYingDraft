@@ -8,8 +8,8 @@ import uuid
 from typing import Optional, Literal, Union
 from typing import Dict, List, Any
 
-from .time_util import tim
-from .segment import Base_segment, Timerange
+from .time_util import tim, Timerange
+from .segment import Media_segment
 from .local_materials import Video_material
 from .keyframe import Keyframe_property, Keyframe_list
 
@@ -277,7 +277,7 @@ class Transition:
             # 不导出path和request_id字段
         }
 
-class Video_segment(Base_segment):
+class Video_segment(Media_segment):
     """安放在轨道上的一个视频/图片片段"""
 
     clip_settings: Clip_settings

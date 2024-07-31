@@ -8,8 +8,8 @@ import uuid
 from typing import Optional, Literal, Union
 from typing import Dict, List, Any
 
-from .time_util import tim
-from .segment import Base_segment, Timerange
+from .time_util import tim, Timerange
+from .segment import Media_segment
 from .local_materials import Audio_material
 from .keyframe import Keyframe_property, Keyframe_list
 
@@ -107,7 +107,7 @@ class Audio_effect:
             # 不导出path和constant_material_id
         }
 
-class Audio_segment(Base_segment):
+class Audio_segment(Media_segment):
     """安放在轨道上的一个音频片段"""
 
     fade: Optional[Audio_fade]
