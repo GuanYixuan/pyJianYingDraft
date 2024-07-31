@@ -8,6 +8,7 @@ import uuid
 from typing import Optional, Literal, Union
 from typing import Dict, List, Any
 
+from .time_util import tim
 from .segment import Base_segment, Timerange
 from .local_materials import Audio_material
 from .keyframe import Keyframe_property, Keyframe_list
@@ -48,7 +49,7 @@ class Audio_effect:
     name: str
     """特效名称"""
     effect_id: str
-    """特效全局id, 由剪映本身提供"""
+    """特效全局id, 由程序自动生成"""
     resource_id: str
     """资源id, 由剪映本身提供"""
 
@@ -157,7 +158,7 @@ class Audio_segment(Base_segment):
                 参数列表的顺序及参数取值范围(0~100)均与剪映中一致. 音效类型可查阅枚举类的具体定义.
 
         Raises:
-            `ValueError`: 试图添加一个已经存在的音效类型, 或提供的参数数量超过了该音效类型的参数数量.
+            `ValueError`: 试图添加一个已经存在的音效类型、提供的参数数量超过了该音效类型的参数数量, 或参数值超出范围.
         """
         if params is not None and len(params) > len(effect_type.value.params):
             raise ValueError("Too many parameters for effect %s" % effect_type.value.name)
@@ -170,18 +171,22 @@ class Audio_segment(Base_segment):
 
         return self
 
-    def add_fade(self, in_duration: int, out_duration: int) -> "Audio_segment":
+    def add_fade(self, in_duration: Union[str, int], out_duration: Union[str, int]) -> "Audio_segment":
         """为音频片段添加淡入淡出效果
 
         Args:
-            in_duration (`int`): 音频淡入时长, 单位为微秒
-            out_duration (`int`): 音频淡出时长, 单位为微秒
+            in_duration (`int` or `str`): 音频淡入时长, 单位为微秒, 若为字符串则会调用`tim()`函数进行解析
+            out_duration (`int` or `str`): 音频淡出时长, 单位为微秒, 若为字符串则会调用`tim()`函数进行解析
 
         Raises:
             `ValueError`: 当前片段已存在淡入淡出效果
         """
         if self.fade is not None:
             raise ValueError("Audio segment already has a fade")
+
+        if isinstance(in_duration, str): in_duration = tim(in_duration)
+        if isinstance(out_duration, str): out_duration = tim(out_duration)
+
         self.fade = Audio_fade(in_duration, out_duration)
         self.extra_material_refs.append(self.fade.fade_id)
 

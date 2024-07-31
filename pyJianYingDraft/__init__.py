@@ -1,7 +1,7 @@
 from .local_materials import Crop_settings, Video_material, Audio_material
 from .keyframe import Keyframe_property
 
-from .segment import Timerange
+from .time_util import Timerange
 from .audio_segment import Audio_segment
 from .video_segment import Video_segment, Clip_settings
 
@@ -14,4 +14,4 @@ from .track import Track_type
 from .Jianying_json import Script_file
 
 
-from .segment import tim, trange
+from .time_util import SEC, tim, trange

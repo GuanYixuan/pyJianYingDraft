@@ -8,6 +8,7 @@ import uuid
 from typing import Optional, Literal, Union
 from typing import Dict, List, Any
 
+from .time_util import tim
 from .segment import Base_segment, Timerange
 from .local_materials import Video_material
 from .keyframe import Keyframe_property, Keyframe_list
@@ -374,12 +375,12 @@ class Video_segment(Base_segment):
 
         return self
 
-    def add_keyframe(self, _property: Keyframe_property, time_offset: int, value: float) -> "Video_segment":
+    def add_keyframe(self, _property: Keyframe_property, time_offset: Union[int, str], value: float) -> "Video_segment":
         """为给定属性创建一个关键帧, 并自动加入到关键帧列表中
 
         Args:
             _property (`Keyframe_property`): 要控制的属性
-            time_offset (`int`): 关键帧的时间偏移量, 单位为微秒
+            time_offset (`int` or `str`): 关键帧的时间偏移量, 单位为微秒. 若传入字符串则会调用`tim()`函数进行解析.
             value (`float`): 属性在`time_offset`处的值
 
         Raises:
@@ -392,6 +393,8 @@ class Video_segment(Base_segment):
             if not self.uniform_scale: raise ValueError("Cannot set uniform_scale when scale_x or scale_y already exist")
             _property = Keyframe_property.scale_x
 
+        if isinstance(time_offset, str): time_offset = tim(time_offset)
+
         for kf_list in self.common_keyframes:
             if kf_list.keyframe_property == _property:
                 kf_list.add_keyframe(time_offset, value)
@@ -401,18 +404,19 @@ class Video_segment(Base_segment):
         self.common_keyframes.append(kf_list)
         return self
 
-    def add_transition(self, transition_type: Transition_type, *, duration: Optional[int] = None) -> "Video_segment":
+    def add_transition(self, transition_type: Transition_type, *, duration: Optional[Union[int, str]] = None) -> "Video_segment":
         """为视频片段添加一个转场, 注意转场应当添加在**前面的**片段上
 
         Args:
             transition_type (`Transition_type`): 转场类型
-            duration (`int`, optional): 转场持续时间, 单位为微秒, 若不指定则使用转场类型定义的默认值.
+            duration (`int` or `str`, optional): 转场持续时间, 单位为微秒. 若传入字符串则会调用`tim()`函数进行解析. 若不指定则使用转场类型定义的默认值.
 
         Raises:
             `ValueError`: 试图添加多个转场.
         """
         if self.transition is not None:
             raise ValueError("Cannot add multiple transitions")
+        if isinstance(duration, str): duration = tim(duration)
 
         self.transition = Transition(transition_type, duration)
         self.extra_material_refs.append(self.transition.global_id)
