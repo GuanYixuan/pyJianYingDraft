@@ -1,12 +1,12 @@
 import os
 import json, uuid
 
-from typing import Optional, Literal, Union
+from typing import Optional, Union, overload
 from typing import Dict, List, Any
 
 from .local_materials import Video_material, Audio_material
 from .audio_segment import Audio_segment, Audio_fade, Audio_effect
-from .video_segment import Video_segment, Segment_animations, Video_effect
+from .video_segment import Video_segment, Segment_animations, Video_effect, Transition
 from .track import Track_type, Track
 
 class Script_material:
@@ -26,6 +26,9 @@ class Script_material:
     video_effects: List[Video_effect]
     """视频特效列表"""
 
+    transitions: List[Transition]
+    """转场效果列表"""
+
     def __init__(self):
         self.audios = []
         self.videos = []
@@ -33,8 +36,16 @@ class Script_material:
         self.audio_fades = []
         self.animations = []
         self.video_effects = []
+        self.transitions = []
 
-    def __contains__(self, item: Union[Audio_material, Video_material, Audio_fade, Audio_effect, Segment_animations, Video_effect]) -> bool:
+    @overload
+    def __contains__(self, item: Union[Video_material, Audio_material]) -> bool:...
+    @overload
+    def __contains__(self, item: Union[Audio_fade, Audio_effect]) -> bool:...
+    @overload
+    def __contains__(self, item: Union[Segment_animations, Video_effect, Transition]) -> bool:...
+
+    def __contains__(self, item) -> bool:
         if isinstance(item, Video_material):
             return item.material_id in [video.material_id for video in self.videos]
         elif isinstance(item, Audio_material):
@@ -47,6 +58,8 @@ class Script_material:
             return item.animation_id in [ani.animation_id for ani in self.animations]
         elif isinstance(item, Video_effect):
             return item.global_id in [effect.global_id for effect in self.video_effects]
+        elif isinstance(item, Transition):
+            return item.global_id in [transition.global_id for transition in self.transitions]
         else:
             raise TypeError("Invalid argument type '%s'" % type(item))
 
@@ -91,7 +104,7 @@ class Script_material:
             "text_templates": [],
             "texts": [],
             "time_marks": [],
-            "transitions": [],
+            "transitions": [transition.export_json() for transition in self.transitions],
             "video_effects": [effect.export_json() for effect in self.video_effects],
             "video_trackings": [],
             "videos": [video.export_json() for video in self.videos],
@@ -133,6 +146,7 @@ class Script_file:
             self.content = json.load(f)
 
     def add_material(self, material: Union[Video_material, Audio_material]) -> "Script_file":
+        """向脚本文件中添加一个素材"""
         if isinstance(material, Video_material):
             self.materials.videos.append(material)
         elif isinstance(material, Audio_material):
@@ -143,6 +157,8 @@ class Script_file:
 
     def add_track(self, track_type: Track_type, track_name: Optional[str] = None) -> "Script_file":
         """向脚本文件中添加一个指定类型、指定名称的轨道
+
+        注意: 轨道的创建顺序决定了其在轨道列表中的位置, 越晚创建的轨道越接近前景
 
         为避免混淆, 仅在创建第一个同类型轨道时允许不指定名称
 
@@ -193,11 +209,16 @@ class Script_file:
 
         # 自动添加相关素材
         if isinstance(segment, Video_segment):
+            # 出入场动画
             if (segment.animations_instance is not None) and (segment.animations_instance not in self.materials):
-                self.add_animation(segment.animations_instance)
+                self.materials.animations.append(segment.animations_instance)
+            # 特效
             for effect in segment.effects:
                 if effect not in self.materials:
                     self.materials.video_effects.append(effect)
+            # 转场
+            if (segment.transition is not None) and (segment.transition not in self.materials):
+                self.materials.transitions.append(segment.transition)
         elif isinstance(segment, Audio_segment):
             if (segment.fade is not None) and (segment.fade not in self.materials):
                 self.materials.audio_fades.append(segment.fade)
@@ -206,9 +227,6 @@ class Script_file:
                     self.materials.audio_effects.append(effect)
 
         return self
-
-    def add_animation(self, animation: Segment_animations):
-        self.materials.animations.append(animation)
 
     def dumps(self) -> str:
         self.content["fps"] = self.fps

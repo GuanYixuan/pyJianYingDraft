@@ -251,7 +251,7 @@ class Transition:
     is_overlap: bool
     """是否与上一个片段重叠(?)"""
 
-    def __init__(self, effect_meta: Transition_type, *, duration: Optional[int] = None):
+    def __init__(self, effect_meta: Transition_type, duration: Optional[int] = None):
         """根据给定的转场元数据及持续时间构造一个转场对象"""
         self.name = effect_meta.value.name
         self.global_id = uuid.uuid4().hex
@@ -295,6 +295,11 @@ class Video_segment(Base_segment):
 
     在放入轨道时自动添加到素材列表中
     """
+    transition: Optional[Transition]
+    """转场实例, 可能为空
+
+    在放入轨道时自动添加到素材列表中
+    """
 
     def __init__(self, material: Video_material, target_timerange: Timerange, *,
                  source_timerange: Optional[Timerange] = None, speed: Optional[float] = None, volume: float = 1.0,
@@ -325,6 +330,7 @@ class Video_segment(Base_segment):
         self.uniform_scale = True
         self.effects = []
         self.animations_instance = None
+        self.transition = None
 
     def add_animation(self, animation_type: Union[Video_intro_type, Video_outro_type, Video_group_animation_type]) -> "Video_segment":
         """将给定的入场/出场/组合动画添加到此片段的动画列表中, 动画的起止时间自动确定"""
@@ -349,7 +355,16 @@ class Video_segment(Base_segment):
         return self
 
     def add_effect(self, effect_type: Union[Video_scene_effect_type, Video_character_effect_type], params: Optional[List[Optional[float]]] = None) -> "Video_segment":
-        """为视频片段添加一个作用于整个片段的特效"""
+        """为视频片段添加一个作用于整个片段的特效
+
+        Args:
+            effect_type (`Video_scene_effect_type` or `Video_character_effect_type`): 特效类型
+            params (`List[Optional[float]]`, optional): 特效参数列表, 参数列表中未提供或为None的项使用默认值.
+                参数列表的顺序及参数取值范围(0~100)均与剪映中一致. 特效类型可查阅枚举类的具体定义.
+
+        Raises:
+            `ValueError`: 提供的参数数量超过了该特效类型的参数数量, 或参数值超出范围.
+        """
         if params is not None and len(params) > len(effect_type.value.params):
             raise ValueError("Too many parameters for effect %s" % effect_type.value.name)
 
@@ -384,6 +399,23 @@ class Video_segment(Base_segment):
         kf_list = Keyframe_list(_property)
         kf_list.add_keyframe(time_offset, value)
         self.common_keyframes.append(kf_list)
+        return self
+
+    def add_transition(self, transition_type: Transition_type, *, duration: Optional[int] = None) -> "Video_segment":
+        """为视频片段添加一个转场, 注意转场应当添加在**前面的**片段上
+
+        Args:
+            transition_type (`Transition_type`): 转场类型
+            duration (`int`, optional): 转场持续时间, 单位为微秒, 若不指定则使用转场类型定义的默认值.
+
+        Raises:
+            `ValueError`: 试图添加多个转场.
+        """
+        if self.transition is not None:
+            raise ValueError("Cannot add multiple transitions")
+
+        self.transition = Transition(transition_type, duration)
+        self.extra_material_refs.append(self.transition.global_id)
         return self
 
     def export_json(self) -> Dict[str, Any]:
