@@ -78,7 +78,14 @@ class Effect_enum(Enum):
 
     @classmethod
     def from_name(cls: "type[Effect_enum_subclass]", name: str) -> Effect_enum_subclass:
-        """根据名称获取特效元数据, 忽略大小写、空格和下划线"""
+        """根据名称获取特效元数据, 忽略大小写、空格和下划线
+
+        Args:
+            name (str): 特效名称
+
+        Raises:
+            `ValueError`: 特效名称不存在
+        """
         name = name.lower().replace(" ", "").replace("_", "")
         for effect in cls:
             if effect.name.lower().replace(" ", "").replace("_", "") == name:
