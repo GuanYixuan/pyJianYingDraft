@@ -18,7 +18,7 @@ class Animation_meta:
         self.effect_id = effect_id
         self.md5 = md5
 
-class Video_intro_type(Effect_enum):
+class Intro_type(Effect_enum):
     """剪映自带的视频/图片入场动画类型"""
 
     # 免费入场动画
@@ -120,7 +120,7 @@ class Video_intro_type(Effect_enum):
     能量立方    = Animation_meta("能量立方", True, 1.333, "7359472053998588425", "58285135", "301b4ffff8510c87b7174161b2642ca3")
     波纹弹动    = Animation_meta("波纹弹动", True, 1.200, "7345731405663441460", "50640360", "b29c4c4dbac023b27bac5d32e642f6bb")
 
-class Video_outro_type(Effect_enum):
+class Outro_type(Effect_enum):
     """剪映自带的视频/图片出场动画类型"""
 
     # 免费
@@ -199,7 +199,7 @@ class Video_outro_type(Effect_enum):
     抖动变焦    = Animation_meta("抖动变焦", True, 0.500, "7153942002696983047", "5188733", "6e14698c240bfa454836d26eaa44d3bc")
     爱心碰撞    = Animation_meta("爱心碰撞", True, 2.300, "7328249133079204352", "42112174", "1cf69aac7b9478f5628413aada8c0707")
 
-class Video_group_animation_type(Effect_enum):
+class Group_animation_type(Effect_enum):
     """剪映自带的视频/图片组合动画类型, 组合动画一般与视频片段等长"""
 
     # 免费

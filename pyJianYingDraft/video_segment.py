@@ -13,10 +13,7 @@ from .segment import Media_segment
 from .local_materials import Video_material
 from .keyframe import Keyframe_property, Keyframe_list
 
-from .metadata.effect_meta import Effect_param_instance
-from .metadata.animation_meta import Video_intro_type, Video_outro_type, Video_group_animation_type
-from .metadata.video_effect_meta import Video_scene_effect_type, Video_character_effect_type
-from .metadata.transition_meta import Transition_type
+from .metadata import *
 
 class Clip_settings:
     """素材片段的图像调节设置"""
@@ -82,26 +79,26 @@ class Animation:
 
     is_video_animation: bool
 
-    def __init__(self, animation_type: Union[Video_intro_type, Video_outro_type, Video_group_animation_type],
+    def __init__(self, animation_type: Union[Intro_type, Outro_type, Group_animation_type],
                  start: int, duration: int):
         type_meta = animation_type.value
         self.name = type_meta.title
         self.effect_id = type_meta.effect_id
         self.resource_id = type_meta.resource_id
 
-        if isinstance(animation_type, Video_intro_type):
+        if isinstance(animation_type, Intro_type):
             self.animation_type = "in"
             self.category_id = "ruchang"
             self.category_name = "入场"
 
             self.is_video_animation = True
-        elif isinstance(animation_type, Video_outro_type):
+        elif isinstance(animation_type, Outro_type):
             self.animation_type = "out"
             self.category_id = "chuchang"
             self.category_name = "出场"
 
             self.is_video_animation = True
-        elif isinstance(animation_type, Video_group_animation_type):
+        elif isinstance(animation_type, Group_animation_type):
             self.animation_type = "group"
             self.category_id = "group"
             self.category_name = "组合"
@@ -333,15 +330,15 @@ class Video_segment(Media_segment):
         self.animations_instance = None
         self.transition = None
 
-    def add_animation(self, animation_type: Union[Video_intro_type, Video_outro_type, Video_group_animation_type]) -> "Video_segment":
+    def add_animation(self, animation_type: Union[Intro_type, Outro_type, Group_animation_type]) -> "Video_segment":
         """将给定的入场/出场/组合动画添加到此片段的动画列表中, 动画的起止时间自动确定"""
-        if isinstance(animation_type, Video_intro_type):
+        if isinstance(animation_type, Intro_type):
             start = 0
             duration = animation_type.value.duration
-        elif isinstance(animation_type, Video_outro_type):
+        elif isinstance(animation_type, Outro_type):
             start = self.target_timerange.duration - animation_type.value.duration
             duration = animation_type.value.duration
-        elif isinstance(animation_type, Video_group_animation_type):
+        elif isinstance(animation_type, Group_animation_type):
             start = 0
             duration = self.target_timerange.duration
         else:

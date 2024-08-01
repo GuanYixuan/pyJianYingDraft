@@ -13,8 +13,8 @@ from .segment import Media_segment
 from .local_materials import Audio_material
 from .keyframe import Keyframe_property, Keyframe_list
 
-from .metadata.effect_meta import Effect_param_instance
-from .metadata.audio_effect_meta import Audio_scene_effect_type, Tone_effect_type, Speech_to_song_type
+from .metadata import Effect_param_instance
+from .metadata import Audio_scene_effect_type, Tone_effect_type, Speech_to_song_type
 
 class Audio_fade:
     """音频淡入淡出效果"""
