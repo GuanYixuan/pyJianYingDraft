@@ -4,10 +4,14 @@ import json, uuid
 from typing import Optional, Union, overload
 from typing import Dict, List, Any
 
+from .time_util import Timerange
 from .local_materials import Video_material, Audio_material
 from .audio_segment import Audio_segment, Audio_fade, Audio_effect
 from .video_segment import Video_segment, Segment_animations, Video_effect, Transition
+from .effect_segment import Filter_segment
 from .track import Track_type, Track
+
+from .metadata import Video_scene_effect_type, Video_character_effect_type, Filter_type
 
 class Script_material:
     """脚本文件中的素材信息部分"""
@@ -28,6 +32,8 @@ class Script_material:
 
     transitions: List[Transition]
     """转场效果列表"""
+    filters: List[Dict[str, Any]]
+    """滤镜效果列表"""
 
     def __init__(self):
         self.audios = []
@@ -36,7 +42,9 @@ class Script_material:
         self.audio_fades = []
         self.animations = []
         self.video_effects = []
+
         self.transitions = []
+        self.filters = []
 
     @overload
     def __contains__(self, item: Union[Video_material, Audio_material]) -> bool:...
@@ -77,7 +85,7 @@ class Script_material:
             "color_curves": [],
             "digital_humans": [],
             "drafts": [],
-            "effects": [],
+            "effects": self.filters,
             "flowers": [],
             "green_screens": [],
             "handwrites": [],
@@ -158,7 +166,7 @@ class Script_file:
     def add_track(self, track_type: Track_type, track_name: Optional[str] = None) -> "Script_file":
         """向脚本文件中添加一个指定类型、指定名称的轨道
 
-        注意: 轨道的创建顺序决定了其在轨道列表中的位置, 越晚创建的轨道越接近前景
+        注意: 轨道的创建顺序决定了其在轨道列表中的位置, 越晚创建的同类轨道越接近前景
 
         为避免混淆, 仅在创建第一个同类型轨道时允许不指定名称
 
@@ -228,10 +236,57 @@ class Script_file:
 
         return self
 
+    def add_effect(self, effect_meta: Union[Video_scene_effect_type, Video_character_effect_type], track_name: Optional[str] = None,
+                   params: Optional[List[Optional[float]]] = None) -> "Script_file":
+        """向指定的特效轨道中添加一个特效"""
+        pass
+
+    def add_filter(self, filter_meta: Filter_type, t_range: Timerange,
+                   track_name: Optional[str] = None, intensity: Optional[float] = None) -> "Script_file":
+        """向指定的滤镜轨道中添加一个滤镜片段
+
+        Args:
+            filter_meta (Filter_type): 滤镜类型
+            t_range (Timerange): 滤镜片段的时间范围
+            track_name (str, optional): 添加到的轨道名称. 当滤镜轨道仅有一条时可省略.
+            intensity (float, optional): 滤镜强度(0-100). 仅当滤镜能够调节强度时允许指定.
+
+        Raises:
+            `NameError`: 未找到指定名称的轨道, 或必须提供`track_name`参数时未提供
+            `TypeError`: 指定的轨道不是滤镜轨道
+            `ValueError`: 新片段与已有片段重叠, 或尝试对不能调节强度的滤镜设置强度
+        """
+        target: Track
+        if track_name is not None: # 指定轨道名称
+            if track_name not in self.tracks: raise NameError("Track with name '%s' not found" % track_name)
+            target = self.tracks[track_name]
+        else: # 寻找唯一的同类型的轨道
+            count = sum([1 for track in self.tracks.values() if track.track_type.value == Filter_segment])
+            if count == 0: raise NameError("No track of type 'Filter_segment' found")
+            if count > 1: raise NameError("Multiple tracks of type 'Filter_segment' found, please specify a track name")
+
+            target = next(track for track in self.tracks.values() if track.track_type.value == Filter_segment)
+
+        # 加入轨道并更新时长
+        if intensity is not None: intensity /= 100 # 转换为0-1范围
+        segment = Filter_segment(filter_meta, t_range, intensity)
+        target.add_segment(segment)
+        self.duration = max(self.duration, t_range.start + t_range.duration)
+
+        # 自动添加相关素材
+        self.materials.filters.append(segment.export_material())
+        return self
+
     def dumps(self) -> str:
+        """将脚本文件内容导出为JSON字符串"""
         self.content["fps"] = self.fps
         self.content["duration"] = self.duration
         self.content["canvas_config"] = {"width": self.width, "height": self.height, "ratio": "original"}
         self.content["materials"] = self.materials.export_json()
         self.content["tracks"] = [track.export_json() for track in self.tracks.values()]
         return json.dumps(self.content, ensure_ascii=False, indent=4)
+
+    def dump(self, file_path: str) -> None:
+        """将脚本文件内容写入文件"""
+        with open(file_path, "w", encoding="utf-8") as f:
+            f.write(self.dumps())

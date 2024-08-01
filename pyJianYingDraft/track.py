@@ -7,6 +7,7 @@ from typing import Dict, List, Any, Literal
 from .segment import Base_segment
 from .video_segment import Video_segment
 from .audio_segment import Audio_segment
+from .effect_segment import Filter_segment
 
 class Track_type(Enum):
     """轨道类型枚举
@@ -16,6 +17,7 @@ class Track_type(Enum):
 
     video = Video_segment
     audio = Audio_segment
+    filter = Filter_segment
 
 Seg_type = TypeVar("Seg_type", bound=Base_segment)
 class Track(Generic[Seg_type]):
@@ -36,17 +38,6 @@ class Track(Generic[Seg_type]):
         self.track_id = uuid.uuid4().hex
 
         self.segments = []
-
-    @overload
-    @classmethod
-    def typed_ctor(cls, track_type: Literal[Track_type.video]) -> "Track[Video_segment]": ...
-    @overload
-    @classmethod
-    def typed_ctor(cls, track_type: Literal[Track_type.audio]) -> "Track[Audio_segment]": ...
-
-    @classmethod
-    def typed_ctor(cls, track_type: Track_type, name: str = "") -> "Track":
-        return cls(track_type, name)
 
     def add_segment(self, segment: Seg_type) -> "Track[Seg_type]":
         """向轨道中添加一个片段, 添加的片段必须匹配轨道类型且不与现有片段重叠
