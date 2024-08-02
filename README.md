@@ -1,6 +1,6 @@
 # pyJianYingDraft
 ### 轻量化、易用的Python剪映草稿文件生成工具
-> **关于6+版本**：尽管剪映对`draft_content.json`文件进行了加密，但仍能读取本程序生成的草稿文件(当然读取后即被加密)
+> **关于6+版本**：尽管剪映对`draft_content.json`文件进行了加密，但仍能正确读取本程序生成的草稿文件(当然读取后即被加密)
 
 # 特性清单
 > 目前仅在5.9版本上进行测试
@@ -13,7 +13,7 @@
   - ☑️ 自定义放置在轨道上的**时间、持续时长或播放速度**
   - ☑️ 自定义**截取**其中某个片段
   - ☑️ 视频**整体调节**（裁剪、旋转、翻转、缩放、透明度、亮度等）
-  - ☑️ 除裁剪外上述属性的**关键帧**生成
+  - ☑️ 除裁剪外上述属性的[关键帧](#关键帧)生成
     - ❔ 关键帧曲线
   - ☑️ 视频片段的**入场/出场/组合动画**（剪映右上角菜单）添加及其时长修改
   - ☑️ 吸附在视频片段上的**特效**
@@ -29,7 +29,7 @@
   - ☑️ 自定义放置在轨道上的**时间、持续时长或播放速度**
   - ☑️ 自定义**截取**其中某个片段
   - ☑️ 调整**音量、淡入淡出**时长
-  - ☑️ 音量的**关键帧**生成
+  - ☑️ 音量的[关键帧](#关键帧)生成
   - ☑️ 音频片段的**音色、场景音**效果（剪映右上角菜单）添加
     - ☑️ 效果的参数设置
     - ❔ 效果参数的关键帧
@@ -47,7 +47,7 @@
 ### 文字
 - ❔ 添加文字
 - ❔ 文字特效
-### ❔ 字幕
+### 字幕
 
 # 用法速查
 ### 快速上手
@@ -60,8 +60,8 @@ from pyJianYingDraft import Group_animation_type, trange
 
 tutorial_asset_dir = os.path.join(os.path.dirname(__file__), 'readme_assets', 'tutorial')
 
-# 创建剪映脚本
-script = draft.Draft_file(1080, 1080) # 1080x1080分辨率
+# 创建剪映草稿
+script = draft.Script_file(1080, 1080) # 1080x1080分辨率
 
 # 添加一个音频轨道和一个视频轨道
 script.add_track(draft.Track_type.audio).add_track(draft.Track_type.video)
@@ -71,13 +71,13 @@ audio_material = draft.Audio_material(os.path.join(tutorial_asset_dir, 'audio.mp
 video_material = draft.Video_material(os.path.join(tutorial_asset_dir, 'video.mp4'))
 script.add_material(audio_material).add_material(video_material) # 随手添加素材是好习惯
 
-# 用音频素材创建一个音频片段
+# 创建一个音频片段
 audio_segment = draft.Audio_segment(audio_material,
                                     trange("0s", "5s"), # 片段将位于轨道上的0s-5s
                                     volume=0.6)         # 音量设置为60%(-4.4dB)
 audio_segment.add_fade("1s", "0s") # 增加一个1s的淡入
 
-# 用视频素材创建一个视频片段
+# 创建一个视频片段
 video_segment = draft.Video_segment(video_material, trange("0s", "5s")) # 片段将位于轨道上的0s-5s
 video_segment.add_animation(Group_animation_type.缩放)                  # 添加一个组合动画“缩放”
 
@@ -88,5 +88,49 @@ script.add_segment(audio_segment).add_segment(video_segment)
 script.dump("*你的草稿工程文件夹*/draft_content.json")
 ```
 现在在剪映中打开草稿，你应该看到如下时间轴：
+
 ![快速上手](readme_assets/快速上手.png)
+
 你可以仔细检查音频片段的音量设置、淡入效果时长以及视频片段的组合动画效果，看看是否符合上述代码的设置
+
+### 关键帧
+关键帧是吸附在**片段**上的“时刻-数值”对，所以创建关键帧只需要在`add_keyframe`方法中指定**相对片段头部的**时刻、数值以及控制的属性即可。
+> ℹ 目前不支持设置特效或滤镜参数的关键帧
+
+下方的例子尝试使用两个不透明度关键帧模拟视频的淡出效果：
+```python
+import os
+import pyJianYingDraft as draft
+from pyJianYingDraft import Keyframe_property, SEC
+
+# 创建草稿及视频轨道
+script = draft.Script_file(1080, 1080)
+script.add_track(draft.Track_type.video)
+tutorial_asset_dir = os.path.join(os.path.dirname(__file__), 'readme_assets', 'tutorial')
+
+# 创建视频片段
+video_material = draft.Video_material(os.path.join(tutorial_asset_dir, 'video.mp4'))
+video_segment = draft.Video_segment(video_material,
+                                    draft.Timerange(0, video_material.duration)) # 与素材等长
+
+# 添加两个不透明度关键帧形成1s的淡出效果
+video_segment.add_keyframe(Keyframe_property.alpha, video_material.duration - SEC, 1.0) # 结束前1s完全不透明
+video_segment.add_keyframe(Keyframe_property.alpha, video_material.duration, 0.0) # 片段结束时完全透明
+
+# 添加素材及片段
+script.add_material(video_material)
+script.add_segment(video_segment)
+
+# 保存草稿
+script.dump("*你的草稿工程文件夹*/draft_content.json")
+```
+
+除了`alpha`外，`Keyframe_property`中还有平移、旋转、缩放、音量、饱和度等属性，它们都可以设置关键帧。
+
+当然，对音频片段，你只能设置音量的关键帧，此时你不需要指定`Keyframe_property`
+```python
+audio_segment: draft.Audio_segment
+audio_segment.add_keyframe("0s", 0.6) # 片段开始时的音量为60%
+```
+
+###

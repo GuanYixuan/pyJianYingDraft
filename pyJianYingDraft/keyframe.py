@@ -41,11 +41,11 @@ class Keyframe_property(Enum):
     rotation = "KFTypeRotation"
 
     scale_x = "KFTypeScaleX"
-    """单独控制X轴缩放比例"""
+    """单独控制X轴缩放比例, 与`uniform_scale`互斥"""
     scale_y = "KFTypeScaleY"
-    """单独控制Y轴缩放比例"""
+    """单独控制Y轴缩放比例, 与`uniform_scale`互斥"""
     uniform_scale = "UNIFORM_SCALE"
-    """同时控制X轴及Y轴缩放比例"""
+    """同时控制X轴及Y轴缩放比例, 与`scale_x`和`scale_y`互斥"""
 
     alpha = "KFTypeAlpha"
     saturation = "KFTypeSaturation"
