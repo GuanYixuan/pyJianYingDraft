@@ -14,7 +14,7 @@ from .track import Track_type, Track
 from .metadata import Video_scene_effect_type, Video_character_effect_type, Filter_type
 
 class Script_material:
-    """脚本文件中的素材信息部分"""
+    """草稿文件中的素材信息部分"""
 
     audios: List[Audio_material]
     """音频素材列表"""
@@ -123,7 +123,7 @@ class Script_material:
 class Script_file:
 
     content: Dict[str, Any]
-    """脚本文件内容"""
+    """草稿文件内容"""
 
     width: int
     """视频的宽度, 单位为像素"""
@@ -135,13 +135,20 @@ class Script_file:
     """视频的总时长, 单位为微秒"""
 
     materials: Script_material
-    """脚本文件中的素材信息部分"""
+    """草稿文件中的素材信息部分"""
     tracks: Dict[str, Track]
     """轨道信息"""
 
     TEMPLATE_FILE = "draft_content_template.json"
 
     def __init__(self, width: int, height: int, fps: int = 30):
+        """创建一个剪映草稿
+
+        Args:
+            width (int): 视频宽度, 单位为像素
+            height (int): 视频高度, 单位为像素
+            fps (int, optional): 视频帧率. 默认为30.
+        """
         self.width = width
         self.height = height
         self.fps = fps
@@ -154,7 +161,7 @@ class Script_file:
             self.content = json.load(f)
 
     def add_material(self, material: Union[Video_material, Audio_material]) -> "Script_file":
-        """向脚本文件中添加一个素材"""
+        """向草稿文件中添加一个素材"""
         if isinstance(material, Video_material):
             self.materials.videos.append(material)
         elif isinstance(material, Audio_material):
@@ -164,7 +171,7 @@ class Script_file:
         return self
 
     def add_track(self, track_type: Track_type, track_name: Optional[str] = None) -> "Script_file":
-        """向脚本文件中添加一个指定类型、指定名称的轨道
+        """向草稿文件中添加一个指定类型、指定名称的轨道
 
         注意: 轨道的创建顺序决定了其在轨道列表中的位置, 越晚创建的同类轨道越接近前景
 
@@ -278,7 +285,7 @@ class Script_file:
         return self
 
     def dumps(self) -> str:
-        """将脚本文件内容导出为JSON字符串"""
+        """将草稿文件内容导出为JSON字符串"""
         self.content["fps"] = self.fps
         self.content["duration"] = self.duration
         self.content["canvas_config"] = {"width": self.width, "height": self.height, "ratio": "original"}
@@ -287,6 +294,6 @@ class Script_file:
         return json.dumps(self.content, ensure_ascii=False, indent=4)
 
     def dump(self, file_path: str) -> None:
-        """将脚本文件内容写入文件"""
+        """将草稿文件内容写入文件"""
         with open(file_path, "w", encoding="utf-8") as f:
             f.write(self.dumps())
