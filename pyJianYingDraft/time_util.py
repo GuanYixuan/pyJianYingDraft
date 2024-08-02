@@ -7,12 +7,12 @@ SEC = 1000000
 """一秒=1e6微秒"""
 
 def tim(inp: Union[str, float]) -> int:
-    """将输入的字符串或秒数转换为微秒
+    """将输入的字符串转换为微秒, 也可直接输入微秒数
 
     支持类似 "1h52m3s" 或 "0.15s" 这样的格式
     """
     if isinstance(inp, (int, float)):
-        return int(round(inp * 1000000))
+        return int(round(inp))
 
     inp = inp.strip().lower()
     last_index: int = 0
@@ -40,9 +40,13 @@ class Timerange:
     def export_json(self) -> Dict[str, int]:
         return {"start": self.start, "duration": self.duration}
 
-def trange(start: Union[str, int], duration: Union[str, int]) -> Timerange:
-        """Timerange的简便构造函数, 接受字符串或整数作为参数
+def trange(start: Union[str, float], duration: Union[str, float]) -> Timerange:
+        """Timerange的简便构造函数, 接受字符串或微秒数作为参数
 
         支持类似 "1h52m3s" 或 "0.15s" 这样的格式
+
+        Args:
+            start (Union[str, float]): 起始时间
+            duration (Union[str, float]): 持续长度
         """
         return Timerange(tim(start), tim(duration))

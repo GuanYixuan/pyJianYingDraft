@@ -1,10 +1,9 @@
 import os
 import uuid
-import imageio
 import pymediainfo
 
 from typing import Optional, Literal
-from typing import Dict, List, Any
+from typing import Dict, Any
 
 class Crop_settings:
     """素材的裁剪设置, 各属性均在0-1之间, 注意素材的坐标原点在左上角"""
@@ -66,9 +65,6 @@ class Video_material:
     material_type: Literal["video", "photo"]
     """素材类型: 视频或图片"""
 
-    VIDEO_POSTFIX = (".mp4", ".mov", ".avi", ".flv", ".wmv", ".rmvb", ".mkv")
-    IMAGE_POSTFIX = (".jpg", ".jpeg", ".png", ".gif", ".tif", ".tiff", ".psd", ".eps", ".svg")
-
     def __init__(self, path: str, material_name: Optional[str] = None, crop_settings: Crop_settings = Crop_settings()):
         """从指定位置加载视频（或图片）素材
 
@@ -81,6 +77,10 @@ class Video_material:
             `FileNotFoundError`: 素材文件不存在.
             `ValueError`: 不支持的素材文件类型.
         """
+        path = os.path.abspath(path)
+        postfix = os.path.splitext(path)[1]
+        if not os.path.exists(path):
+            raise FileNotFoundError(f"File {path} does not exist")
 
         self.material_name = material_name if material_name else os.path.basename(path)
         self.material_id = uuid.uuid3(uuid.NAMESPACE_DNS, self.material_name).hex
@@ -88,24 +88,31 @@ class Video_material:
         self.crop_settings = crop_settings
         self.local_material_id = ""
 
-        if not os.path.exists(path):
-            raise FileNotFoundError(f"File {path} does not exist")
-        postfix = os.path.splitext(path)[1]
-        if postfix in self.VIDEO_POSTFIX:
-            vid = imageio.get_reader(path)
+        if not pymediainfo.MediaInfo.can_parse():
+            raise ValueError(f"Unsupported file type '{postfix}'")
+
+        info: pymediainfo.MediaInfo = pymediainfo.MediaInfo.parse(path) # type: ignore
+        if len(info.video_tracks): # 有视频轨道的视为视频素材
+            self.material_type = "video"
+            self.duration = int(info.video_tracks[0].duration * 1e3) # type: ignore
+            self.width, self.height = info.video_tracks[0].width, info.video_tracks[0].height # type: ignore
+        elif postfix.lower() == ".gif": # gif文件使用imageio库获取长度
+            try:
+                import imageio
+            except ImportError:
+                raise ImportError("Please install imageio to support GIF file")
+            gif = imageio.get_reader(path)
 
             self.material_type = "video"
-            self.duration = int(round(vid.get_meta_data()['duration'] * 1e6))
-            self.width, self.height = [int(x) for x in vid.get_meta_data()["size"]]
-            vid.close()
-        elif postfix in self.IMAGE_POSTFIX:
-            pic = imageio.imread(path)
-
+            self.duration = int(round(gif.get_meta_data()['duration'] * gif.get_length() * 1e3))
+            self.width, self.height = info.image_tracks[0].width, info.image_tracks[0].height # type: ignore
+            gif.close()
+        elif len(info.image_tracks):
             self.material_type = "photo"
-            self.duration = 10800000000 # 相当于无限长
-            self.height, self.width, _ = pic.shape
+            self.duration = 10800000000 # 相当于3h
+            self.width, self.height = info.image_tracks[0].width, info.image_tracks[0].height # type: ignore
         else:
-            raise ValueError(f"Unsupported file type {postfix}")
+            raise ValueError(f"Input file {path} has no video or image track")
 
     def export_json(self) -> Dict[str, Any]:
         video_material_json = {
@@ -193,7 +200,7 @@ class Audio_material:
     """素材时长, 单位为微秒"""
 
     def __init__(self, path: str, material_name: Optional[str] = None):
-        """从指定位置加载音频素材
+        """从指定位置加载音频素材, 注意视频文件不应该作为音频素材使用
 
         Args:
             path (`str`): 素材文件路径, 支持mp3, wav等常见音频文件.
@@ -203,6 +210,7 @@ class Audio_material:
             `FileNotFoundError`: 素材文件不存在.
             `ValueError`: 不支持的素材文件类型.
         """
+        path = os.path.abspath(path)
         if not os.path.exists(path):
             raise FileNotFoundError(f"File {path} does not exist")
 
@@ -213,6 +221,10 @@ class Audio_material:
         if not pymediainfo.MediaInfo.can_parse():
             raise ValueError("Unsupported file type %s" % os.path.splitext(path)[1])
         info: pymediainfo.MediaInfo = pymediainfo.MediaInfo.parse(path)  # type: ignore
+        if len(info.video_tracks):
+            raise ValueError("Audio file should not contain video track")
+        if not len(info.audio_tracks):
+            raise ValueError(f"Input file {path} has no audio track")
         self.duration = int(info.audio_tracks[0].duration * 1e3)  # type: ignore
 
     def export_json(self) -> Dict[str, Any]:
