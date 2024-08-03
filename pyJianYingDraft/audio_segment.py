@@ -155,7 +155,7 @@ class Audio_segment(Media_segment):
         Args:
             effect_type (`Audio_scene_effect_type` | `Tone_effect_type` | `Speech_to_song_type`): 音效类型, 一类音效只能添加一个.
             params (`List[Optional[float]]`, optional): 音效参数列表, 参数列表中未提供或为None的项使用默认值.
-                参数列表的顺序及参数取值范围(0~100)均与剪映中一致. 音效类型可查阅枚举类的具体定义.
+                参数取值范围(0~100)与剪映中一致. 某个特效类型有何参数以及具体参数顺序以枚举类成员的annotation为准.
 
         Raises:
             `ValueError`: 试图添加一个已经存在的音效类型、提供的参数数量超过了该音效类型的参数数量, 或参数值超出范围.

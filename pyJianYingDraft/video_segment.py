@@ -19,13 +19,13 @@ class Clip_settings:
     """素材片段的图像调节设置"""
 
     alpha: float
-    """图像透明度, 0-1"""
+    """图像不透明度, 0-1"""
     flip_horizontal: bool
     """是否水平翻转"""
     flip_vertical: bool
     """是否垂直翻转"""
     rotation: float
-    """旋转角度, 可正可负"""
+    """顺时针旋转的**角度**, 可正可负"""
     scale_x: float
     """水平缩放比例"""
     scale_y: float
@@ -40,7 +40,18 @@ class Clip_settings:
                  rotation: float = 0.0,
                  scale_x: float = 1.0, scale_y: float = 1.0,
                  transform_x: float = 0.0, transform_y: float = 0.0):
-        """初始化图像调节设置, 默认参数表示不作任何图像变换"""
+        """初始化图像调节设置, 默认参数表示不作任何图像变换
+
+        Args:
+            alpha (float, optional): 图像不透明度, 0-1. 默认为1.0.
+            flip_horizontal (bool, optional): 是否水平翻转. 默认为False.
+            flip_vertical (bool, optional): 是否垂直翻转. 默认为False.
+            rotation (float, optional): 顺时针旋转的**角度**, 可正可负. 默认为0.0.
+            scale_x (float, optional): 水平缩放比例. 默认为1.0.
+            scale_y (float, optional): 垂直缩放比例. 默认为1.0.
+            transform_x (float, optional): 水平位移, 单位为像素. 默认为0.0.
+            transform_y (float, optional): 垂直位移, 单位为像素. 默认为0.0.
+        """
         self.alpha = alpha
         self.flip_horizontal, self.flip_vertical = flip_horizontal, flip_vertical
         self.rotation = rotation
@@ -358,7 +369,7 @@ class Video_segment(Media_segment):
         Args:
             effect_type (`Video_scene_effect_type` or `Video_character_effect_type`): 特效类型
             params (`List[Optional[float]]`, optional): 特效参数列表, 参数列表中未提供或为None的项使用默认值.
-                参数列表的顺序及参数取值范围(0~100)均与剪映中一致. 特效类型可查阅枚举类的具体定义.
+                参数取值范围(0~100)与剪映中一致. 某个特效类型有何参数以及具体参数顺序以枚举类成员的annotation为准.
 
         Raises:
             `ValueError`: 提供的参数数量超过了该特效类型的参数数量, 或参数值超出范围.

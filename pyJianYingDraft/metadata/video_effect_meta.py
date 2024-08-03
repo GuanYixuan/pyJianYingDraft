@@ -7708,7 +7708,7 @@ class Video_scene_effect_type(Effect_enum):
     """
 
 class Video_character_effect_type(Effect_enum):
-    """剪映自带的人物特效类型, 人物特效似乎不能直接附着在视频片段上"""
+    """剪映自带的人物特效类型"""
 
     BOOM        = Effect_meta("BOOM！", False, "6999560597230588429", "1378605", "a7d5d3fbae39950e51bff93b92ad7792", [
                               Effect_param("effects_adjust_speed", 0.330, 0.000, 1.000),
