@@ -28,6 +28,27 @@ class Base_segment(ABC):
 
         self.common_keyframes = []
 
+    @property
+    def start(self) -> int:
+        """片段开始时间, 单位为微秒"""
+        return self.target_timerange.start
+    @start.setter
+    def start(self, value: int):
+        self.target_timerange.start = value
+
+    @property
+    def duration(self) -> int:
+        """片段持续时间, 单位为微秒"""
+        return self.target_timerange.duration
+    @duration.setter
+    def duration(self, value: int):
+        self.target_timerange.duration = value
+
+    @property
+    def end(self) -> int:
+        """片段结束时间, 单位为微秒"""
+        return self.target_timerange.start + self.target_timerange.duration
+
     def overlaps(self, other: "Base_segment") -> bool:
         """判断是否与另一个片段有重叠"""
         return not (self.target_timerange.start + self.target_timerange.duration <= other.target_timerange.start or
