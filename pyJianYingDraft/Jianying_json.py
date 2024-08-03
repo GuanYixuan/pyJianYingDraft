@@ -1,11 +1,13 @@
 import os
-import json, uuid
+import json
+import warnings
 
 from typing import Optional, Union, overload
 from typing import Dict, List, Any
 
 from .time_util import Timerange
 from .local_materials import Video_material, Audio_material
+from .segment import Speed
 from .audio_segment import Audio_segment, Audio_fade, Audio_effect
 from .video_segment import Video_segment, Segment_animations, Video_effect, Transition
 from .effect_segment import Filter_segment
@@ -30,6 +32,8 @@ class Script_material:
     video_effects: List[Video_effect]
     """视频特效列表"""
 
+    speeds: List[Speed]
+    """变速列表"""
     transitions: List[Transition]
     """转场效果列表"""
     filters: List[Dict[str, Any]]
@@ -43,6 +47,7 @@ class Script_material:
         self.animations = []
         self.video_effects = []
 
+        self.speeds = []
         self.transitions = []
         self.filters = []
 
@@ -70,6 +75,14 @@ class Script_material:
             return item.global_id in [transition.global_id for transition in self.transitions]
         else:
             raise TypeError("Invalid argument type '%s'" % type(item))
+
+    def contains_material(self, segment: Union[Video_segment, Audio_segment]) -> bool:
+        if isinstance(segment, Video_segment):
+            return segment.material_id in [video.material_id for video in self.videos]
+        elif isinstance(segment, Audio_segment):
+            return segment.material_id in [audio.material_id for audio in self.audios]
+        else:
+            raise TypeError("Invalid argument type '%s'" % type(segment))
 
     def export_json(self) -> Dict[str, List[Any]]:
         return {
@@ -106,7 +119,7 @@ class Script_material:
             "smart_crops": [],
             "smart_relights": [],
             "sound_channel_mappings": [],
-            "speeds": [],
+            "speeds": [spd.export_json() for spd in self.speeds],
             "stickers": [],
             "tail_leaders": [],
             "text_templates": [],
@@ -240,13 +253,13 @@ class Script_file:
             for effect in segment.effects:
                 if effect not in self.materials:
                     self.materials.audio_effects.append(effect)
+        self.materials.speeds.append(segment.speed)
+
+        # 检查片段素材是否已添加
+        if not self.materials.contains_material(segment):
+            warnings.warn("Material of segment '%s' hasn't been added yet" % str(segment.target_timerange))
 
         return self
-
-    def add_effect(self, effect_meta: Union[Video_scene_effect_type, Video_character_effect_type], track_name: Optional[str] = None,
-                   params: Optional[List[Optional[float]]] = None) -> "Script_file":
-        """向指定的特效轨道中添加一个特效"""
-        pass
 
     def add_filter(self, filter_meta: Filter_type, t_range: Timerange,
                    track_name: Optional[str] = None, intensity: Optional[float] = None) -> "Script_file":

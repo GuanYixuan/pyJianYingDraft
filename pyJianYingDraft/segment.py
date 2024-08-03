@@ -66,14 +66,34 @@ class Base_segment(ABC):
             "keyframe_refs": [], # 意义不明
         }
 
+class Speed:
+    """播放速度对象, 目前只支持固定速度"""
+
+    global_id: str
+    """全局id, 由程序自动生成"""
+    speed: float
+    """播放速度"""
+
+    def __init__(self, speed: float):
+        self.global_id = uuid.uuid4().hex
+        self.speed = speed
+
+    def export_json(self) -> Dict[str, Any]:
+        return {
+            "curve_speed": None,
+            "id": self.global_id,
+            "mode": 0,
+            "speed": self.speed,
+            "type": "speed"
+        }
 
 class Media_segment(Base_segment):
     """媒体片段基类"""
 
     source_timerange: Timerange
     """截取的素材片段的时间范围"""
-    speed: float
-    """播放速度"""
+    speed: Speed
+    """播放速度设置"""
     volume: float
     """音量"""
 
@@ -84,17 +104,17 @@ class Media_segment(Base_segment):
         super().__init__(material_id, target_timerange)
 
         self.source_timerange = source_timerange
-        self.speed = speed
+        self.speed = Speed(speed)
         self.volume = volume
 
-        self.extra_material_refs = []
+        self.extra_material_refs = [self.speed.global_id]
 
     def export_json(self) -> Dict[str, Any]:
         """返回通用于音频和视频片段的默认属性"""
         ret = super().export_json()
         ret.update({
             "source_timerange": self.source_timerange.export_json(),
-            "speed": self.speed,
+            "speed": self.speed.speed,
             "volume": self.volume,
             "extra_material_refs": self.extra_material_refs,
         })

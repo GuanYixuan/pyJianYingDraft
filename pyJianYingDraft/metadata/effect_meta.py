@@ -1,7 +1,7 @@
 from enum import Enum
 
 from typing import List, Dict, Any
-from typing import TypeVar
+from typing import TypeVar, Optional
 
 class Effect_param:
     """特效参数信息"""
@@ -69,6 +69,22 @@ class Effect_meta:
         self.effect_id = effect_id
         self.md5 = md5
         self.params = params
+
+    def parse_params(self, params: Optional[List[Optional[float]]]) -> List[Effect_param_instance]:
+        """解析参数列表(范围0~100), 返回参数实例列表"""
+        ret: List[Effect_param_instance] = []
+
+        if params is None: params = []
+        for i, param in enumerate(self.params):
+            val = param.default_value
+            if i < len(params):
+                input_v = params[i]
+                if input_v is not None:
+                    if input_v < 0 or input_v > 100:
+                        raise ValueError("Invalid parameter value %f within %s" % (input_v, str(param)))
+                    val = param.min_value + (param.max_value - param.min_value) * input_v / 100.0 # 从0~100映射到实际值
+            ret.append(Effect_param_instance(param, i, val))
+        return ret
 
 
 Effect_enum_subclass = TypeVar("Effect_enum_subclass", bound="Effect_enum")

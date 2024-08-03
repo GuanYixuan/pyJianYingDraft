@@ -79,16 +79,7 @@ class Audio_effect:
         else:
             raise TypeError("Invalid effect meta type %s" % type(effect_meta))
 
-        if params is None: params = []
-        for i, param in enumerate(effect_meta.value.params):
-            val = param.default_value
-            if i < len(params):
-                input_v = params[i]
-                if input_v is not None:
-                    if input_v < 0 or input_v > 100:
-                        raise ValueError("Invalid parameter value %f within %s" % (input_v, str(param)))
-                    val = param.min_value + (param.max_value - param.min_value) * input_v / 100.0 # 从0~100映射到实际值
-            self.audio_adjust_params.append(Effect_param_instance(param, i, val))
+        self.audio_adjust_params = effect_meta.value.parse_params(params)
 
     def export_json(self) -> Dict[str, Any]:
         return {
@@ -134,6 +125,9 @@ class Audio_segment(Media_segment):
             source_timerange (`Timerange`, optional): 截取的素材片段的时间范围, 默认从开头根据`speed`截取与`target_timerange`等长的一部分
             speed (`float`, optional): 播放速度, 默认为1.0. 此项与`source_timerange`同时指定时, 将覆盖`target_timerange`中的时长
             volume (`float`, optional): 音量, 默认为1.0
+
+        Raises:
+            `ValueError`: 指定的或计算出的`source_timerange`超出了素材的时长范围
         """
         if source_timerange is not None and speed is not None:
             target_timerange = Timerange(target_timerange.start, round(source_timerange.duration / speed))
@@ -142,6 +136,9 @@ class Audio_segment(Media_segment):
         else: # source_timerange is None
             speed = speed if speed is not None else 1.0
             source_timerange = Timerange(0, round(target_timerange.duration * speed))
+
+        if source_timerange.end > material.duration:
+            raise ValueError(f"Source timerange {source_timerange} exceeds material duration {material.duration}")
 
         super().__init__(material.material_id, source_timerange, target_timerange, speed, volume)
 
