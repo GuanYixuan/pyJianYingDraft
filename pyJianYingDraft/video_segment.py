@@ -139,7 +139,7 @@ class Animation:
         }
 
 class Segment_animations:
-    """附加于某素材上的一系列动画（一般是入场、出场）"""
+    """附加于某素材上的一系列动画（一般是入场/出场/组合动画）"""
 
     animation_id: str
     """动画系列全局id, 自动生成"""
@@ -175,7 +175,7 @@ class Segment_animations:
         }
 
 class Video_effect:
-    """视频特效对象"""
+    """视频特效素材"""
 
     name: str
     """特效名称"""
@@ -187,11 +187,14 @@ class Video_effect:
     """资源id, 由剪映本身提供"""
 
     effect_type: Literal["video_effect", "face_effect"]
+    apply_target_type: Literal[0, 2]
+    """应用目标类型, 0: 片段, 2: 全局"""
 
     adjust_params: List[Effect_param_instance]
 
     def __init__(self, effect_meta: Union[Video_scene_effect_type, Video_character_effect_type],
-                 params: Optional[List[Optional[float]]] = None):
+                 params: Optional[List[Optional[float]]] = None, *,
+                 apply_target_type: Literal[0, 2] = 0):
         """根据给定的特效元数据及参数列表构造一个视频特效对象, params的范围是0~100"""
 
         self.name = effect_meta.value.name
@@ -206,13 +209,14 @@ class Video_effect:
             self.effect_type = "face_effect"
         else:
             raise TypeError("Invalid effect meta type %s" % type(effect_meta))
+        self.apply_target_type = apply_target_type
 
         self.adjust_params = effect_meta.value.parse_params(params)
 
     def export_json(self) -> Dict[str, Any]:
         return {
             "adjust_params": [param.export_json() for param in self.adjust_params],
-            "apply_target_type": 0,
+            "apply_target_type": self.apply_target_type,
             "apply_time_range": None,
             "category_id": "", # 一律设为空
             "category_name": "", # 一律设为空

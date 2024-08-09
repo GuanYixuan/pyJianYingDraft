@@ -7,7 +7,7 @@ from typing import Dict, List, Any, Literal
 from .segment import Base_segment
 from .video_segment import Video_segment
 from .audio_segment import Audio_segment
-from .effect_segment import Filter_segment
+from .effect_segment import Effect_segment, Filter_segment
 
 class Track_type(Enum):
     """轨道类型枚举
@@ -17,6 +17,7 @@ class Track_type(Enum):
 
     video = Video_segment
     audio = Audio_segment
+    effect = Effect_segment
     filter = Filter_segment
 
 Seg_type = TypeVar("Seg_type", bound=Base_segment)

@@ -10,7 +10,7 @@ from .local_materials import Video_material, Audio_material
 from .segment import Speed
 from .audio_segment import Audio_segment, Audio_fade, Audio_effect
 from .video_segment import Video_segment, Segment_animations, Video_effect, Transition
-from .effect_segment import Filter_segment
+from .effect_segment import Effect_segment, Filter_segment
 from .track import Track_type, Track
 
 from .metadata import Video_scene_effect_type, Video_character_effect_type, Filter_type
@@ -261,15 +261,53 @@ class Script_file:
 
         return self
 
+    def add_effect(self, effect: Union[Video_scene_effect_type, Video_character_effect_type],
+                   t_range: Timerange, track_name: Optional[str] = None, *,
+                   params: Optional[List[Optional[float]]] = None) -> "Script_file":
+        """向指定的特效轨道中添加一个特效片段
+
+        Args:
+            effect (`Video_scene_effect_type` or `Video_character_effect_type`): 特效类型
+            t_range (`Timerange`): 特效片段的时间范围
+            track_name (`str`, optional): 添加到的轨道名称. 当特效轨道仅有一条时可省略.
+            params (`List[Optional[float]]`, optional): 特效参数列表, 参数列表中未提供或为None的项使用默认值.
+                参数取值范围(0~100)与剪映中一致. 某个特效类型有何参数以及具体参数顺序以枚举类成员的annotation为准.
+
+        Raises:
+            `NameError`: 未找到指定名称的轨道, 或必须提供`track_name`参数时未提供
+            `TypeError`: 指定的轨道不是特效轨道
+            `ValueError`: 新片段与已有片段重叠、提供的参数数量超过了该特效类型的参数数量, 或参数值超出范围.
+        """
+        target: Track
+        if track_name is not None: # 指定轨道名称
+            if track_name not in self.tracks: raise NameError("Track with name '%s' not found" % track_name)
+            target = self.tracks[track_name]
+        else: # 寻找唯一的同类型的轨道
+            count = sum([1 for track in self.tracks.values() if track.track_type.value == Effect_segment])
+            if count == 0: raise NameError("No track of type 'Effect_segment' found")
+            if count > 1: raise NameError("Multiple tracks of type 'Effect_segment' found, please specify a track name")
+
+            target = next(track for track in self.tracks.values() if track.track_type.value == Effect_segment)
+
+        # 加入轨道并更新时长
+        segment = Effect_segment(effect, t_range, params)
+        target.add_segment(segment)
+        self.duration = max(self.duration, t_range.start + t_range.duration)
+
+        # 自动添加相关素材
+        if segment.effect_inst not in self.materials:
+            self.materials.video_effects.append(segment.effect_inst)
+        return self
+
     def add_filter(self, filter_meta: Filter_type, t_range: Timerange,
                    track_name: Optional[str] = None, intensity: Optional[float] = None) -> "Script_file":
         """向指定的滤镜轨道中添加一个滤镜片段
 
         Args:
-            filter_meta (Filter_type): 滤镜类型
-            t_range (Timerange): 滤镜片段的时间范围
-            track_name (str, optional): 添加到的轨道名称. 当滤镜轨道仅有一条时可省略.
-            intensity (float, optional): 滤镜强度(0-100). 仅当滤镜能够调节强度时允许指定.
+            filter_meta (`Filter_type`): 滤镜类型
+            t_range (`Timerange`): 滤镜片段的时间范围
+            track_name (`str`, optional): 添加到的轨道名称. 当滤镜轨道仅有一条时可省略.
+            intensity (`float`, optional): 滤镜强度(0-100). 仅当滤镜能够调节强度时允许指定.
 
         Raises:
             `NameError`: 未找到指定名称的轨道, 或必须提供`track_name`参数时未提供
