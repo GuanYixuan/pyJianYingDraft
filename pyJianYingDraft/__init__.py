@@ -5,6 +5,7 @@ from .time_util import Timerange
 from .audio_segment import Audio_segment
 from .video_segment import Video_segment, Clip_settings
 
+from .metadata import Mask_type
 from .metadata import Transition_type, Filter_type
 from .metadata import Intro_type, Outro_type, Group_animation_type
 from .metadata import Audio_scene_effect_type, Tone_effect_type, Speech_to_song_type

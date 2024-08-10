@@ -2,6 +2,7 @@
 
 from .effect_meta import Effect_meta, Effect_param_instance
 
+from .mask_meta import Mask_type, Mask_meta
 from .filter_meta import Filter_type
 from .transition_meta import Transition_type
 from .animation_meta import Intro_type, Outro_type, Group_animation_type
