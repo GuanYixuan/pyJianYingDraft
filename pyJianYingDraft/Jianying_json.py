@@ -34,6 +34,8 @@ class Script_material:
 
     speeds: List[Speed]
     """变速列表"""
+    masks: List[Dict[str, Any]]
+    """蒙版列表"""
     transitions: List[Transition]
     """转场效果列表"""
     filters: List[Dict[str, Any]]
@@ -48,6 +50,7 @@ class Script_material:
         self.video_effects = []
 
         self.speeds = []
+        self.masks = []
         self.transitions = []
         self.filters = []
 
@@ -107,7 +110,7 @@ class Script_material:
             "log_color_wheels": [],
             "loudnesses": [],
             "manual_deformations": [],
-            "masks": [],
+            "masks": self.masks,
             "material_animations": [ani.export_json() for ani in self.animations],
             "material_colors": [],
             "multi_language_refs": [],
@@ -244,6 +247,9 @@ class Script_file:
             for effect in segment.effects:
                 if effect not in self.materials:
                     self.materials.video_effects.append(effect)
+            # 蒙版
+            if segment.mask is not None:
+                self.materials.masks.append(segment.mask.export_json())
             # 转场
             if (segment.transition is not None) and (segment.transition not in self.materials):
                 self.materials.transitions.append(segment.transition)

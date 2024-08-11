@@ -6,7 +6,7 @@
 import uuid
 
 from typing import Optional, Literal, Union
-from typing import Dict, List, Any
+from typing import Dict, List, Tuple, Any
 
 from .time_util import tim, Timerange
 from .segment import Media_segment
@@ -31,9 +31,9 @@ class Clip_settings:
     scale_y: float
     """垂直缩放比例"""
     transform_x: float
-    """水平位移, 单位为像素?"""
+    """水平位移, 单位为整个画布上的半个像素?"""
     transform_y: float
-    """垂直位移, 单位为像素?"""
+    """垂直位移, 单位为整个画布上的半个像素?"""
 
     def __init__(self, *, alpha: float = 1.0,
                  flip_horizontal: bool = False, flip_vertical: bool = False,
@@ -174,6 +174,65 @@ class Segment_animations:
             "animations": [animation.export_json() for animation in self.animations]
         }
 
+class Mask:
+    """蒙版对象"""
+
+    mask_meta: Mask_meta
+    """蒙版元数据"""
+    global_id: str
+    """蒙版全局id, 由程序自动生成"""
+
+    center_x: float
+    center_y: float
+    width: float
+    height: float
+    aspect_ratio: float
+
+    rotation: float
+    invert: bool
+    feather: float
+    """羽化程度, 0-1"""
+    round_corner: float
+    """矩形蒙版的圆角, 0-1"""
+
+    def __init__(self, mask_meta: Mask_meta,
+                 cx: float, cy: float, w: float, h: float,
+                 ratio: float, rot: float, inv: bool, feather: float, round_corner: float):
+        self.mask_meta = mask_meta
+        self.global_id = uuid.uuid4().hex
+
+        self.center_x, self.center_y = cx, cy
+        self.width, self.height = w, h
+        self.aspect_ratio = ratio
+
+        self.rotation = rot
+        self.invert = inv
+        self.feather = feather
+        self.round_corner = round_corner
+
+    def export_json(self) -> Dict[str, Any]:
+        return {
+            "config": {
+                "aspectRatio": self.aspect_ratio,
+                "centerX": self.center_x,
+                "centerY": self.center_y,
+                "feather": self.feather,
+                "height": self.height,
+                "invert": self.invert,
+                "rotation": self.rotation,
+                "roundCorner": self.round_corner,
+                "width": self.width
+            },
+            "id": self.global_id,
+            "name": self.mask_meta.name,
+            "platform": "all",
+            "position_info": "",
+            "resource_type": self.mask_meta.resource_type,
+            "resource_id": self.mask_meta.resource_id,
+            "type": "mask"
+            # 不导出path字段
+        }
+
 class Video_effect:
     """视频特效素材"""
 
@@ -283,6 +342,9 @@ class Transition:
 class Video_segment(Media_segment):
     """安放在轨道上的一个视频/图片片段"""
 
+    material_size: Tuple[int, int]
+    """素材尺寸"""
+
     clip_settings: Clip_settings
     """图像调节设置, 其效果可被关键帧覆盖"""
 
@@ -296,6 +358,11 @@ class Video_segment(Media_segment):
     """
     animations_instance: Optional[Segment_animations]
     """动画实例, 可能为空
+
+    在放入轨道时自动添加到素材列表中
+    """
+    mask: Optional[Mask]
+    """蒙版实例, 可能为空
 
     在放入轨道时自动添加到素材列表中
     """
@@ -336,11 +403,14 @@ class Video_segment(Media_segment):
 
         super().__init__(material.material_id, source_timerange, target_timerange, speed, volume)
 
+        self.material_size = (material.width, material.height)
+
         self.clip_settings = clip_settings if clip_settings is not None else Clip_settings()
         self.uniform_scale = True
         self.effects = []
         self.animations_instance = None
         self.transition = None
+        self.mask = None
 
     def add_animation(self, animation_type: Union[Intro_type, Outro_type, Group_animation_type]) -> "Video_segment":
         """将给定的入场/出场/组合动画添加到此片段的动画列表中, 动画的起止时间自动确定"""
@@ -413,8 +483,44 @@ class Video_segment(Media_segment):
         self.common_keyframes.append(kf_list)
         return self
 
+    def add_mask(self, mask_type: Mask_type, *, center_x: float = 0.0, center_y: float = 0.0, size: float = 0.5,
+                 rotation: float = 0.0, feather: float = 0.0, invert: bool = False,
+                 rect_width: Optional[float] = None, round_corner: Optional[float] = None) -> "Video_segment":
+        """为视频片段添加蒙版
+
+        Args:
+            mask_type (`Mask_type`): 蒙版类型
+            center_x (`float`, optional): 蒙版中心点X坐标(以素材的像素为单位), 默认设置在素材中心
+            center_y (`float`, optional): 蒙版中心点Y坐标(以素材的像素为单位), 默认设置在素材中心
+            size (`float`, optional): 蒙版的“主要尺寸”(镜面的可视部分高度/圆形直径/爱心高度等), 以占素材高度的比例表示, 默认为0.5
+            rotation (`float`, optional): 蒙版顺时针旋转的**角度**, 默认不旋转
+            feather (`float`, optional): 蒙版的羽化参数, 取值范围0~100, 默认无羽化
+            invert (`bool`, optional): 是否反转蒙版, 默认不反转
+            rect_width (`float`, optional): 矩形蒙版的宽度, 仅在蒙版类型为矩形时允许设置, 以占素材宽度的比例表示, 默认与`size`相同
+            round_corner (`float`, optional): 矩形蒙版的圆角参数, 仅在蒙版类型为矩形时允许设置, 取值范围0~100, 默认为0
+
+        Raises:
+            `ValueError`: 试图添加多个蒙版或不正确地设置了`rect_width`及`round_corner`
+        """
+
+        if self.mask is not None:
+            raise ValueError("Cannot add multiple masks")
+        if (rect_width is not None or round_corner is not None) and mask_type != Mask_type.矩形:
+            raise ValueError("`rect_width` and `round_corner` can only be set for rectangle mask")
+        if rect_width is None and mask_type == Mask_type.矩形:
+            rect_width = size
+        if round_corner is None:
+            round_corner = 0
+
+        self.mask = Mask(mask_type.value, center_x, center_y,
+                         w=rect_width if rect_width else size * self.material_size[1] * mask_type.value.default_aspect_ratio / self.material_size[0],
+                         h=size, ratio=mask_type.value.default_aspect_ratio,
+                         rot=rotation, inv=invert, feather=feather/100, round_corner=round_corner/100)
+        self.extra_material_refs.append(self.mask.global_id)
+        return self
+
     def add_transition(self, transition_type: Transition_type, *, duration: Optional[Union[int, str]] = None) -> "Video_segment":
-        """为视频片段添加一个转场, 注意转场应当添加在**前面的**片段上
+        """为视频片段添加转场, 注意转场应当添加在**前面的**片段上
 
         Args:
             transition_type (`Transition_type`): 转场类型
