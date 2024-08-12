@@ -297,6 +297,63 @@ class Video_effect:
             # 不导出path、request_id和algorithm_artifact_path字段
         }
 
+class Filter:
+    """滤镜素材"""
+
+    global_id: str
+    """滤镜全局id, 由程序自动生成"""
+
+    effect_meta: Effect_meta
+    """滤镜的元数据"""
+    intensity: float
+    """滤镜强度(滤镜的唯一参数)"""
+
+    apply_target_type: Literal[0, 2]
+    """应用目标类型, 0: 片段, 2: 全局"""
+
+    def __init__(self, meta: Effect_meta, intensity: float, *,
+                 apply_target_type: Literal[0, 2] = 0):
+        """根据给定的滤镜元数据及强度构造滤镜素材对象"""
+
+        self.global_id = uuid.uuid4().hex
+        self.effect_meta = meta
+        self.intensity = intensity
+        self.apply_target_type = apply_target_type
+
+    def export_json(self) -> Dict[str, Any]:
+        return {
+            "adjust_params": [],
+            "algorithm_artifact_path": "",
+            "apply_target_type": self.apply_target_type,
+            "bloom_params": None,
+            "category_id": "", # 一律设为空
+            "category_name": "", # 一律设为空
+            "color_match_info": {
+                "source_feature_path": "",
+                "target_feature_path": "",
+                "target_image_path": ""
+            },
+            "effect_id": self.effect_meta.effect_id,
+            "enable_skin_tone_correction": False,
+            "exclusion_group": [],
+            "face_adjust_params": [],
+            "formula_id": "",
+            "id": self.global_id,
+            "intensity_key": "",
+            "multi_language_current": "",
+            "name": self.effect_meta.name,
+            "panel_id": "",
+            "platform": "all",
+            "resource_id": self.effect_meta.resource_id,
+            "source_platform": 1,
+            "sub_type": "none",
+            "time_range": None,
+            "type": "filter",
+            "value": self.intensity,
+            "version": ""
+            # 不导出path和request_id
+        }
+
 class Transition:
     """转场对象"""
 
@@ -356,6 +413,11 @@ class Video_segment(Media_segment):
 
     在放入轨道时自动添加到素材列表中
     """
+    filters: List[Filter]
+    """滤镜列表
+
+    在放入轨道时自动添加到素材列表中
+    """
     animations_instance: Optional[Segment_animations]
     """动画实例, 可能为空
 
@@ -408,6 +470,7 @@ class Video_segment(Media_segment):
         self.clip_settings = clip_settings if clip_settings is not None else Clip_settings()
         self.uniform_scale = True
         self.effects = []
+        self.filters = []
         self.animations_instance = None
         self.transition = None
         self.mask = None
@@ -454,6 +517,24 @@ class Video_segment(Media_segment):
 
         return self
 
+    def add_filter(self, filter_type: Filter_type, intensity: Optional[float] = None) -> "Video_segment":
+        """为视频片段添加一个滤镜
+
+        Args:
+            filter_type (`Filter_type`): 滤镜类型
+            intensity (`float`, optional): 滤镜强度, 取值范围0~100, 仅当滤镜能够自定义强度时允许指定, 默认100.
+
+        Raises:
+            `ValueError`: 不正确地给定了`intensity`
+        """
+        if intensity is not None: intensity /= 100 # 转化为0~1范围
+
+        filter_inst = Filter(filter_type.value, intensity if intensity is not None else 1.0)
+        self.filters.append(filter_inst)
+        self.extra_material_refs.append(filter_inst.global_id)
+
+        return self
+
     def add_keyframe(self, _property: Keyframe_property, time_offset: Union[int, str], value: float) -> "Video_segment":
         """为给定属性创建一个关键帧, 并自动加入到关键帧列表中
 
@@ -464,8 +545,8 @@ class Video_segment(Media_segment):
 
         Raises:
             `ValueError`: 试图同时设置`uniform_scale`以及`scale_x`或`scale_y`其中一者
-
         """
+
         if (_property == Keyframe_property.scale_x or _property == Keyframe_property.scale_y) and self.uniform_scale:
             self.uniform_scale = False
         elif _property == Keyframe_property.uniform_scale:

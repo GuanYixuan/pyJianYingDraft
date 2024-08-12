@@ -9,7 +9,7 @@ from .time_util import Timerange
 from .local_materials import Video_material, Audio_material
 from .segment import Speed
 from .audio_segment import Audio_segment, Audio_fade, Audio_effect
-from .video_segment import Video_segment, Segment_animations, Video_effect, Transition
+from .video_segment import Video_segment, Segment_animations, Video_effect, Transition, Filter
 from .effect_segment import Effect_segment, Filter_segment
 from .track import Track_type, Track
 
@@ -38,7 +38,7 @@ class Script_material:
     """蒙版列表"""
     transitions: List[Transition]
     """转场效果列表"""
-    filters: List[Dict[str, Any]]
+    filters: List[Filter]
     """滤镜效果列表"""
 
     def __init__(self):
@@ -59,7 +59,7 @@ class Script_material:
     @overload
     def __contains__(self, item: Union[Audio_fade, Audio_effect]) -> bool:...
     @overload
-    def __contains__(self, item: Union[Segment_animations, Video_effect, Transition]) -> bool:...
+    def __contains__(self, item: Union[Segment_animations, Video_effect, Transition, Filter]) -> bool:...
 
     def __contains__(self, item) -> bool:
         if isinstance(item, Video_material):
@@ -76,6 +76,8 @@ class Script_material:
             return item.global_id in [effect.global_id for effect in self.video_effects]
         elif isinstance(item, Transition):
             return item.global_id in [transition.global_id for transition in self.transitions]
+        elif isinstance(item, Filter):
+            return item.global_id in [filter_.global_id for filter_ in self.filters]
         else:
             raise TypeError("Invalid argument type '%s'" % type(item))
 
@@ -101,7 +103,7 @@ class Script_material:
             "color_curves": [],
             "digital_humans": [],
             "drafts": [],
-            "effects": self.filters,
+            "effects": [_filter.export_json() for _filter in self.filters],
             "flowers": [],
             "green_screens": [],
             "handwrites": [],
@@ -247,6 +249,10 @@ class Script_file:
             for effect in segment.effects:
                 if effect not in self.materials:
                     self.materials.video_effects.append(effect)
+            # 滤镜
+            for filter_ in segment.filters:
+                if filter_ not in self.materials:
+                    self.materials.filters.append(filter_)
             # 蒙版
             if segment.mask is not None:
                 self.materials.masks.append(segment.mask.export_json())
@@ -338,7 +344,7 @@ class Script_file:
         self.duration = max(self.duration, t_range.start + t_range.duration)
 
         # 自动添加相关素材
-        self.materials.filters.append(segment.export_material())
+        self.materials.filters.append(segment.material)
         return self
 
     def dumps(self) -> str:
