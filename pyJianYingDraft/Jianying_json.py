@@ -324,7 +324,7 @@ class Script_file:
         Raises:
             `NameError`: 未找到指定名称的轨道, 或必须提供`track_name`参数时未提供
             `TypeError`: 指定的轨道不是滤镜轨道
-            `ValueError`: 新片段与已有片段重叠, 或尝试对不能调节强度的滤镜设置强度
+            `ValueError`: 新片段与已有片段重叠
         """
         target: Track
         if track_name is not None: # 指定轨道名称

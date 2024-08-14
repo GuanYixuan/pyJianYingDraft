@@ -41,11 +41,7 @@ class Filter_segment(Base_segment):
     """
 
     def __init__(self, meta: Filter_type, target_timerange: Timerange, intensity: Optional[float] = None):
-        if intensity is not None:
-            if len(meta.value.params) == 0:
-                raise ValueError("Intensity cannot be set for this filter")
-        else:
-            intensity = 1.0
+        if intensity is None: intensity = 1.0
 
         self.material = Filter(meta.value, intensity)
         super().__init__(self.material.global_id, target_timerange)

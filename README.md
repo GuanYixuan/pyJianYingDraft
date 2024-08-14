@@ -20,16 +20,16 @@
 - ☑️ [视频整体调节](#视频整体调节)（裁剪、旋转、翻转、缩放、透明度、亮度等）
 - ☑️ 除裁剪外上述属性的[关键帧](#关键帧)生成
   - ❔ 关键帧曲线
-- ☑️ 添加**蒙版**
-  - ☑️ 蒙版参数设置
+- ☑️ 添加[蒙版](#蒙版)
+  - ☑️ 蒙版参数
   - ❔ 蒙版参数的关键帧
 - ☑️ 视频片段的[入场/出场/组合动画](#快速上手)（剪映右上角菜单）添加
-- ☑️ 吸附在视频片段上的[特效](#片段特效)
-  - ☑️ 特效的参数设置
+- ☑️ 吸附在视频片段上的[特效](#片段特效滤镜)
+  - ☑️ 特效参数
   - ❔ 特效参数的关键帧
-- ☑️ 吸附在视频片段上的**滤镜**
-  - ☑️ 滤镜参数设置
-  - ❔ 滤镜参数的关键帧
+- ☑️ 吸附在视频片段上的[滤镜](#片段特效滤镜)
+  - ☑️ 滤镜强度
+  - ❔ 滤镜强度的关键帧
 ### 贴纸
 - ⬜ 添加剪映的贴纸素材
 ### 音频
@@ -233,31 +233,62 @@ audio_segment: draft.Audio_segment
 audio_segment.add_keyframe("0s", 0.6) # 片段开始时的音量为60%
 ```
 
-### 片段特效
-> 本节介绍的是**吸附在音频/视频片段上**的特效
+### 蒙版
+蒙版的添加非常简单：调用`Video_segment`的`add_mask`方法即可：
+```python
+from pyJianYingDraft import Mask_type
 
-#### 特效类型
+# 添加一个线性蒙版，中心点在素材的(100, 0)像素处，顺时针旋转45度
+video_segment1.add_mask(Mask_type.线性, center_x=100, rotation=45)
+# 添加一个圆形蒙版，直径占素材的50%
+video_segment2.add_mask(Mask_type.圆形, size=0.5)
+```
+其中：
+- `Mask_type`保存了剪映自带的蒙版类型
+- `center_x`和`center_y`参数表示蒙版中心点的坐标，与剪映中意义一致
+- `rotation`、`feather`、`round_corner`分别表示旋转、羽化、圆角参数，与剪映中意义一致
+- `size`参数表示蒙版的“主要尺寸”（镜面的可视部分高度/圆形直径/爱心高度等）占素材的比例
+
+更具体的参数说明请参见`add_mask`方法的注释。
+
+### 片段特效/滤镜
+> 本节介绍的是**吸附在音频/视频片段上**的特效及滤镜
+
+#### 特效及滤镜类型
 目前支持的特效类型由以下枚举类定义：
 - 音频：`Audio_scene_effect_type`（场景音）、`Tone_effect_type`（音色）、`Speech_to_song_type`（声音成曲，此类效果**目前不能自动触发剪映生成相应文件**）
 - 视频：`Video_scene_effect_type`（画面特效）、`Video_character_effect_type`（人物特效）
 
-而枚举类中的成员（通常）直接**以特效的名字命名**，并注释了相应参数，例如：
+滤镜类型则保存在`Filter_type`中
+
+枚举类中的成员（通常）直接**以特效的名字命名**，并注释了相应参数，例如：
 
 ![特效类型](readme_assets/片段特效_annotation.jpg)
 
-你也可以使用`from_name`方法来获取特效类型，其忽略大小写、空格和下划线，例如：
+你也可以使用`from_name`方法来获取特效/滤镜成员，其忽略大小写、空格和下划线，例如：
 
 ```python
 assert Video_scene_effect_type.from_name("__全息 扫描__") == Video_scene_effect_type.全息扫描
 ```
 
-#### 为片段添加特效
+#### 添加特效
 添加特效使用的方法是`add_effect`，它接受特效类型和一个参数数组，参数数组的顺序**与特效类型注释中的参数顺序一致**，但**不一定与剪映内的参数顺序一致**。
 
 下方的例子为视频片段添加一个`全息扫描`特效，并且指定其`氛围`参数为（剪映中的）100，其余参数默认：
 ```python
-video_segment: draft.Video_segment
+from pyJianYingDraft import Video_scene_effect_type
+
 video_segment.add_effect(Video_scene_effect_type.全息扫描,
                          [None, None, 100.0]) # 不设置前两个参数, 第三个参数（氛围）为100，其余参数也不设置
 ```
 音频片段的特效添加方法与视频片段相似
+
+### 添加滤镜
+滤镜的添加方法与特效类似，其使用的是`add_filter`方法。与特效不同的是，滤镜只支持一个“滤镜强度”参数，且**不是所有滤镜都支持设置强度**。
+
+```python
+from pyJianYingDraft import Filter_type
+
+video_segment1.add_filter(Filter_type.原生肤, 10) # 设置"原生肤"强度为10
+video_segment2.add_filter(.Filter_type.冰雪世界, 50) # 这会产生一个警告，因为"冰雪世界"不支持设置强度
+```

@@ -4,6 +4,7 @@
 """
 
 import uuid
+import warnings
 
 from typing import Optional, Literal, Union
 from typing import Dict, List, Tuple, Any
@@ -314,6 +315,9 @@ class Filter:
     def __init__(self, meta: Effect_meta, intensity: float, *,
                  apply_target_type: Literal[0, 2] = 0):
         """根据给定的滤镜元数据及强度构造滤镜素材对象"""
+        if len(meta.params) == 0 and intensity != 1.0:
+            warnings.warn("Filter '%s' cannot set intensity, input intensity '%f' is ignored" % (meta.name, intensity))
+            intensity = 1.0
 
         self.global_id = uuid.uuid4().hex
         self.effect_meta = meta
@@ -523,9 +527,6 @@ class Video_segment(Media_segment):
         Args:
             filter_type (`Filter_type`): 滤镜类型
             intensity (`float`, optional): 滤镜强度, 取值范围0~100, 仅当滤镜能够自定义强度时允许指定, 默认100.
-
-        Raises:
-            `ValueError`: 不正确地给定了`intensity`
         """
         if intensity is not None: intensity /= 100 # 转化为0~1范围
 
