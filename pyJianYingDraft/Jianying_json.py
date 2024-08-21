@@ -11,6 +11,7 @@ from .segment import Speed
 from .audio_segment import Audio_segment, Audio_fade, Audio_effect
 from .video_segment import Video_segment, Segment_animations, Video_effect, Transition, Filter
 from .effect_segment import Effect_segment, Filter_segment
+from .text_segment import Text_segment
 from .track import Track_type, Track
 
 from .metadata import Video_scene_effect_type, Video_character_effect_type, Filter_type
@@ -22,6 +23,7 @@ class Script_material:
     """音频素材列表"""
     videos: List[Video_material]
     """视频素材列表"""
+    texts: List[Dict[str, Any]]
 
     audio_effects: List[Audio_effect]
     """音频特效列表"""
@@ -44,6 +46,8 @@ class Script_material:
     def __init__(self):
         self.audios = []
         self.videos = []
+        self.texts = []
+
         self.audio_effects = []
         self.audio_fades = []
         self.animations = []
@@ -81,11 +85,13 @@ class Script_material:
         else:
             raise TypeError("Invalid argument type '%s'" % type(item))
 
-    def contains_material(self, segment: Union[Video_segment, Audio_segment]) -> bool:
+    def contains_material(self, segment: Union[Video_segment, Audio_segment, Text_segment]) -> bool:
         if isinstance(segment, Video_segment):
             return segment.material_id in [video.material_id for video in self.videos]
         elif isinstance(segment, Audio_segment):
             return segment.material_id in [audio.material_id for audio in self.audios]
+        elif isinstance(segment, Text_segment):
+            return True # 文本素材暂不检查
         else:
             raise TypeError("Invalid argument type '%s'" % type(segment))
 
@@ -128,7 +134,7 @@ class Script_material:
             "stickers": [],
             "tail_leaders": [],
             "text_templates": [],
-            "texts": [],
+            "texts": self.texts,
             "time_marks": [],
             "transitions": [transition.export_json() for transition in self.transitions],
             "video_effects": [effect.export_json() for effect in self.video_effects],
@@ -213,12 +219,12 @@ class Script_file:
         self.tracks[track_name] = Track(track_type, track_name)
         return self
 
-    def add_segment(self, segment: Union[Video_segment, Audio_segment], track_name: Optional[str] = None) -> "Script_file":
+    def add_segment(self, segment: Union[Video_segment, Audio_segment, Text_segment], track_name: Optional[str] = None) -> "Script_file":
         """向指定轨道中添加一个片段
 
         Args:
-            segment (Union[Video_segment, Audio_segment]): 要添加的片段
-            track_name (str, optional): 添加到的轨道名称. 当此类型的轨道仅有一条时可省略.
+            segment (`Video_segment`, `Audio_segment`, or `Text_segment`): 要添加的片段
+            track_name (`str`, optional): 添加到的轨道名称. 当此类型的轨道仅有一条时可省略.
 
         Raises:
             `NameError`: 未找到指定名称的轨道, 或必须提供`track_name`参数时未提供
@@ -259,13 +265,17 @@ class Script_file:
             # 转场
             if (segment.transition is not None) and (segment.transition not in self.materials):
                 self.materials.transitions.append(segment.transition)
+
+            self.materials.speeds.append(segment.speed)
         elif isinstance(segment, Audio_segment):
             if (segment.fade is not None) and (segment.fade not in self.materials):
                 self.materials.audio_fades.append(segment.fade)
             for effect in segment.effects:
                 if effect not in self.materials:
                     self.materials.audio_effects.append(effect)
-        self.materials.speeds.append(segment.speed)
+            self.materials.speeds.append(segment.speed)
+        elif isinstance(segment, Text_segment):
+            self.materials.texts.append(segment.export_material())
 
         # 检查片段素材是否已添加
         if not self.materials.contains_material(segment):

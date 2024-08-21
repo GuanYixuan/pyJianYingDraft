@@ -1,12 +1,13 @@
 import uuid
 
 from enum import Enum
-from typing import TypeVar, Generic, overload
+from typing import TypeVar, Generic
 from typing import Dict, List, Any, Literal
 
 from .segment import Base_segment
 from .video_segment import Video_segment
 from .audio_segment import Audio_segment
+from .text_segment import Text_segment
 from .effect_segment import Effect_segment, Filter_segment
 
 class Track_type(Enum):
@@ -19,6 +20,7 @@ class Track_type(Enum):
     audio = Audio_segment
     effect = Effect_segment
     filter = Filter_segment
+    text = Text_segment
 
 Seg_type = TypeVar("Seg_type", bound=Base_segment)
 class Track(Generic[Seg_type]):
