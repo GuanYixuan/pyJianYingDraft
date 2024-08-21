@@ -214,8 +214,8 @@ video_segment = draft.Video_segment(video_material,
                                     draft.Timerange(0, video_material.duration)) # 与素材等长
 
 # 添加两个不透明度关键帧形成1s的淡出效果
-video_segment.add_keyframe(Keyframe_property.alpha, video_material.duration - SEC, 1.0) # 结束前1s完全不透明
-video_segment.add_keyframe(Keyframe_property.alpha, video_material.duration, 0.0) # 片段结束时完全透明
+video_segment.add_keyframe(Keyframe_property.alpha, video_segment.duration - SEC, 1.0) # 结束前1s完全不透明
+video_segment.add_keyframe(Keyframe_property.alpha, video_segment.duration, 0.0) # 片段结束时完全透明
 
 # 添加素材及片段
 script.add_material(video_material)
@@ -261,7 +261,7 @@ video_segment2.add_mask(Mask_type.圆形, size=0.5)
 
 滤镜类型则保存在`Filter_type`中
 
-枚举类中的成员（通常）直接**以特效的名字命名**，并注释了相应参数，例如：
+枚举类中的成员（通常）直接**以特效或滤镜的名字命名**，并注释了相应参数，例如：
 
 ![特效类型](readme_assets/片段特效_annotation.jpg)
 
@@ -283,12 +283,12 @@ video_segment.add_effect(Video_scene_effect_type.全息扫描,
 ```
 音频片段的特效添加方法与视频片段相似
 
-### 添加滤镜
+#### 添加滤镜
 滤镜的添加方法与特效类似，其使用的是`add_filter`方法。与特效不同的是，滤镜只支持一个“滤镜强度”参数，且**不是所有滤镜都支持设置强度**。
 
 ```python
 from pyJianYingDraft import Filter_type
 
 video_segment1.add_filter(Filter_type.原生肤, 10) # 设置"原生肤"强度为10
-video_segment2.add_filter(.Filter_type.冰雪世界, 50) # 这会产生一个警告，因为"冰雪世界"不支持设置强度
+video_segment2.add_filter(Filter_type.冰雪世界, 50) # 这会产生一个警告，因为"冰雪世界"不支持设置强度
 ```
