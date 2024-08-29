@@ -54,6 +54,10 @@ class Timerange:
             return False
         return self.start == other.start and self.duration == other.duration
 
+    def overlaps(self, other: "Timerange") -> bool:
+        """判断两个时间范围是否有重叠"""
+        return not (self.end <= other.start or other.end <= self.start)
+
     def __repr__(self) -> str:
         return f"Timerange(start={self.start}, duration={self.duration})"
 
