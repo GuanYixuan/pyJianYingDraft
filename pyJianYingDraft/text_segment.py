@@ -2,31 +2,86 @@
 
 import uuid, json
 
-from typing import Dict, List, Any
+from typing import Dict, List, Tuple, Any
+from typing import Optional, Literal
 
 from .time_util import Timerange
 from .segment import Base_segment
 
+class Text_style:
+    """字体样式类"""
+
+    size: float
+    """字体大小"""
+
+    bold: bool
+    """是否加粗"""
+    italic: bool
+    """是否斜体"""
+    underline: bool
+    """是否加下划线"""
+
+    color: Tuple[float, float, float]
+    """字体颜色"""
+    alpha: float
+    """字体透明度"""
+
+    align: Literal[0, 1, 2]
+    """对齐方式"""
+    vertical: bool
+    """竖排文本"""
+
+    def __init__(self, *, size: float = 15.0, bold: bool = False, italic: bool = False, underline: bool = False,
+                 color: Tuple[float, float, float] = (1.0, 1.0, 1.0), alpha: float = 1.0,
+                 align: Literal[0, 1, 2] = 0, vertical: bool = False):
+        """
+        Args:
+            size (`float`): 字体大小
+            bold (`bool`): 是否加粗
+            italic (`bool`): 是否斜体
+            underline (`bool`): 是否加下划线
+            color (`Tuple[float, float, float]`): 字体颜色, RGB三元组, 取值范围[0, 1]
+            alpha (`float`): 字体透明度, 取值范围[0, 1]
+            align (`int`): 对齐方式, 0: 左对齐, 1: 居中, 2: 右对齐
+            vertical (`bool`): 是否是竖排文本
+        """
+        self.size = size
+        self.bold = bold
+        self.italic = italic
+        self.underline = underline
+
+        self.color = color
+        self.alpha = alpha
+
+        self.align = align
+        self.vertical = vertical
+
 class Text_segment(Base_segment):
-    """文本片段类, 目前仍不完整"""
+    """文本片段类, 目前仅支持设置基本的字体样式"""
 
     text: str
     """文本内容"""
+    style: Text_style
+    """字体样式"""
 
     extra_material_refs: List[str]
     """附加的素材id列表, 用于链接动画/特效等"""
 
-    def __init__(self, text: str, target_timerange: Timerange):
-        super().__init__(uuid.uuid4().hex, target_timerange)
+    def __init__(self, text: str, timerange: Timerange, style: Optional[Text_style] = None):
+        super().__init__(uuid.uuid4().hex, timerange)
+
+        self.text = text
+        self.style = style or Text_style()
 
         self.extra_material_refs = []
-        self.text = text
 
     def export_material(self) -> Dict[str, Any]:
         """与此文本片段联系的素材, 以此不再单独定义Text_material类"""
         return {
             "add_type": 0,
-            "alignment": 1,
+
+            "typesetting": int(self.style.vertical),
+            "alignment": self.style.align,
 
             # ?
             # "caption_template_info": {
@@ -87,6 +142,15 @@ class Text_segment(Base_segment):
             # "font_url": "",
             # "fonts": [],
 
+            # 似乎会被content覆盖
+            # "text_alpha": 1.0,
+            # "text_color": "#FFFFFF",
+            # "text_curve": None,
+            # "text_preset_resource_id": "",
+            # "text_size": 30,
+            # "underline": False,
+
+
             "base_content": "",
             "bold_width": 0.0,
 
@@ -102,8 +166,8 @@ class Text_segment(Base_segment):
                             "content": {
                                 "render_type": "solid",
                                 "solid": {
-                                    "alpha": 1.0,
-                                    "color": [1.0, 1.0, 1.0]
+                                    "alpha": self.style.alpha,
+                                    "color": list(self.style.color)
                                 }
                             }
                         },
@@ -112,7 +176,10 @@ class Text_segment(Base_segment):
                         #     "path": "***.ttf"
                         # },
                         "range": [0, len(self.text)],
-                        "size": 25.0
+                        "size": self.style.size,
+                        "bold": self.style.bold,
+                        "italic": self.style.italic,
+                        "underline": self.style.underline,
                     }
                 ],
                 "text": self.text
@@ -157,17 +224,10 @@ class Text_segment(Base_segment):
             "sub_type": 0,
             "subtitle_keywords": None,
             "subtitle_template_original_fontsize": 0.0,
-            "text_alpha": 1.0,
-            "text_color": "#FFFFFF",
-            "text_curve": None,
-            "text_preset_resource_id": "",
-            "text_size": 30,
             "text_to_audio_ids": [],
             "tts_auto_update": False,
             "type": "text",
-            "typesetting": 0,
 
-            "underline": False,
             "underline_offset": 0.22,
             "underline_width": 0.05,
 
