@@ -194,16 +194,20 @@ class Script_file:
             raise TypeError("Invalid argument type '%s'" % type(material))
         return self
 
-    def add_track(self, track_type: Track_type, track_name: Optional[str] = None) -> "Script_file":
-        """向草稿文件中添加一个指定类型、指定名称的轨道
+    def add_track(self, track_type: Track_type, track_name: Optional[str] = None, *,
+                  relative_index: int = 0, absolute_index: Optional[int] = None) -> "Script_file":
+        """向草稿文件中添加一个指定类型、指定名称的轨道, 可以自定义轨道层级
 
-        注意: 轨道的创建顺序决定了其在轨道列表中的位置, 越晚创建的同类轨道越接近前景
+        注意: 主视频轨道(最底层的视频轨道)上的视频片段必须从0s开始, 否则会被剪映强制对齐至0s.
 
         为避免混淆, 仅在创建第一个同类型轨道时允许不指定名称
 
         Args:
             track_type (Track_type): 轨道类型
             track_name (str, optional): 轨道名称. 仅在创建第一个同类型轨道时允许不指定.
+            relative_index (int, optional): 相对(同类型轨道的)图层位置, 越高越接近前景. 默认为0.
+            absolute_index (int, optional): 绝对图层位置, 越高越接近前景. 此参数将直接覆盖相应片段的`render_index`属性, 供有经验的用户使用.
+                此参数不能与`relative_index`同时使用.
 
         Raises:
             `NameError`: 已存在同类型轨道且未指定名称, 或已存在同名轨道
@@ -216,7 +220,11 @@ class Script_file:
         if track_name in [track.name for track in self.tracks.values()]:
             raise NameError("Track with name '%s' already exists" % track_name)
 
-        self.tracks[track_name] = Track(track_type, track_name)
+        render_index = track_type.value.render_index + relative_index
+        if absolute_index is not None:
+            render_index = absolute_index
+
+        self.tracks[track_name] = Track(track_type, track_name, render_index)
         return self
 
     def add_segment(self, segment: Union[Video_segment, Audio_segment, Text_segment], track_name: Optional[str] = None) -> "Script_file":
@@ -236,11 +244,11 @@ class Script_file:
             if track_name not in self.tracks: raise NameError("Track with name '%s' not found" % track_name)
             target = self.tracks[track_name]
         else: # 寻找唯一的同类型的轨道
-            count = sum([1 for track in self.tracks.values() if isinstance(segment, track.track_type.value)])
+            count = sum([1 for track in self.tracks.values() if isinstance(segment, track.accept_segment_type)])
             if count == 0: raise NameError("No track of type '%s' found" % type(segment))
             if count > 1: raise NameError("Multiple tracks of type '%s' found, please specify a track name" % type(segment))
 
-            target = next(track for track in self.tracks.values() if isinstance(segment, track.track_type.value))
+            target = next(track for track in self.tracks.values() if isinstance(segment, track.accept_segment_type))
 
         # 加入轨道并更新时长
         target.add_segment(segment)
@@ -305,11 +313,11 @@ class Script_file:
             if track_name not in self.tracks: raise NameError("Track with name '%s' not found" % track_name)
             target = self.tracks[track_name]
         else: # 寻找唯一的同类型的轨道
-            count = sum([1 for track in self.tracks.values() if track.track_type.value == Effect_segment])
+            count = sum([1 for track in self.tracks.values() if track.accept_segment_type == Effect_segment])
             if count == 0: raise NameError("No track of type 'Effect_segment' found")
             if count > 1: raise NameError("Multiple tracks of type 'Effect_segment' found, please specify a track name")
 
-            target = next(track for track in self.tracks.values() if track.track_type.value == Effect_segment)
+            target = next(track for track in self.tracks.values() if track.accept_segment_type == Effect_segment)
 
         # 加入轨道并更新时长
         segment = Effect_segment(effect, t_range, params)
@@ -341,17 +349,17 @@ class Script_file:
             if track_name not in self.tracks: raise NameError("Track with name '%s' not found" % track_name)
             target = self.tracks[track_name]
         else: # 寻找唯一的同类型的轨道
-            count = sum([1 for track in self.tracks.values() if track.track_type.value == Filter_segment])
+            count = sum([1 for track in self.tracks.values() if track.accept_segment_type == Filter_segment])
             if count == 0: raise NameError("No track of type 'Filter_segment' found")
             if count > 1: raise NameError("Multiple tracks of type 'Filter_segment' found, please specify a track name")
 
-            target = next(track for track in self.tracks.values() if track.track_type.value == Filter_segment)
+            target = next(track for track in self.tracks.values() if track.accept_segment_type == Filter_segment)
 
         # 加入轨道并更新时长
         if intensity is not None: intensity /= 100 # 转换为0-1范围
         segment = Filter_segment(filter_meta, t_range, intensity)
         target.add_segment(segment)
-        self.duration = max(self.duration, t_range.start + t_range.duration)
+        self.duration = max(self.duration, t_range.end)
 
         # 自动添加相关素材
         self.materials.filters.append(segment.material)
@@ -363,7 +371,11 @@ class Script_file:
         self.content["duration"] = self.duration
         self.content["canvas_config"] = {"width": self.width, "height": self.height, "ratio": "original"}
         self.content["materials"] = self.materials.export_json()
-        self.content["tracks"] = [track.export_json() for track in self.tracks.values()]
+
+        # 对轨道排序
+        track_list = list(self.tracks.values())
+        track_list.sort(key=lambda track: track.render_index)
+        self.content["tracks"] = [track.export_json() for track in track_list]
         return json.dumps(self.content, ensure_ascii=False, indent=4)
 
     def dump(self, file_path: str) -> None:

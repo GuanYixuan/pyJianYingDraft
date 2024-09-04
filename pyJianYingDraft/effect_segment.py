@@ -9,7 +9,6 @@ from .time_util import Timerange
 from .segment import Base_segment
 from .video_segment import Video_effect, Filter
 
-from .metadata import Effect_meta
 from .metadata import Video_scene_effect_type, Video_character_effect_type, Filter_type
 
 class Effect_segment(Base_segment):
@@ -26,11 +25,6 @@ class Effect_segment(Base_segment):
         self.effect_inst = Video_effect(effect_type, params, apply_target_type=2) # 作用域为全局
         super().__init__(self.effect_inst.global_id, target_timerange)
 
-    def export_json(self) -> Dict[str, Any]:
-        ret = super().export_json()
-        ret["render_index"] = 11000
-        return ret
-
 class Filter_segment(Base_segment):
     """放置在独立滤镜轨道上的滤镜片段"""
 
@@ -45,8 +39,3 @@ class Filter_segment(Base_segment):
 
         self.material = Filter(meta.value, intensity)
         super().__init__(self.material.global_id, target_timerange)
-
-    def export_json(self) -> Dict[str, Any]:
-        ret = super().export_json()
-        ret["render_index"] = 10000
-        return ret

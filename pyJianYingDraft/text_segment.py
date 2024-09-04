@@ -252,7 +252,5 @@ class Text_segment(Base_segment):
             "speed": 1.0,
             "volume": 1.0,
             "extra_material_refs": [self.extra_material_refs],
-
-            "render_index": 14000,
         })
         return ret
