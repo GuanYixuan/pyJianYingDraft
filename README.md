@@ -65,6 +65,12 @@
 # 用法速查
 ### 快速上手
 下方的例子将创建包含音视频素材的剪映草稿文件，并且添加了音频淡入、视频入场动画和转场效果。
+
+这个例子的操作方法如下：
+1. 在剪映里**创建一个空草稿**，找到它对应的**文件夹路径**（类似`.../JianyingPro Drafts/9月5日`）
+2. **返回剪映首页**或退出剪映
+3. 将下方代码**保存到项目文件夹根目录**下（即与此`README.md`同级）
+4. 将代码中最后一行`dump`的**保存路径改为草稿文件夹下的`draft_content.json`路径**，随后运行代码
 ```python
 # 导入模块
 import os
@@ -104,10 +110,10 @@ video_segment.add_transition(Transition_type.信号故障) # 注意转场添加�
 # 将各片段添加到轨道中
 script.add_segment(audio_segment).add_segment(video_segment).add_segment(sticker_segment)
 
-# 保存草稿
-script.dump("*你的草稿工程文件夹*/draft_content.json")
+# 保存草稿（覆盖掉原有的draft_content.json）
+script.dump("<你的草稿文件夹>/draft_content.json")
 ```
-现在在剪映中打开草稿，你应该看到如下时间轴：
+5. 现在在剪映中**重新打开这个草稿**，你应该看到如下时间轴：
 
 ![快速上手](readme_assets/快速上手.png)
 
