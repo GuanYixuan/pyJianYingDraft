@@ -6,7 +6,7 @@ from typing import Dict, List, Tuple, Any
 from typing import Optional, Literal
 
 from .time_util import Timerange
-from .segment import Base_segment
+from .segment import Base_segment, Clip_settings
 
 class Text_style:
     """字体样式类"""
@@ -31,19 +31,19 @@ class Text_style:
     vertical: bool
     """竖排文本"""
 
-    def __init__(self, *, size: float = 15.0, bold: bool = False, italic: bool = False, underline: bool = False,
+    def __init__(self, *, size: float = 8.0, bold: bool = False, italic: bool = False, underline: bool = False,
                  color: Tuple[float, float, float] = (1.0, 1.0, 1.0), alpha: float = 1.0,
                  align: Literal[0, 1, 2] = 0, vertical: bool = False):
         """
         Args:
-            size (`float`): 字体大小
-            bold (`bool`): 是否加粗
-            italic (`bool`): 是否斜体
-            underline (`bool`): 是否加下划线
-            color (`Tuple[float, float, float]`): 字体颜色, RGB三元组, 取值范围[0, 1]
-            alpha (`float`): 字体透明度, 取值范围[0, 1]
-            align (`int`): 对齐方式, 0: 左对齐, 1: 居中, 2: 右对齐
-            vertical (`bool`): 是否是竖排文本
+            size (`float`, optional): 字体大小, 默认为6.0
+            bold (`bool`, optional): 是否加粗, 默认为否
+            italic (`bool`, optional): 是否斜体, 默认为否
+            underline (`bool`, optional): 是否加下划线, 默认为否
+            color (`Tuple[float, float, float]`, optional): 字体颜色, RGB三元组, 取值范围为[0, 1], 默认为白色
+            alpha (`float`, optional): 字体不透明度, 取值范围[0, 1], 默认不透明
+            align (`int`, optional): 对齐方式, 0: 左对齐, 1: 居中, 2: 右对齐, 默认为左对齐
+            vertical (`bool`, optional): 是否是竖排文本, 默认为否
         """
         self.size = size
         self.bold = bold
@@ -64,14 +64,29 @@ class Text_segment(Base_segment):
     style: Text_style
     """字体样式"""
 
+    clip_settings: Clip_settings
+    """图像调节设置"""
+
     extra_material_refs: List[str]
     """附加的素材id列表, 用于链接动画/特效等"""
 
-    def __init__(self, text: str, timerange: Timerange, style: Optional[Text_style] = None):
+    def __init__(self, text: str, timerange: Timerange, *,
+                 style: Optional[Text_style] = None, clip_settings: Optional[Clip_settings] = None):
+        """创建文本片段, 并指定其时间信息、字体样式及图像调节设置
+
+        片段创建完成后, 可通过`Script_file.add_segment`方法将其添加到轨道中
+
+        Args:
+            text (`str`): 文本内容
+            timerange (`Timerange`): 片段在轨道上的时间范围
+            style (`Text_style`, optional): 字体样式
+            clip_settings (`Clip_settings`, optional): 图像调节设置, 默认不做任何变换
+        """
         super().__init__(uuid.uuid4().hex, timerange)
 
         self.text = text
         self.style = style or Text_style()
+        self.clip_settings = clip_settings or Clip_settings()
 
         self.extra_material_refs = []
 
@@ -243,7 +258,7 @@ class Text_segment(Base_segment):
         ret = super().export_json()
         ret.update({
             # 与Video_segment一致的部分
-            # "clip": {},
+            "clip": self.clip_settings.export_json(),
             # "hdr_settings": null,
             # "uniform_scale": {},
 
