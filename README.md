@@ -57,15 +57,15 @@
 - ☑️ 添加[转场](#快速上手)
   - ☑️ 转场时长设置
 ### 文本及字幕
-- ☑️ 添加普通文本
-- ☑️ 设置基础字体样式
-- ☑️ 文本位置及旋转设置
+- ☑️ 添加[普通文本](#快速上手)
+- ☑️ 设置基础[字体样式](#快速上手)
+- ☑️ 文本[位置及旋转设置](#快速上手)
 - ⬜ 导入`.srt`文件生成一系列字幕
 - ❔ 文字特效
 
 # 用法速查
 ### 快速上手
-下方的例子将创建包含音视频素材的剪映草稿文件，并且添加了音频淡入、视频入场动画和转场效果。
+下方的例子将创建包含音视频素材和一行字幕的剪映草稿文件，并且添加了音频淡入、视频入场动画和转场效果。
 
 这个例子的操作方法如下：
 1. 在剪映里**创建一个空草稿**，找到它对应的**文件夹路径**（类似`.../JianyingPro Drafts/9月5日`）
@@ -83,8 +83,8 @@ tutorial_asset_dir = os.path.join(os.path.dirname(__file__), 'readme_assets', 't
 # 创建剪映草稿
 script = draft.Script_file(1080, 1080) # 1080x1080分辨率
 
-# 添加一个音频轨道和一个视频轨道
-script.add_track(draft.Track_type.audio).add_track(draft.Track_type.video)
+# 添加音频、视频和文本轨道
+script.add_track(draft.Track_type.audio).add_track(draft.Track_type.video).add_track(draft.Track_type.text)
 
 # 从本地读取音视频素材和一个gif表情包
 audio_material = draft.Audio_material(os.path.join(tutorial_asset_dir, 'audio.mp3'))
@@ -108,8 +108,14 @@ sticker_segment = draft.Video_segment(sticker_material,
 # 为二者添加一个转场
 video_segment.add_transition(Transition_type.信号故障) # 注意转场添加在“前一个”视频片段上
 
-# 将各片段添加到轨道中
+# 将上述片段添加到轨道中
 script.add_segment(audio_segment).add_segment(video_segment).add_segment(sticker_segment)
+
+# 创建一行类似字幕的文本片段并添加到轨道中
+text_segment = draft.Text_segment("据说pyJianYingDraft效果还不错?", trange(0, script.duration), # 文本将持续整个视频（注意script.duration在上方片段添加到轨道后才会自动更新）
+                                  style=draft.Text_style(color=(1.0, 1.0, 0.0)),                # 设置字体颜色为黄色
+                                  clip_settings=draft.Clip_settings(transform_y=-0.8))          # 模拟字幕的位置
+script.add_segment(text_segment)
 
 # 保存草稿（覆盖掉原有的draft_content.json）
 script.dump("<你的草稿文件夹>/draft_content.json")

@@ -133,7 +133,7 @@ class Clip_settings:
                  rotation: float = 0.0,
                  scale_x: float = 1.0, scale_y: float = 1.0,
                  transform_x: float = 0.0, transform_y: float = 0.0):
-        """初始化图像调节设置, 默认参数表示不作任何图像变换
+        """初始化图像调节设置, 默认不作任何图像变换
 
         Args:
             alpha (float, optional): 图像不透明度, 0-1. 默认为1.0.
@@ -144,6 +144,7 @@ class Clip_settings:
             scale_y (float, optional): 垂直缩放比例. 默认为1.0.
             transform_x (float, optional): 水平位移, 单位为半个画布宽. 默认为0.0.
             transform_y (float, optional): 垂直位移, 单位为半个画布高. 默认为0.0.
+                参考: 剪映导入的字幕似乎取此值为-0.8
         """
         self.alpha = alpha
         self.flip_horizontal, self.flip_vertical = flip_horizontal, flip_vertical
