@@ -68,12 +68,22 @@ class Timerange:
         return {"start": self.start, "duration": self.duration}
 
 def trange(start: Union[str, float], duration: Union[str, float]) -> Timerange:
-        """Timerange的简便构造函数, 接受字符串或微秒数作为参数
+    """Timerange的简便构造函数, 接受字符串或微秒数作为参数
 
-        支持类似 "1h52m3s" 或 "0.15s" 这样的格式
+    支持类似 "1h52m3s" 或 "0.15s" 这样的格式
 
-        Args:
-            start (Union[str, float]): 起始时间
-            duration (Union[str, float]): 持续长度
-        """
-        return Timerange(tim(start), tim(duration))
+    Args:
+        start (Union[str, float]): 起始时间
+        duration (Union[str, float]): 持续长度
+    """
+    return Timerange(tim(start), tim(duration))
+
+def srt_tstamp(srt_tstamp: str) -> int:
+    """解析srt中的时间戳字符串, 返回微秒数"""
+    sec_str, ms_str = srt_tstamp.split(",")
+    parts = sec_str.split(":") + [ms_str]
+
+    total_time = 0
+    for value, factor in zip(parts, [3600*SEC, 60*SEC, SEC, 1000]):
+        total_time += int(value) * factor
+    return total_time

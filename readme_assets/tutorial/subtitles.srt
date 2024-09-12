@@ -1,0 +1,13 @@
+1
+00:00:00,710 --> 00:00:03,220
+Lorem ipsum dolor sit amet
+consectetur, adipisicing elit.
+
+2
+00:00:03,220 --> 00:00:05,970
+Dignissimos et quod laboriosam
+iure magni expedita
+
+3
+00:00:05,970 --> 00:00:09,130
+nisi, quis quaerat. Rem, facere!

@@ -2,16 +2,16 @@ import os
 import json
 import warnings
 
-from typing import Optional, Union, overload
+from typing import Optional, Literal, Union, overload
 from typing import Dict, List, Any
 
-from .time_util import Timerange
+from .time_util import Timerange, tim, srt_tstamp
 from .local_materials import Video_material, Audio_material
-from .segment import Speed
+from .segment import Speed, Clip_settings
 from .audio_segment import Audio_segment, Audio_fade, Audio_effect
 from .video_segment import Video_segment, Segment_animations, Video_effect, Transition, Filter
 from .effect_segment import Effect_segment, Filter_segment
-from .text_segment import Text_segment
+from .text_segment import Text_segment, Text_style
 from .track import Track_type, Track
 
 from .metadata import Video_scene_effect_type, Video_character_effect_type, Filter_type
@@ -252,7 +252,7 @@ class Script_file:
 
         # 加入轨道并更新时长
         target.add_segment(segment)
-        self.duration = max(self.duration, segment.target_timerange.start + segment.target_timerange.duration)
+        self.duration = max(self.duration, segment.end)
 
         # 自动添加相关素材
         if isinstance(segment, Video_segment):
@@ -363,6 +363,71 @@ class Script_file:
 
         # 自动添加相关素材
         self.materials.filters.append(segment.material)
+        return self
+
+    def import_srt(self, srt_path: str, track_name: str, *,
+                   time_offset: Union[str, float] = 0.0,
+                   text_style: Text_style = Text_style(size=5, align=1),
+                   clip_settings: Clip_settings = Clip_settings(transform_y=-0.8)) -> "Script_file":
+        """从SRT文件中导入字幕
+
+        Args:
+            srt_path (`str`): SRT文件路径
+            track_name (`str`): 导入到的文本轨道名称, 若不存在则自动创建
+            time_offset (`Union[str, float]`, optional): 字幕整体时间偏移, 单位为微秒, 默认为0.
+            text_style (`Text_style`, optional): 字幕样式, 默认模仿剪映导入字幕时的样式.
+            clip_settings (`Clip_settings`, optional): 图像调节设置, 默认模仿剪映导入字幕时的设置.
+
+        Raises:
+            `NameError`: 已存在同名轨道
+            `TypeError`: 轨道类型不匹配
+        """
+        time_offset = tim(time_offset)
+        if track_name not in self.tracks:
+            self.add_track(Track_type.text, track_name, relative_index=999) # 在所有文本轨道的最上层
+
+        with open(srt_path, "r", encoding="utf-8") as srt_file:
+            lines = srt_file.readlines()
+
+        index = 0
+        text: str = ""
+        text_trange: Timerange
+        read_state: Literal["index", "timestamp", "content"] = "index"
+        while index < len(lines):
+            line = lines[index].strip()
+            if read_state == "index":
+                if len(line) == 0:
+                    index += 1
+                    continue
+                if not line.isdigit():
+                    raise ValueError("Expected a number at line %d, got '%s'" % (index+1, line))
+                index += 1
+                read_state = "timestamp"
+            elif read_state == "timestamp":
+                # 读取时间戳
+                start_str, end_str = line.split(" --> ")
+                start, end = srt_tstamp(start_str), srt_tstamp(end_str)
+                text_trange = Timerange(start + time_offset, end - start)
+
+                index += 1
+                read_state = "content"
+            elif read_state == "content":
+                # 内容结束, 生成片段
+                if len(line) == 0:
+                    seg = Text_segment(text, text_trange, style=text_style, clip_settings=clip_settings)
+                    self.add_segment(seg, track_name)
+
+                    text = ""
+                    read_state = "index"
+                else:
+                    text += line + "\n"
+                index += 1
+
+        # 添加最后一个片段
+        if len(text) > 0:
+            seg = Text_segment(text, text_trange, style=text_style, clip_settings=clip_settings)
+            self.add_segment(seg, track_name)
+
         return self
 
     def dumps(self) -> str:
