@@ -50,7 +50,7 @@
 - ☑️ 添加轨道
 - ☑️ 将片段添加到指定轨道
 - ☑️ 自定义视频/滤镜/特效轨道的**层级关系**
-### 特效类
+### 特效、滤镜和转场
 - ☑️ 位于**独立轨道的特效**
 - ☑️ 位于**独立轨道的滤镜**
 - ☑️ 添加[转场](#快速上手)
@@ -59,7 +59,7 @@
 - ☑️ 添加[普通文本](#快速上手)
 - ☑️ 设置基础[字体样式](#快速上手)
 - ☑️ 文本[位置及旋转设置](#快速上手)
-- ☑️ 导入`.srt`文件生成字幕
+- ☑️ [导入`.srt`文件](#导入字幕)生成字幕
 - ❔ 文本特效
 
 # 用法速查
@@ -267,7 +267,7 @@ video_segment2.add_mask(Mask_type.圆形, size=0.5)
 
 更具体的参数说明请参见`add_mask`方法的注释。
 
-### 片段特效/滤镜
+### 片段特效和滤镜
 > 本节介绍的是**吸附在音频/视频片段上**的特效及滤镜
 
 #### 特效及滤镜类型
@@ -308,3 +308,40 @@ from pyJianYingDraft import Filter_type
 video_segment1.add_filter(Filter_type.原生肤, 10) # 设置"原生肤"强度为10
 video_segment2.add_filter(Filter_type.冰雪世界, 50) # 这会产生一个警告，因为"冰雪世界"不支持设置强度
 ```
+
+### 文本及字幕
+#### 文本
+添加文本与添加视频/音频片段类似，只需创建`Text_segment`对象并利用`add_segment`添加到`Script_file`中即可。
+其**文字样式**及**图像调节**设置可分别通过`style`和`clip_settings`参数设置。
+
+例如：
+```python
+import pyJianYingDraft as draft
+from pyJianYingDraft import Text_style, Clip_settings
+
+# 带下划线、位置及大小类似字幕的浅蓝色文本
+seg1 = draft.Text_segment("Subtitle", trange("0s", "10s"),
+                          style=Text_style(size=5.0, color=(0.7, 0.7, 1.0), underline=True, align=1),
+                          clip_settings=Clip_settings(transform_y=-0.8))
+```
+
+更具体的参数说明可参见`Text_style`和`Clip_settings`的构造函数。
+
+#### 导入字幕
+> ℹ 目前只支持导入**SRT格式**的字幕文件
+
+导入字幕本质上是根据每条字幕的时间戳及内容创建一系列文本，并添加到轨道中。这一过程通过`Script_file.import_srt`来实现。
+上述方法同样支持`style`和`clip_settings`参数，还支持指定`time_offset`参数来对字幕进行整体时间偏移。
+
+例如：
+```python
+import pyJianYingDraft as draft
+
+script = draft.Script_file(1080, 1080)
+
+# 将字幕导入到名为"subtitle"的轨道中，若轨道不存在将自动创建
+# 不指定style和clip_settings，则默认模拟剪映导入字幕时的样式
+script.import_srt("subtitle.srt", track_name="subtitle")
+```
+
+`style`和`clip_settings`参数的意义与`Text_segment`相同。
