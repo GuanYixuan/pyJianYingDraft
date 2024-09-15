@@ -79,7 +79,7 @@ def trange(start: Union[str, float], duration: Union[str, float]) -> Timerange:
 
     Args:
         start (Union[str, float]): 起始时间
-        duration (Union[str, float]): 持续长度
+        duration (Union[str, float]): 持续长度, 注意**不是结束时间**
     """
     return Timerange(tim(start), tim(duration))
 
