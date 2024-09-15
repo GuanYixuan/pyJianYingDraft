@@ -1,10 +1,12 @@
 import os
 import json
 import warnings
+from copy import deepcopy
 
 from typing import Optional, Literal, Union, overload
 from typing import Dict, List, Any
 
+from . import util
 from .time_util import Timerange, tim, srt_tstamp
 from .local_materials import Video_material, Audio_material
 from .segment import Speed, Clip_settings
@@ -12,7 +14,7 @@ from .audio_segment import Audio_segment, Audio_fade, Audio_effect
 from .video_segment import Video_segment, Segment_animations, Video_effect, Transition, Filter
 from .effect_segment import Effect_segment, Filter_segment
 from .text_segment import Text_segment, Text_style
-from .track import Track_type, Track
+from .track import Track_type, Base_track, Track, Imported_track
 
 from .metadata import Video_scene_effect_type, Video_character_effect_type, Filter_type
 
@@ -163,6 +165,11 @@ class Script_file:
     tracks: Dict[str, Track]
     """轨道信息"""
 
+    imported_materials: Dict[str, List[Dict[str, Any]]]
+    """导入的素材信息"""
+    imported_tracks: List[Imported_track]
+    """导入的轨道信息"""
+
     TEMPLATE_FILE = "draft_content_template.json"
 
     def __init__(self, width: int, height: int, fps: int = 30):
@@ -181,8 +188,30 @@ class Script_file:
         self.materials = Script_material()
         self.tracks = {}
 
+        self.imported_materials = {}
+        self.imported_tracks = []
+
         with open(os.path.join(os.path.dirname(__file__), self.TEMPLATE_FILE), "r", encoding="utf-8") as f:
             self.content = json.load(f)
+
+    @staticmethod
+    def load_template(json_path: str) -> "Script_file":
+        """从JSON文件加载草稿模板
+
+        Args:
+            json_path (str): JSON文件路径
+        """
+        obj = Script_file(**util.provide_ctor_defaults(Script_file))
+        with open(json_path, "r", encoding="utf-8") as f:
+            obj.content = json.load(f)
+
+        util.assign_attr_with_json(obj, ["fps", "duration"], obj.content)
+        util.assign_attr_with_json(obj, ["width", "height"], obj.content["canvas_config"])
+
+        obj.imported_materials = deepcopy(obj.content["materials"])
+        obj.imported_tracks = list(Imported_track(data) for data in obj.content["tracks"])
+
+        return obj
 
     def add_material(self, material: Union[Video_material, Audio_material]) -> "Script_file":
         """向草稿文件中添加一个素材"""
@@ -437,10 +466,19 @@ class Script_file:
         self.content["canvas_config"] = {"width": self.width, "height": self.height, "ratio": "original"}
         self.content["materials"] = self.materials.export_json()
 
-        # 对轨道排序
-        track_list = list(self.tracks.values())
+        # 合并导入的素材
+        for material_type, material_list in self.imported_materials.items():
+            if material_type not in self.content["materials"]:
+                self.content["materials"][material_type] = material_list
+            else:
+                self.content["materials"][material_type].extend(material_list)
+
+        # 对轨道排序并导出
+        track_list: List[Base_track] = list(self.tracks.values())
+        track_list.extend(self.imported_tracks)
         track_list.sort(key=lambda track: track.render_index)
         self.content["tracks"] = [track.export_json() for track in track_list]
+
         return json.dumps(self.content, ensure_ascii=False, indent=4)
 
     def dump(self, file_path: str) -> None:

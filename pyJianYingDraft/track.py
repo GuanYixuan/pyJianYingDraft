@@ -1,10 +1,13 @@
 import uuid
+from copy import deepcopy
 
 from enum import Enum
 from typing import TypeVar, Generic, Type
 from typing import Dict, List, Any, Union, Optional
 from dataclasses import dataclass
+from abc import ABC, abstractmethod
 
+from . import util
 from .segment import Base_segment
 from .video_segment import Video_segment
 from .audio_segment import Audio_segment
@@ -32,20 +35,36 @@ class Track_type(Enum):
     filter = Track_meta(Filter_segment, 11000)
     text = Track_meta(Text_segment, 14000)
 
-Seg_type = TypeVar("Seg_type", bound=Base_segment)
-class Track(Generic[Seg_type]):
-    """轨道"""
+    @staticmethod
+    def from_name(name: str) -> "Track_type":
+        """根据名称获取轨道类型枚举"""
+        for t in Track_type:
+            if t.name == name:
+                return t
+        raise ValueError("Invalid track type name: %s" % name)
+
+
+class Base_track(ABC):
+    """轨道基类"""
 
     track_type: Track_type
     """轨道类型"""
     name: str
     """轨道名称"""
     track_id: str
-    """轨道全局ID, 由程序自动生成"""
+    """轨道全局ID"""
     render_index: int
     """渲染顺序, 值越大越接近前景"""
 
+    @abstractmethod
+    def export_json(self) -> Dict[str, Any]: ...
+
+Seg_type = TypeVar("Seg_type", bound=Base_segment)
+class Track(Base_track, Generic[Seg_type]):
+    """非模板模式下的轨道"""
+
     segments: List[Seg_type]
+    """该轨道包含的片段列表"""
 
     def __init__(self, track_type: Track_type, name: str, render_index: int):
         self.track_type = track_type
@@ -97,3 +116,24 @@ class Track(Generic[Seg_type]):
             "segments": segment_exports,
             "type": self.track_type.name
         }
+
+class Imported_track(Base_track):
+    """模板模式下导入的轨道"""
+
+    raw_data: Dict[str, Any]
+    """原始轨道数据"""
+    segments: List[Dict[str, Any]]
+    """该轨道包含的片段列表"""
+
+    def __init__(self, json_data: Dict[str, Any]):
+        self.track_type = Track_type.from_name(json_data["type"])
+        self.name = json_data["name"]
+        self.track_id = json_data["id"]
+        self.render_index = max([int(seg["render_index"]) for seg in json_data["segments"]])
+
+        self.raw_data = deepcopy(json_data)
+        self.segments = deepcopy(json_data["segments"])
+
+    def export_json(self) -> Dict[str, Any]:
+        self.raw_data.update({"segments": self.segments})
+        return self.raw_data
