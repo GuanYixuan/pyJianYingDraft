@@ -27,7 +27,13 @@ def provide_ctor_defaults(cls: Type) -> Dict[str, Any]:
     return provided_defaults
 
 def assign_attr_with_json(obj: object, attrs: List[str], json_data: Dict[str, Any]):
-    """根据json数据赋值给指定的对象属性"""
-    type_hints = obj.__annotations__
+    """根据json数据赋值给指定的对象属性
+
+    若有复杂类型，则尝试调用其`import_json`方法进行构造
+    """
+    type_hints: Dict[str, Type] = obj.__annotations__
     for attr in attrs:
-        obj.__setattr__(attr, type_hints[attr](json_data[attr]))
+        if hasattr(type_hints[attr], 'import_json'):
+            obj.__setattr__(attr, type_hints[attr].import_json(json_data[attr]))
+        else:
+            obj.__setattr__(attr, type_hints[attr](json_data[attr]))

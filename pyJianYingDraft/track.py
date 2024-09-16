@@ -7,8 +7,7 @@ from typing import Dict, List, Any, Union, Optional
 from dataclasses import dataclass
 from abc import ABC, abstractmethod
 
-from . import util
-from .segment import Base_segment
+from .segment import Base_segment, Imported_segment
 from .video_segment import Video_segment
 from .audio_segment import Audio_segment
 from .text_segment import Text_segment
@@ -122,7 +121,7 @@ class Imported_track(Base_track):
 
     raw_data: Dict[str, Any]
     """原始轨道数据"""
-    segments: List[Dict[str, Any]]
+    segments: List[Imported_segment]
     """该轨道包含的片段列表"""
 
     def __init__(self, json_data: Dict[str, Any]):
@@ -132,8 +131,8 @@ class Imported_track(Base_track):
         self.render_index = max([int(seg["render_index"]) for seg in json_data["segments"]])
 
         self.raw_data = deepcopy(json_data)
-        self.segments = deepcopy(json_data["segments"])
+        self.segments = [Imported_segment(seg) for seg in json_data["segments"]]
 
     def export_json(self) -> Dict[str, Any]:
-        self.raw_data.update({"segments": self.segments})
+        self.raw_data.update({"segments": [seg.export_json() for seg in self.segments]})
         return self.raw_data

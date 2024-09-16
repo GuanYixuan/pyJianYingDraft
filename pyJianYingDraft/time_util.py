@@ -49,6 +49,11 @@ class Timerange:
         self.start = start
         self.duration = duration
 
+    @classmethod
+    def import_json(cls, json_obj: Dict[str, str]) -> "Timerange":
+        """从json对象中恢复Timerange"""
+        return cls(int(json_obj["start"]), int(json_obj["duration"]))
+
     @property
     def end(self) -> int:
         """结束时间, 单位为微秒"""

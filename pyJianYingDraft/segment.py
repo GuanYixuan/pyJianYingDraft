@@ -1,14 +1,15 @@
 """定义片段基类及部分比较通用的属性类"""
 
 import uuid
+from copy import deepcopy
 
-from abc import ABC
 from typing import Dict, List, Any
 
+from . import util
 from .time_util import Timerange
 from .keyframe import Keyframe_list
 
-class Base_segment(ABC):
+class Base_segment:
     """片段基类"""
 
     segment_id: str
@@ -47,12 +48,11 @@ class Base_segment(ABC):
     @property
     def end(self) -> int:
         """片段结束时间, 单位为微秒"""
-        return self.target_timerange.start + self.target_timerange.duration
+        return self.target_timerange.end
 
     def overlaps(self, other: "Base_segment") -> bool:
         """判断是否与另一个片段有重叠"""
-        return not (self.target_timerange.start + self.target_timerange.duration <= other.target_timerange.start or
-                    self.target_timerange.start >= other.target_timerange.start + other.target_timerange.duration)
+        return self.target_timerange.overlaps(other.target_timerange)
 
     def export_json(self) -> Dict[str, Any]:
         """返回通用于各种片段的属性"""
@@ -194,3 +194,27 @@ class Media_segment(Base_segment):
             "extra_material_refs": self.extra_material_refs,
         })
         return ret
+
+class Imported_segment:
+    """导入的视频/音频片段"""
+
+    raw_data: Dict[str, Any]
+    """原始数据"""
+
+    material_id: str
+    """使用的素材id"""
+    target_timerange: Timerange
+    """片段在轨道上的时间范围"""
+
+    def __init__(self, json_data: Dict[str, Any]):
+        self.raw_data = deepcopy(json_data)
+
+        util.assign_attr_with_json(self, ["material_id", "target_timerange"], json_data)
+
+    def export_json(self) -> Dict[str, Any]:
+        raw_data = deepcopy(self.raw_data)
+        raw_data.update({
+            "material_id": self.material_id,
+            "target_timerange": self.target_timerange.export_json(),
+        })
+        return raw_data
