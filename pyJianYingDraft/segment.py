@@ -194,27 +194,3 @@ class Media_segment(Base_segment):
             "extra_material_refs": self.extra_material_refs,
         })
         return ret
-
-class Imported_segment:
-    """导入的视频/音频片段"""
-
-    raw_data: Dict[str, Any]
-    """原始数据"""
-
-    material_id: str
-    """使用的素材id"""
-    target_timerange: Timerange
-    """片段在轨道上的时间范围"""
-
-    def __init__(self, json_data: Dict[str, Any]):
-        self.raw_data = deepcopy(json_data)
-
-        util.assign_attr_with_json(self, ["material_id", "target_timerange"], json_data)
-
-    def export_json(self) -> Dict[str, Any]:
-        raw_data = deepcopy(self.raw_data)
-        raw_data.update({
-            "material_id": self.material_id,
-            "target_timerange": self.target_timerange.export_json(),
-        })
-        return raw_data

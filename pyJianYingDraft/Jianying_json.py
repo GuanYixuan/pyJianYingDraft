@@ -7,6 +7,7 @@ from typing import Optional, Literal, Union, overload
 from typing import Dict, List, Any
 
 from . import util
+from .template_mode import Imported_track
 from .time_util import Timerange, tim, srt_tstamp
 from .local_materials import Video_material, Audio_material
 from .segment import Speed, Clip_settings
@@ -14,7 +15,7 @@ from .audio_segment import Audio_segment, Audio_fade, Audio_effect
 from .video_segment import Video_segment, Segment_animations, Video_effect, Transition, Filter
 from .effect_segment import Effect_segment, Filter_segment
 from .text_segment import Text_segment, Text_style
-from .track import Track_type, Base_track, Track, Imported_track
+from .track import Track_type, Base_track, Track
 
 from .metadata import Video_scene_effect_type, Video_character_effect_type, Filter_type
 
@@ -366,7 +367,7 @@ class Script_file:
             filter_meta (`Filter_type`): 滤镜类型
             t_range (`Timerange`): 滤镜片段的时间范围
             track_name (`str`, optional): 添加到的轨道名称. 当滤镜轨道仅有一条时可省略.
-            intensity (`float`, optional): 滤镜强度(0-100). 仅当滤镜能够调节强度时允许指定.
+            intensity (`float`, optional): 滤镜强度(0-100). 仅当滤镜能够调节强度时有效.
 
         Raises:
             `NameError`: 未找到指定名称的轨道, 或必须提供`track_name`参数时未提供

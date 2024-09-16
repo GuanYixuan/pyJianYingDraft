@@ -7,7 +7,7 @@ from typing import Dict, List, Any, Union, Optional
 from dataclasses import dataclass
 from abc import ABC, abstractmethod
 
-from .segment import Base_segment, Imported_segment
+from .segment import Base_segment
 from .video_segment import Video_segment
 from .audio_segment import Audio_segment
 from .text_segment import Text_segment
@@ -115,24 +115,3 @@ class Track(Base_track, Generic[Seg_type]):
             "segments": segment_exports,
             "type": self.track_type.name
         }
-
-class Imported_track(Base_track):
-    """模板模式下导入的轨道"""
-
-    raw_data: Dict[str, Any]
-    """原始轨道数据"""
-    segments: List[Imported_segment]
-    """该轨道包含的片段列表"""
-
-    def __init__(self, json_data: Dict[str, Any]):
-        self.track_type = Track_type.from_name(json_data["type"])
-        self.name = json_data["name"]
-        self.track_id = json_data["id"]
-        self.render_index = max([int(seg["render_index"]) for seg in json_data["segments"]])
-
-        self.raw_data = deepcopy(json_data)
-        self.segments = [Imported_segment(seg) for seg in json_data["segments"]]
-
-    def export_json(self) -> Dict[str, Any]:
-        self.raw_data.update({"segments": [seg.export_json() for seg in self.segments]})
-        return self.raw_data
