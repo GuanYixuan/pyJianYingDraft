@@ -5,6 +5,8 @@ import inspect
 from typing import Union, Type
 from typing import List, Dict, Any
 
+JsonExportable = Union[int, float, bool, str, List["JsonExportable"], Dict[str, "JsonExportable"]]
+
 def provide_ctor_defaults(cls: Type) -> Dict[str, Any]:
     """为构造函数提供默认值，以绕开构造函数的参数限制"""
 
@@ -37,3 +39,16 @@ def assign_attr_with_json(obj: object, attrs: List[str], json_data: Dict[str, An
             obj.__setattr__(attr, type_hints[attr].import_json(json_data[attr]))
         else:
             obj.__setattr__(attr, type_hints[attr](json_data[attr]))
+
+def export_attr_to_json(obj: object, attrs: List[str]) -> Dict[str, JsonExportable]:
+    """将对象属性导出为json数据
+
+    若有复杂类型，则尝试调用其`export_json`方法进行导出
+    """
+    json_data: Dict[str, Any] = {}
+    for attr in attrs:
+        if hasattr(getattr(obj, attr), 'export_json'):
+            json_data[attr] = getattr(obj, attr).export_json()
+        else:
+            json_data[attr] = getattr(obj, attr)
+    return json_data

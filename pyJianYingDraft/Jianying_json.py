@@ -7,7 +7,7 @@ from typing import Optional, Literal, Union, overload
 from typing import Dict, List, Any
 
 from . import util
-from .template_mode import Imported_track
+from .template_mode import Imported_track, Static_track
 from .time_util import Timerange, tim, srt_tstamp
 from .local_materials import Video_material, Audio_material
 from .segment import Speed, Clip_settings
@@ -168,7 +168,7 @@ class Script_file:
 
     imported_materials: Dict[str, List[Dict[str, Any]]]
     """导入的素材信息"""
-    imported_tracks: List[Imported_track]
+    imported_tracks: List[Union[Imported_track, Static_track]]
     """导入的轨道信息"""
 
     TEMPLATE_FILE = "draft_content_template.json"
@@ -210,7 +210,13 @@ class Script_file:
         util.assign_attr_with_json(obj, ["width", "height"], obj.content["canvas_config"])
 
         obj.imported_materials = deepcopy(obj.content["materials"])
-        obj.imported_tracks = list(Imported_track(data) for data in obj.content["tracks"])
+        obj.imported_tracks = []
+        for track_data in obj.content["tracks"]:
+            track_type = Track_type.from_name(track_data["type"])
+            if track_type.value.allow_modify: # 仅允许修改视频和音频轨道
+                obj.imported_tracks.append(Imported_track(track_data))
+            else:
+                obj.imported_tracks.append(Static_track(track_data))
 
         return obj
 
@@ -459,6 +465,38 @@ class Script_file:
             self.add_segment(seg, track_name)
 
         return self
+
+    def get_imported_track(self, track_type: Literal[Track_type.video, Track_type.audio], name: Optional[str] = None, index: Optional[int] = None) -> Imported_track:
+        """获取指定类型的导入轨道, 以便在其上进行素材替换
+
+        推荐使用轨道名称进行筛选（若已知轨道名称）
+
+        Args:
+            track_type (`Track_type.video` or `Track_type.audio`): 轨道类型, 目前只支持视频和音频
+            name (`str`, optional): 轨道名称. 不指定则不根据名称筛选.
+            index (`int`, optional): 轨道在**同类型的导入轨道**中的下标, 以0为最下层轨道. 不指定则不根据下标筛选.
+
+        Raises:
+            `ValueError`: 未找到或找到多个满足条件的轨道
+        """
+        tracks_of_same_type: List[Imported_track] = []
+        for track in self.imported_tracks:
+            if track.track_type == track_type:
+                assert isinstance(track, Imported_track)
+                tracks_of_same_type.append(track)
+
+        ret: List[Imported_track] = []
+        for ind, track in enumerate(tracks_of_same_type):
+            if (name is not None) and (track.name != name): continue
+            if (index is not None) and (ind != index): continue
+            ret.append(track)
+
+        if len(ret) == 0:
+            raise ValueError("No track satisfies the conditions: track_type=%s, name=%s, index=%s" % (track_type, name, index))
+        if len(ret) > 1:
+            raise ValueError("Multiple tracks satisfy the conditions: track_type=%s, name=%s, index=%s" % (track_type, name, index))
+
+        return ret[0]
 
     def dumps(self) -> str:
         """将草稿文件内容导出为JSON字符串"""

@@ -21,6 +21,8 @@ class Track_meta:
     """与轨道关联的片段类型"""
     render_index: int
     """默认渲染顺序, 值越大越接近前景"""
+    allow_modify: bool
+    """当被导入时, 是否允许修改"""
 
 class Track_type(Enum):
     """轨道类型枚举
@@ -28,11 +30,11 @@ class Track_type(Enum):
     变量名对应type属性, 值表示相应的轨道元数据
     """
 
-    video = Track_meta(Video_segment, 0)
-    audio = Track_meta(Audio_segment, 0)
-    effect = Track_meta(Effect_segment, 10000)
-    filter = Track_meta(Filter_segment, 11000)
-    text = Track_meta(Text_segment, 14000)
+    video = Track_meta(Video_segment, 0, True)
+    audio = Track_meta(Audio_segment, 0, True)
+    effect = Track_meta(Effect_segment, 10000, False)
+    filter = Track_meta(Filter_segment, 11000, False)
+    text = Track_meta(Text_segment, 14000, False)
 
     @staticmethod
     def from_name(name: str) -> "Track_type":
