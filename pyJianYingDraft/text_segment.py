@@ -22,9 +22,9 @@ class Text_style:
     """是否加下划线"""
 
     color: Tuple[float, float, float]
-    """字体颜色"""
+    """字体颜色, RGB三元组, 取值范围为[0, 1]"""
     alpha: float
-    """字体透明度"""
+    """字体不透明度"""
 
     align: Literal[0, 1, 2]
     """对齐方式"""
@@ -36,7 +36,7 @@ class Text_style:
                  align: Literal[0, 1, 2] = 0, vertical: bool = False):
         """
         Args:
-            size (`float`, optional): 字体大小, 默认为6.0
+            size (`float`, optional): 字体大小, 默认为8.0
             bold (`bool`, optional): 是否加粗, 默认为否
             italic (`bool`, optional): 是否斜体, 默认为否
             underline (`bool`, optional): 是否加下划线, 默认为否
@@ -56,6 +56,39 @@ class Text_style:
         self.align = align
         self.vertical = vertical
 
+class Text_border:
+    """文本描边的参数"""
+
+    alpha: float
+    """描边不透明度"""
+    color: Tuple[float, float, float]
+    """描边颜色, RGB三元组, 取值范围为[0, 1]"""
+    width: float
+    """描边宽度"""
+
+    def __init__(self, *, alpha: float = 1.0, color: Tuple[float, float, float] = (0.0, 0.0, 0.0), width: float = 40.0):
+        """
+        Args:
+            alpha (`float`, optional): 描边不透明度, 取值范围[0, 1], 默认为1.0
+            color (`Tuple[float, float, float]`, optional): 描边颜色, RGB三元组, 取值范围为[0, 1], 默认为黑色
+            width (`float`, optional): 描边宽度, 与剪映中一致, 取值范围为[0, 100], 默认为40.0
+        """
+        self.alpha = alpha
+        self.color = color
+        self.width = width / 100.0 * 0.2 # 此映射可能不完全正确
+
+    def export_json(self) -> Dict[str, Any]:
+        """导出JSON数据, 放置在素材content的styles中"""
+        return {
+            "content": {
+                "solid": {
+                    "alpha": self.alpha,
+                    "color": list(self.color),
+                }
+            },
+            "width": self.width
+        }
+
 class Text_segment(Base_segment):
     """文本片段类, 目前仅支持设置基本的字体样式"""
 
@@ -66,12 +99,15 @@ class Text_segment(Base_segment):
 
     clip_settings: Clip_settings
     """图像调节设置"""
+    border: Optional[Text_border]
+    """文本描边参数, None表示无描边"""
 
     extra_material_refs: List[str]
     """附加的素材id列表, 用于链接动画/特效等"""
 
     def __init__(self, text: str, timerange: Timerange, *,
-                 style: Optional[Text_style] = None, clip_settings: Optional[Clip_settings] = None):
+                 style: Optional[Text_style] = None, clip_settings: Optional[Clip_settings] = None,
+                 border: Optional[Text_border] = None):
         """创建文本片段, 并指定其时间信息、字体样式及图像调节设置
 
         片段创建完成后, 可通过`Script_file.add_segment`方法将其添加到轨道中
@@ -81,17 +117,23 @@ class Text_segment(Base_segment):
             timerange (`Timerange`): 片段在轨道上的时间范围
             style (`Text_style`, optional): 字体样式
             clip_settings (`Clip_settings`, optional): 图像调节设置, 默认不做任何变换
+            border (`Text_border`, optional): 文本描边参数, 默认无描边
         """
         super().__init__(uuid.uuid4().hex, timerange)
 
         self.text = text
         self.style = style or Text_style()
         self.clip_settings = clip_settings or Clip_settings()
+        self.border = border
 
         self.extra_material_refs = []
 
     def export_material(self) -> Dict[str, Any]:
         """与此文本片段联系的素材, 以此不再单独定义Text_material类"""
+        # 叠加各类效果的flag
+        check_flag: int = 7
+        if self.border: check_flag |= 8
+
         return {
             "add_type": 0,
 
@@ -114,7 +156,7 @@ class Text_segment(Base_segment):
             # 混合 (+4)
             # "global_alpha": 1.0,
 
-            # 描边 (+8)
+            # 描边 (+8), 似乎也会被content覆盖
             # "border_alpha": 1.0,
             # "border_color": "",
             # "border_width": 0.08,
@@ -169,7 +211,7 @@ class Text_segment(Base_segment):
             "base_content": "",
             "bold_width": 0.0,
 
-            "check_flag": 7,
+            "check_flag": check_flag,
             "combo_info": {
                 "text_templates": []
             },
@@ -195,6 +237,7 @@ class Text_segment(Base_segment):
                         "bold": self.style.bold,
                         "italic": self.style.italic,
                         "underline": self.style.underline,
+                        "strokes": [self.border.export_json()] if self.border else []
                     }
                 ],
                 "text": self.text

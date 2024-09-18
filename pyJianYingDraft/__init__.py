@@ -5,7 +5,7 @@ from .time_util import Timerange
 from .audio_segment import Audio_segment
 from .video_segment import Video_segment, Clip_settings
 from .effect_segment import Effect_segment, Filter_segment
-from .text_segment import Text_segment, Text_style
+from .text_segment import Text_segment, Text_style, Text_border
 
 from .metadata import Mask_type
 from .metadata import Transition_type, Filter_type
