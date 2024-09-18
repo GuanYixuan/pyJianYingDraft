@@ -7,7 +7,8 @@ from typing import Optional, Literal, Union, overload
 from typing import Dict, List, Any
 
 from . import util
-from .template_mode import Imported_track, Static_track
+from .exceptions import TrackNotFound, AmbiguousTrack
+from .template_mode import Imported_track, Static_track, Shrink_mode, Extend_mode
 from .time_util import Timerange, tim, srt_tstamp
 from .local_materials import Video_material, Audio_material
 from .segment import Speed, Clip_settings
@@ -477,7 +478,8 @@ class Script_file:
             index (`int`, optional): 轨道在**同类型的导入轨道**中的下标, 以0为最下层轨道. 不指定则不根据下标筛选.
 
         Raises:
-            `ValueError`: 未找到或找到多个满足条件的轨道
+            `TrackNotFound`: 未找到满足条件的轨道
+            `AmbiguousTrack`: 找到多个满足条件的轨道
         """
         tracks_of_same_type: List[Imported_track] = []
         for track in self.imported_tracks:
@@ -492,11 +494,28 @@ class Script_file:
             ret.append(track)
 
         if len(ret) == 0:
-            raise ValueError("No track satisfies the conditions: track_type=%s, name=%s, index=%s" % (track_type, name, index))
+            raise TrackNotFound("No track satisfies the conditions: track_type=%s, name=%s, index=%s" % (track_type, name, index))
         if len(ret) > 1:
-            raise ValueError("Multiple tracks satisfy the conditions: track_type=%s, name=%s, index=%s" % (track_type, name, index))
+            raise AmbiguousTrack("Multiple tracks satisfy the conditions: track_type=%s, name=%s, index=%s" % (track_type, name, index))
 
         return ret[0]
+
+    def replace_material(self, track: Imported_track, segment_index: int, material: Union[Video_material, Audio_material], *,
+                         handle_shrink: Shrink_mode, handle_extend: Union[Extend_mode, List[Extend_mode]]) -> "Script_file":
+        """替换指定轨道上指定片段的素材
+
+        Args:
+            track (`Imported_track`): 要替换素材的轨道, 由`get_imported_track`获取
+            segment_index (`int`): 要替换素材的片段下标, 从0开始
+            material (`Video_material` or `Audio_material`): 新素材, 必须与原素材类型一致
+            handle_shrink (`Shrink_mode`): 新素材比原素材短时的处理方式
+            handle_extend (`Extend_mode` or `List[Extend_mode]`): 新素材比原素材长时的处理方式, 将按顺序逐个尝试直至成功或抛出异常
+
+        Raises:
+            `IndexError`: `segment_index`越界
+            `TypeError`: 素材类型不正确
+            `ExtensionFailed`: 新素材比原素材长时处理失败
+        """
 
     def dumps(self) -> str:
         """将草稿文件内容导出为JSON字符串"""

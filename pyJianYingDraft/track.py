@@ -7,6 +7,7 @@ from typing import Dict, List, Any, Union, Optional
 from dataclasses import dataclass
 from abc import ABC, abstractmethod
 
+from .exceptions import SegmentOverlap
 from .segment import Base_segment
 from .video_segment import Video_segment
 from .audio_segment import Audio_segment
@@ -88,7 +89,7 @@ class Track(Base_track, Generic[Seg_type]):
 
         Raises:
             `TypeError`: 新片段类型与轨道类型不匹配
-            `ValueError`: 新片段与现有片段重叠
+            `SegmentOverlap`: 新片段与现有片段重叠
         """
         if not isinstance(segment, self.accept_segment_type):
             raise TypeError("New segment (%s) is not of the same type as the track (%s)" % (type(segment), self.accept_segment_type))
@@ -96,8 +97,8 @@ class Track(Base_track, Generic[Seg_type]):
         # 检查片段是否重叠
         for seg in self.segments:
             if seg.overlaps(segment):
-                raise ValueError("New segment overlaps with existing segment [start: {}, duration: {}]" \
-                                .format(seg.target_timerange.start, seg.target_timerange.duration))
+                raise SegmentOverlap("New segment overlaps with existing segment [start: {}, end: {}]" \
+                                     .format(segment.target_timerange.start, segment.target_timerange.end))
 
         self.segments.append(segment)
         return self

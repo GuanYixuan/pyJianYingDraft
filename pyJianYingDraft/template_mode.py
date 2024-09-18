@@ -1,5 +1,6 @@
 """与模板模式相关的类及函数等"""
 
+from enum import Enum
 from copy import deepcopy
 
 from . import util
@@ -7,6 +8,31 @@ from .track import Base_track, Track_type
 from .time_util import Timerange
 
 from typing import List, Dict, Any
+
+class Shrink_mode(Enum):
+    """处理替换素材时素材变短情况的方法"""
+
+    """裁剪头部, 即后移片段起始点"""
+    cut_head = "cut_head"
+    """裁剪尾部, 即前移片段终止点"""
+    cut_tail = "cut_tail"
+
+    """裁剪尾部并消除间隙, 即前移片段终止点, 后续片段也依次前移"""
+    cut_tail_align = "cut_tail_align"
+
+    """保持中间点不变, 两端点向中间靠拢"""
+    shrink = "shrink"
+
+class Extend_mode(Enum):
+    """处理替换素材时素材变长情况的方法"""
+
+    """延伸头部, 即尝试前移片段起始点, 与前续片段重合时失败"""
+    extend_head = "extend_head"
+    """延伸尾部, 即尝试后移片段终止点, 与后续片段重合时失败"""
+    extend_tail = "extend_tail"
+
+    """延伸尾部, 若有必要则依次后移后续片段, 此方法总是成功"""
+    push_tail = "push_tail"
 
 class Imported_segment:
     """导入的视频/音频片段"""
