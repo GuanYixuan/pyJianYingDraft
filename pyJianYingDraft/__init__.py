@@ -14,6 +14,7 @@ from .metadata import Audio_scene_effect_type, Tone_effect_type, Speech_to_song_
 from .metadata import Video_scene_effect_type, Video_character_effect_type
 
 from .track import Track_type
+from .template_mode import Shrink_mode, Extend_mode
 from .Jianying_json import Script_file
 
 

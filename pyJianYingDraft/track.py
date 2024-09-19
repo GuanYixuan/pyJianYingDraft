@@ -77,6 +77,13 @@ class Track(Base_track, Generic[Seg_type]):
         self.segments = []
 
     @property
+    def end_time(self) -> int:
+        """轨道结束时间, 微秒"""
+        if len(self.segments) == 0:
+            return 0
+        return self.segments[-1].target_timerange.end
+
+    @property
     def accept_segment_type(self) -> Type[Seg_type]:
         """返回该轨道允许的片段类型"""
         return self.track_type.value.segment_type # type: ignore

@@ -223,6 +223,8 @@ class Script_file:
 
     def add_material(self, material: Union[Video_material, Audio_material]) -> "Script_file":
         """向草稿文件中添加一个素材"""
+        if material in self.materials: # 素材已存在
+            return self
         if isinstance(material, Video_material):
             self.materials.videos.append(material)
         elif isinstance(material, Audio_material):
@@ -467,7 +469,8 @@ class Script_file:
 
         return self
 
-    def get_imported_track(self, track_type: Literal[Track_type.video, Track_type.audio], name: Optional[str] = None, index: Optional[int] = None) -> Imported_track:
+    def get_imported_track(self, track_type: Literal[Track_type.video, Track_type.audio],
+                           name: Optional[str] = None, index: Optional[int] = None) -> Imported_track:
         """获取指定类型的导入轨道, 以便在其上进行素材替换
 
         推荐使用轨道名称进行筛选（若已知轨道名称）
@@ -500,14 +503,16 @@ class Script_file:
 
         return ret[0]
 
-    def replace_material(self, track: Imported_track, segment_index: int, material: Union[Video_material, Audio_material], *,
+    def replace_material(self, track: Imported_track, segment_index: int,
+                         material: Union[Video_material, Audio_material], source_timerange: Optional[Timerange] = None, *,
                          handle_shrink: Shrink_mode, handle_extend: Union[Extend_mode, List[Extend_mode]]) -> "Script_file":
-        """替换指定轨道上指定片段的素材
+        """替换指定轨道上指定片段的素材, 暂不支持变速片段的素材替换
 
         Args:
             track (`Imported_track`): 要替换素材的轨道, 由`get_imported_track`获取
             segment_index (`int`): 要替换素材的片段下标, 从0开始
             material (`Video_material` or `Audio_material`): 新素材, 必须与原素材类型一致
+            source_timerange (`Timerange`, optional): 从原素材中截取的时间范围, 默认为全时段, 若是图片素材则默认与原片段等长.
             handle_shrink (`Shrink_mode`): 新素材比原素材短时的处理方式
             handle_extend (`Extend_mode` or `List[Extend_mode]`): 新素材比原素材长时的处理方式, 将按顺序逐个尝试直至成功或抛出异常
 
@@ -516,6 +521,29 @@ class Script_file:
             `TypeError`: 素材类型不正确
             `ExtensionFailed`: 新素材比原素材长时处理失败
         """
+
+        if not 0 <= segment_index < len(track):
+            raise IndexError("Segment index %d out of range [0, %d)" % (segment_index, len(track)))
+        if not track.check_material_type(material):
+            raise TypeError("Material type mismatch for track type %s, provided %s", (track.track_type, type(material)))
+        seg = track.segments[segment_index]
+
+        if isinstance(handle_extend, Extend_mode):
+            handle_extend = [handle_extend]
+        if source_timerange is None:
+            if isinstance(material, Video_material) and (material.material_type == "photo"):
+                source_timerange = Timerange(0, seg.duration)
+            else:
+                source_timerange = Timerange(0, material.duration)
+
+        track.process_timerange(segment_index, source_timerange.duration, handle_shrink, handle_extend)
+
+        # 最后替换素材链接
+        track.segments[segment_index].material_id = material.material_id
+        self.add_material(material)
+
+        # TODO: 更新总长
+        return self
 
     def dumps(self) -> str:
         """将草稿文件内容导出为JSON字符串"""
