@@ -7,7 +7,7 @@ from typing import Optional, Literal, Union, overload
 from typing import Dict, List, Any
 
 from . import util
-from .exceptions import TrackNotFound, AmbiguousTrack
+from .exceptions import *
 from .template_mode import Imported_track, Static_track, Shrink_mode, Extend_mode
 from .time_util import Timerange, tim, srt_tstamp
 from .local_materials import Video_material, Audio_material
@@ -503,9 +503,40 @@ class Script_file:
 
         return ret[0]
 
-    def replace_material(self, track: Imported_track, segment_index: int,
-                         material: Union[Video_material, Audio_material], source_timerange: Optional[Timerange] = None, *,
-                         handle_shrink: Shrink_mode, handle_extend: Union[Extend_mode, List[Extend_mode]]) -> "Script_file":
+    def replace_material_by_name(self, material_name: str, material: Union[Video_material, Audio_material]) -> "Script_file":
+        """替换指定名称的素材, 并影响所有引用它的片段
+
+        这种方法不会改变相应片段的时长和引用范围(`source_timerange`)
+
+        Args:
+            material_name (`str`): 要替换的素材名称
+            material (`Video_material` or `Audio_material`): 新素材, 目前只支持视频和音频
+
+        Raises:
+            `MaterialNotFound`: 根据指定名称未找到与新素材同类的素材
+            `AmbiguousMaterial`: 根据指定名称找到多个与新素材同类的素材
+        """
+        # 查找素材
+        target_json_obj: Optional[Dict[str, Any]] = None
+        target_material_list = self.imported_materials["videos"] if isinstance(material, Video_material) else self.imported_materials["audios"]
+        for mat in target_material_list:
+            if mat["material_name"] == material_name:
+                if target_json_obj is not None:
+                    raise AmbiguousMaterial("Multiple %s with name '%s' found" % (type(material).__name__, material_name))
+                target_json_obj = mat
+        if target_json_obj is None:
+            raise MaterialNotFound("No %s with name '%s' found" % (type(material).__name__, material_name))
+
+        # 更新素材信息
+        target_json_obj.update({"material_name": material.material_name, "path": material.path, "duration": material.duration})
+        if isinstance(material, Video_material):
+            target_json_obj.update({"width": material.width, "height": material.height, "material_type": material.material_type})
+
+        return self
+
+    def replace_material_by_seg(self, track: Imported_track, segment_index: int,
+                                material: Union[Video_material, Audio_material], source_timerange: Optional[Timerange] = None, *,
+                                handle_shrink: Shrink_mode, handle_extend: Union[Extend_mode, List[Extend_mode]]) -> "Script_file":
         """替换指定轨道上指定片段的素材, 暂不支持变速片段的素材替换
 
         Args:

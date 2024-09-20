@@ -7,5 +7,10 @@ class AmbiguousTrack(ValueError):
 class SegmentOverlap(ValueError):
     """新片段与已有的轨道片段重叠"""
 
+class MaterialNotFound(NameError):
+    """未找到满足条件的素材"""
+class AmbiguousMaterial(ValueError):
+    """找到多个满足条件的素材"""
+
 class ExtensionFailed(ValueError):
     """替换素材时延伸片段失败"""

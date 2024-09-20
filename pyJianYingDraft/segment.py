@@ -1,11 +1,9 @@
 """定义片段基类及部分比较通用的属性类"""
 
 import uuid
-from copy import deepcopy
 
 from typing import Dict, List, Any
 
-from . import util
 from .time_util import Timerange
 from .keyframe import Keyframe_list
 
