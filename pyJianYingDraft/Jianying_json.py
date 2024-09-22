@@ -63,11 +63,11 @@ class Script_material:
         self.filters = []
 
     @overload
-    def __contains__(self, item: Union[Video_material, Audio_material]) -> bool:...
+    def __contains__(self, item: Union[Video_material, Audio_material]) -> bool: ...
     @overload
-    def __contains__(self, item: Union[Audio_fade, Audio_effect]) -> bool:...
+    def __contains__(self, item: Union[Audio_fade, Audio_effect]) -> bool: ...
     @overload
-    def __contains__(self, item: Union[Segment_animations, Video_effect, Transition, Filter]) -> bool:...
+    def __contains__(self, item: Union[Segment_animations, Video_effect, Transition, Filter]) -> bool: ...
 
     def __contains__(self, item) -> bool:
         if isinstance(item, Video_material):
@@ -503,14 +503,16 @@ class Script_file:
 
         return ret[0]
 
-    def replace_material_by_name(self, material_name: str, material: Union[Video_material, Audio_material]) -> "Script_file":
+    def replace_material_by_name(self, material_name: str, material: Union[Video_material, Audio_material],
+                                 replace_crop: bool = False) -> "Script_file":
         """替换指定名称的素材, 并影响所有引用它的片段
 
-        这种方法不会改变相应片段的时长和引用范围(`source_timerange`)
+        这种方法不会改变相应片段的时长和引用范围(`source_timerange`), 尤其适合于图片素材
 
         Args:
             material_name (`str`): 要替换的素材名称
             material (`Video_material` or `Audio_material`): 新素材, 目前只支持视频和音频
+            replace_crop (`bool`, optional): 是否替换原素材的裁剪设置, 默认为否. 仅对视频素材有效.
 
         Raises:
             `MaterialNotFound`: 根据指定名称未找到与新素材同类的素材
@@ -531,6 +533,8 @@ class Script_file:
         target_json_obj.update({"material_name": material.material_name, "path": material.path, "duration": material.duration})
         if isinstance(material, Video_material):
             target_json_obj.update({"width": material.width, "height": material.height, "material_type": material.material_type})
+            if replace_crop:
+                target_json_obj.update({"crop": material.crop_settings.export_json()})
 
         return self
 
