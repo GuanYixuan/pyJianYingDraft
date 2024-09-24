@@ -93,7 +93,7 @@ class Audio_effect:
             "resource_id": self.resource_id,
             "speaker_id": "",
             "sub_type": 1,
-            "time_range": {"duration": 0, "start": 0}, # 似乎并未用到
+            "time_range": {"duration": 0, "start": 0},  # 似乎并未用到
             "type": "audio_effect"
             # 不导出path和constant_material_id
         }
@@ -133,7 +133,7 @@ class Audio_segment(Media_segment):
             target_timerange = Timerange(target_timerange.start, round(source_timerange.duration / speed))
         elif source_timerange is not None and speed is None:
             speed = source_timerange.duration / target_timerange.duration
-        else: # source_timerange is None
+        else:  # source_timerange is None
             speed = speed if speed is not None else 1.0
             source_timerange = Timerange(0, round(target_timerange.duration * speed))
 

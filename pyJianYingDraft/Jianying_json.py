@@ -95,7 +95,7 @@ class Script_material:
         elif isinstance(segment, Audio_segment):
             return segment.material_id in [audio.material_id for audio in self.audios]
         elif isinstance(segment, Text_segment):
-            return True # 文本素材暂不检查
+            return True  # 文本素材暂不检查
         else:
             raise TypeError("Invalid argument type '%s'" % type(segment))
 
@@ -214,7 +214,7 @@ class Script_file:
         obj.imported_tracks = []
         for track_data in obj.content["tracks"]:
             track_type = Track_type.from_name(track_data["type"])
-            if track_type.value.allow_modify: # 仅允许修改视频和音频轨道
+            if track_type.value.allow_modify:  # 仅允许修改视频和音频轨道
                 obj.imported_tracks.append(Imported_track(track_data))
             else:
                 obj.imported_tracks.append(Static_track(track_data))
@@ -223,7 +223,7 @@ class Script_file:
 
     def add_material(self, material: Union[Video_material, Audio_material]) -> "Script_file":
         """向草稿文件中添加一个素材"""
-        if material in self.materials: # 素材已存在
+        if material in self.materials:  # 素材已存在
             return self
         if isinstance(material, Video_material):
             self.materials.videos.append(material)
@@ -279,10 +279,10 @@ class Script_file:
             `ValueError`: 新片段与已有片段重叠
         """
         target: Track
-        if track_name is not None: # 指定轨道名称
+        if track_name is not None:  # 指定轨道名称
             if track_name not in self.tracks: raise NameError("Track with name '%s' not found" % track_name)
             target = self.tracks[track_name]
-        else: # 寻找唯一的同类型的轨道
+        else:  # 寻找唯一的同类型的轨道
             count = sum([1 for track in self.tracks.values() if isinstance(segment, track.accept_segment_type)])
             if count == 0: raise NameError("No track of type '%s' found" % type(segment))
             if count > 1: raise NameError("Multiple tracks of type '%s' found, please specify a track name" % type(segment))
@@ -348,10 +348,10 @@ class Script_file:
             `ValueError`: 新片段与已有片段重叠、提供的参数数量超过了该特效类型的参数数量, 或参数值超出范围.
         """
         target: Track
-        if track_name is not None: # 指定轨道名称
+        if track_name is not None:  # 指定轨道名称
             if track_name not in self.tracks: raise NameError("Track with name '%s' not found" % track_name)
             target = self.tracks[track_name]
-        else: # 寻找唯一的同类型的轨道
+        else:  # 寻找唯一的同类型的轨道
             count = sum([1 for track in self.tracks.values() if track.accept_segment_type == Effect_segment])
             if count == 0: raise NameError("No track of type 'Effect_segment' found")
             if count > 1: raise NameError("Multiple tracks of type 'Effect_segment' found, please specify a track name")
@@ -384,10 +384,10 @@ class Script_file:
             `ValueError`: 新片段与已有片段重叠
         """
         target: Track
-        if track_name is not None: # 指定轨道名称
+        if track_name is not None:  # 指定轨道名称
             if track_name not in self.tracks: raise NameError("Track with name '%s' not found" % track_name)
             target = self.tracks[track_name]
-        else: # 寻找唯一的同类型的轨道
+        else:  # 寻找唯一的同类型的轨道
             count = sum([1 for track in self.tracks.values() if track.accept_segment_type == Filter_segment])
             if count == 0: raise NameError("No track of type 'Filter_segment' found")
             if count > 1: raise NameError("Multiple tracks of type 'Filter_segment' found, please specify a track name")
@@ -395,7 +395,7 @@ class Script_file:
             target = next(track for track in self.tracks.values() if track.accept_segment_type == Filter_segment)
 
         # 加入轨道并更新时长
-        if intensity is not None: intensity /= 100 # 转换为0-1范围
+        if intensity is not None: intensity /= 100  # 转换为0-1范围
         segment = Filter_segment(filter_meta, t_range, intensity)
         target.add_segment(segment)
         self.duration = max(self.duration, t_range.end)
@@ -423,7 +423,7 @@ class Script_file:
         """
         time_offset = tim(time_offset)
         if track_name not in self.tracks:
-            self.add_track(Track_type.text, track_name, relative_index=999) # 在所有文本轨道的最上层
+            self.add_track(Track_type.text, track_name, relative_index=999)  # 在所有文本轨道的最上层
 
         with open(srt_path, "r", encoding="utf-8") as srt_file:
             lines = srt_file.readlines()

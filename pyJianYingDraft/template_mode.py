@@ -154,7 +154,7 @@ class Imported_track(Base_track):
                 seg.duration -= delta_duration
             elif shrink == Shrink_mode.cut_tail_align:
                 seg.duration -= delta_duration
-                for i in range(seg_index+1, len(self.segments)): # 后续片段也依次前移相应值（保持间隙）
+                for i in range(seg_index+1, len(self.segments)):  # 后续片段也依次前移相应值（保持间隙）
                     self.segments[i].start -= delta_duration
             elif shrink == Shrink_mode.shrink:
                 seg.duration -= delta_duration
@@ -178,7 +178,7 @@ class Imported_track(Base_track):
                 elif mode == Extend_mode.push_tail:
                     shift_duration = max(0, seg.target_timerange.end + delta_duration - next_seg_start)
                     seg.duration += delta_duration
-                    if shift_duration > 0: # 有必要时后移后续片段
+                    if shift_duration > 0:  # 有必要时后移后续片段
                         for i in range(seg_index+1, len(self.segments)):
                             self.segments[i].start += shift_duration
                     success_flag = True

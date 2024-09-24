@@ -1,9 +1,6 @@
 """定义特效/滤镜片段类"""
 
-import uuid
-
-from typing import Union, Optional
-from typing import List, Dict, Any
+from typing import Union, Optional, List
 
 from .time_util import Timerange
 from .segment import Base_segment
@@ -22,7 +19,7 @@ class Effect_segment(Base_segment):
 
     def __init__(self, effect_type: Union[Video_scene_effect_type, Video_character_effect_type],
                  target_timerange: Timerange, params: Optional[List[Optional[float]]] = None):
-        self.effect_inst = Video_effect(effect_type, params, apply_target_type=2) # 作用域为全局
+        self.effect_inst = Video_effect(effect_type, params, apply_target_type=2)  # 作用域为全局
         super().__init__(self.effect_inst.global_id, target_timerange)
 
 class Filter_segment(Base_segment):

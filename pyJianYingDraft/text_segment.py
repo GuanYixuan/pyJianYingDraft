@@ -1,6 +1,7 @@
 """定义文本片段及其相关类"""
 
-import uuid, json
+import json
+import uuid
 
 from typing import Dict, List, Tuple, Any
 from typing import Optional, Literal
@@ -75,7 +76,7 @@ class Text_border:
         """
         self.alpha = alpha
         self.color = color
-        self.width = width / 100.0 * 0.2 # 此映射可能不完全正确
+        self.width = width / 100.0 * 0.2  # 此映射可能不完全正确
 
     def export_json(self) -> Dict[str, Any]:
         """导出JSON数据, 放置在素材content的styles中"""

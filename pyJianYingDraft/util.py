@@ -14,7 +14,7 @@ def provide_ctor_defaults(cls: Type) -> Dict[str, Any]:
     provided_defaults: Dict[str, Any] = {}
 
     for name, param in signature.parameters.items():
-        if name =='self': continue
+        if name == 'self': continue
         if param.default is not inspect.Parameter.empty: continue
 
         if param.annotation is int or param.annotation is float:

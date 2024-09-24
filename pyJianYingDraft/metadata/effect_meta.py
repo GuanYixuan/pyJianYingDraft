@@ -82,7 +82,7 @@ class Effect_meta:
                 if input_v is not None:
                     if input_v < 0 or input_v > 100:
                         raise ValueError("Invalid parameter value %f within %s" % (input_v, str(param)))
-                    val = param.min_value + (param.max_value - param.min_value) * input_v / 100.0 # 从0~100映射到实际值
+                    val = param.min_value + (param.max_value - param.min_value) * input_v / 100.0  # 从0~100映射到实际值
             ret.append(Effect_param_instance(param, i, val))
         return ret
 

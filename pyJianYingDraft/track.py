@@ -1,9 +1,10 @@
+"""轨道类及其元数据"""
+
 import uuid
-from copy import deepcopy
 
 from enum import Enum
 from typing import TypeVar, Generic, Type
-from typing import Dict, List, Any, Union, Optional
+from typing import Dict, List, Any, Union
 from dataclasses import dataclass
 from abc import ABC, abstractmethod
 
@@ -86,7 +87,7 @@ class Track(Base_track, Generic[Seg_type]):
     @property
     def accept_segment_type(self) -> Type[Seg_type]:
         """返回该轨道允许的片段类型"""
-        return self.track_type.value.segment_type # type: ignore
+        return self.track_type.value.segment_type  # type: ignore
 
     def add_segment(self, segment: Seg_type) -> "Track[Seg_type]":
         """向轨道中添加一个片段, 添加的片段必须匹配轨道类型且不与现有片段重叠
@@ -104,7 +105,7 @@ class Track(Base_track, Generic[Seg_type]):
         # 检查片段是否重叠
         for seg in self.segments:
             if seg.overlaps(segment):
-                raise SegmentOverlap("New segment overlaps with existing segment [start: {}, end: {}]" \
+                raise SegmentOverlap("New segment overlaps with existing segment [start: {}, end: {}]"
                                      .format(segment.target_timerange.start, segment.target_timerange.end))
 
         self.segments.append(segment)

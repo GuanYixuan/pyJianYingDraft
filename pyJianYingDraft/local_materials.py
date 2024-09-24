@@ -91,12 +91,14 @@ class Video_material:
         if not pymediainfo.MediaInfo.can_parse():
             raise ValueError(f"Unsupported file type '{postfix}'")
 
-        info: pymediainfo.MediaInfo = pymediainfo.MediaInfo.parse(path) # type: ignore
-        if len(info.video_tracks): # 有视频轨道的视为视频素材
+        info: pymediainfo.MediaInfo = pymediainfo.MediaInfo.parse(path)  # type: ignore
+        # 有视频轨道的视为视频素材
+        if len(info.video_tracks):
             self.material_type = "video"
-            self.duration = int(info.video_tracks[0].duration * 1e3) # type: ignore
-            self.width, self.height = info.video_tracks[0].width, info.video_tracks[0].height # type: ignore
-        elif postfix.lower() == ".gif": # gif文件使用imageio库获取长度
+            self.duration = int(info.video_tracks[0].duration * 1e3)  # type: ignore
+            self.width, self.height = info.video_tracks[0].width, info.video_tracks[0].height  # type: ignore
+        # gif文件使用imageio库获取长度
+        elif postfix.lower() == ".gif":
             try:
                 import imageio
             except ImportError:
@@ -105,12 +107,12 @@ class Video_material:
 
             self.material_type = "video"
             self.duration = int(round(gif.get_meta_data()['duration'] * gif.get_length() * 1e3))
-            self.width, self.height = info.image_tracks[0].width, info.image_tracks[0].height # type: ignore
+            self.width, self.height = info.image_tracks[0].width, info.image_tracks[0].height  # type: ignore
             gif.close()
         elif len(info.image_tracks):
             self.material_type = "photo"
-            self.duration = 10800000000 # 相当于3h
-            self.width, self.height = info.image_tracks[0].width, info.image_tracks[0].height # type: ignore
+            self.duration = 10800000000  # 相当于3h
+            self.width, self.height = info.image_tracks[0].width, info.image_tracks[0].height  # type: ignore
         else:
             raise ValueError(f"Input file {path} has no video or image track")
 

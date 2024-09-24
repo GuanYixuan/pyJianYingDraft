@@ -82,7 +82,7 @@ class Base_segment:
             "target_timerange": self.target_timerange.export_json(),
 
             "common_keyframes": [kf_list.export_json() for kf_list in self.common_keyframes],
-            "keyframe_refs": [], # 意义不明
+            "keyframe_refs": [],  # 意义不明
         }
 
 class Speed:

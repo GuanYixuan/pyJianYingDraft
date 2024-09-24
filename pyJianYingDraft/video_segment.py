@@ -225,8 +225,8 @@ class Video_effect:
             "adjust_params": [param.export_json() for param in self.adjust_params],
             "apply_target_type": self.apply_target_type,
             "apply_time_range": None,
-            "category_id": "", # 一律设为空
-            "category_name": "", # 一律设为空
+            "category_id": "",  # 一律设为空
+            "category_name": "",  # 一律设为空
             "common_keyframes": [],
             "disable_effect_faces": [],
             "effect_id": self.effect_id,
@@ -277,8 +277,8 @@ class Filter:
             "algorithm_artifact_path": "",
             "apply_target_type": self.apply_target_type,
             "bloom_params": None,
-            "category_id": "", # 一律设为空
-            "category_name": "", # 一律设为空
+            "category_id": "",  # 一律设为空
+            "category_name": "",  # 一律设为空
             "color_match_info": {
                 "source_feature_path": "",
                 "target_feature_path": "",
@@ -334,8 +334,8 @@ class Transition:
 
     def export_json(self) -> Dict[str, Any]:
         return {
-            "category_id": "", # 一律设为空
-            "category_name": "", # 一律设为空
+            "category_id": "",  # 一律设为空
+            "category_name": "",  # 一律设为空
             "duration": self.duration,
             "effect_id": self.effect_id,
             "id": self.global_id,
@@ -407,7 +407,7 @@ class Video_segment(Media_segment):
             target_timerange = Timerange(target_timerange.start, round(source_timerange.duration / speed))
         elif source_timerange is not None and speed is None:
             speed = source_timerange.duration / target_timerange.duration
-        else: # source_timerange is None
+        else:  # source_timerange is None
             speed = speed if speed is not None else 1.0
             source_timerange = Timerange(0, round(target_timerange.duration * speed))
 
@@ -448,7 +448,8 @@ class Video_segment(Media_segment):
 
         return self
 
-    def add_effect(self, effect_type: Union[Video_scene_effect_type, Video_character_effect_type], params: Optional[List[Optional[float]]] = None) -> "Video_segment":
+    def add_effect(self, effect_type: Union[Video_scene_effect_type, Video_character_effect_type],
+                   params: Optional[List[Optional[float]]] = None) -> "Video_segment":
         """为视频片段添加一个作用于整个片段的特效
 
         Args:
@@ -475,7 +476,7 @@ class Video_segment(Media_segment):
             filter_type (`Filter_type`): 滤镜类型
             intensity (`float`, optional): 滤镜强度, 取值范围0~100, 仅当滤镜能够自定义强度时允许指定, 默认100.
         """
-        if intensity is not None: intensity /= 100 # 转化为0~1范围
+        if intensity is not None: intensity /= 100  # 转化为0~1范围
 
         filter_inst = Filter(filter_type.value, intensity if intensity is not None else 1.0)
         self.filters.append(filter_inst)

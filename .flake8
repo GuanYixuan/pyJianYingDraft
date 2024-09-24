@@ -1,0 +1,12 @@
+[flake8]
+extend-ignore = E301, E302, E303, E305, E306, E701, F403, F405
+exclude =
+    .git,
+    __pycache__,
+    ignored,
+    pyJianYingDraft/metadata/animation_meta.py,
+    pyJianYingDraft/metadata/audio_effect_meta.py,
+    pyJianYingDraft/metadata/filter_meta.py,
+    pyJianYingDraft/metadata/video_effect_meta.py,
+    pyJianYingDraft/metadata/transition_meta.py
+max-line-length = 150
