@@ -44,7 +44,7 @@ class Track_type(Enum):
         for t in Track_type:
             if t.name == name:
                 return t
-        raise ValueError("Invalid track type name: %s" % name)
+        raise ValueError("Invalid track type: %s" % name)
 
 
 class Base_track(ABC):

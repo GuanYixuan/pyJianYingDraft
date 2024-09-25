@@ -7,7 +7,7 @@ from typing import Optional, Literal, Union, overload
 from typing import Dict, List, Any
 
 from . import util
-from .exceptions import *
+from . import exceptions
 from .template_mode import Imported_track, Static_track, Shrink_mode, Extend_mode
 from .time_util import Timerange, tim, srt_tstamp
 from .local_materials import Video_material, Audio_material
@@ -497,9 +497,9 @@ class Script_file:
             ret.append(track)
 
         if len(ret) == 0:
-            raise TrackNotFound("No track satisfies the conditions: track_type=%s, name=%s, index=%s" % (track_type, name, index))
+            raise exceptions.TrackNotFound("No track satisfies the conditions: track_type=%s, name=%s, index=%s" % (track_type, name, index))
         if len(ret) > 1:
-            raise AmbiguousTrack("Multiple tracks satisfy the conditions: track_type=%s, name=%s, index=%s" % (track_type, name, index))
+            raise exceptions.AmbiguousTrack("Multiple tracks satisfy the conditions: track_type=%s, name=%s, index=%s" % (track_type, name, index))
 
         return ret[0]
 
@@ -524,10 +524,10 @@ class Script_file:
         for mat in target_material_list:
             if mat["material_name"] == material_name:
                 if target_json_obj is not None:
-                    raise AmbiguousMaterial("Multiple %s with name '%s' found" % (type(material).__name__, material_name))
+                    raise exceptions.AmbiguousMaterial("Multiple %s with name '%s' found" % (type(material).__name__, material_name))
                 target_json_obj = mat
         if target_json_obj is None:
-            raise MaterialNotFound("No %s with name '%s' found" % (type(material).__name__, material_name))
+            raise exceptions.MaterialNotFound("No %s with name '%s' found" % (type(material).__name__, material_name))
 
         # 更新素材信息
         target_json_obj.update({"material_name": material.material_name, "path": material.path, "duration": material.duration})
