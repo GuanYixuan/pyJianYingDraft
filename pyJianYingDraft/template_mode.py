@@ -28,6 +28,9 @@ class Shrink_mode(Enum):
 class Extend_mode(Enum):
     """处理替换素材时素材变长情况的方法"""
 
+    cut_material_tail = "cut_material_tail"
+    """裁剪素材尾部(覆盖`source_timerange`参数), 使得片段维持原长不变, 此方法总是成功"""
+
     extend_head = "extend_head"
     """延伸头部, 即尝试前移片段起始点, 与前续片段重合时失败"""
     extend_tail = "extend_tail"
@@ -140,10 +143,11 @@ class Imported_track(Base_track):
             return True
         return False
 
-    def process_timerange(self, seg_index: int, new_duration: int,
+    def process_timerange(self, seg_index: int, src_timerange: Timerange,
                           shrink: Shrink_mode, extend: List[Extend_mode]) -> None:
         """处理素材替换的时间范围变更"""
         seg = self.segments[seg_index]
+        new_duration = src_timerange.duration
 
         # 时长变短
         delta_duration = abs(new_duration - seg.duration)
@@ -182,6 +186,9 @@ class Imported_track(Base_track):
                         for i in range(seg_index+1, len(self.segments)):
                             self.segments[i].start += shift_duration
                     success_flag = True
+                elif mode == Extend_mode.cut_material_tail:
+                    src_timerange.duration = seg.duration
+                    success_flag = True
                 else:
                     raise ValueError(f"Unsupported extend mode: {mode}")
 
@@ -189,6 +196,9 @@ class Imported_track(Base_track):
                     break
             if not success_flag:
                 raise ExtensionFailed(f"Failed to extend segment to {new_duration} μs, tried modes: {extend}")
+
+        # 写入素材时间范围
+        seg.source_timerange = src_timerange
 
     def export_json(self) -> Dict[str, Any]:
         self.raw_data.update({"segments": [seg.export_json() for seg in self.segments]})

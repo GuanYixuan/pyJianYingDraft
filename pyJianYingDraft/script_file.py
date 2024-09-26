@@ -149,6 +149,7 @@ class Script_material:
         }
 
 class Script_file:
+    """剪映草稿文件, 大部分接口定义在此"""
 
     save_path: Optional[str]
     """草稿文件保存路径, 仅在模板模式下有效"""
@@ -548,9 +549,10 @@ class Script_file:
 
         return self
 
-    def replace_material_by_seg(self, track: Imported_track, segment_index: int,
-                                material: Union[Video_material, Audio_material], source_timerange: Optional[Timerange] = None, *,
-                                handle_shrink: Shrink_mode, handle_extend: Union[Extend_mode, List[Extend_mode]]) -> "Script_file":
+    def replace_material_by_seg(self, track: Imported_track, segment_index: int, material: Union[Video_material, Audio_material],
+                                source_timerange: Optional[Timerange] = None, *,
+                                handle_shrink: Shrink_mode = Shrink_mode.cut_tail,
+                                handle_extend: Union[Extend_mode, List[Extend_mode]] = Extend_mode.cut_material_tail) -> "Script_file":
         """替换指定轨道上指定片段的素材, 暂不支持变速片段的素材替换
 
         Args:
@@ -558,8 +560,9 @@ class Script_file:
             segment_index (`int`): 要替换素材的片段下标, 从0开始
             material (`Video_material` or `Audio_material`): 新素材, 必须与原素材类型一致
             source_timerange (`Timerange`, optional): 从原素材中截取的时间范围, 默认为全时段, 若是图片素材则默认与原片段等长.
-            handle_shrink (`Shrink_mode`): 新素材比原素材短时的处理方式
-            handle_extend (`Extend_mode` or `List[Extend_mode]`): 新素材比原素材长时的处理方式, 将按顺序逐个尝试直至成功或抛出异常
+            handle_shrink (`Shrink_mode`, optional): 新素材比原素材短时的处理方式, 默认为裁剪尾部, 使片段长度与素材一致.
+            handle_extend (`Extend_mode` or `List[Extend_mode]`, optional): 新素材比原素材长时的处理方式, 将按顺序逐个尝试直至成功或抛出异常.
+                默认为截断素材尾部, 使片段维持原长不变
 
         Raises:
             `IndexError`: `segment_index`越界
@@ -581,7 +584,8 @@ class Script_file:
             else:
                 source_timerange = Timerange(0, material.duration)
 
-        track.process_timerange(segment_index, source_timerange.duration, handle_shrink, handle_extend)
+        # 处理时间变化
+        track.process_timerange(segment_index, source_timerange, handle_shrink, handle_extend)
 
         # 最后替换素材链接
         track.segments[segment_index].material_id = material.material_id
