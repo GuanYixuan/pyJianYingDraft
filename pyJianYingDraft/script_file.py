@@ -150,6 +150,8 @@ class Script_material:
 
 class Script_file:
 
+    save_path: Optional[str]
+    """草稿文件保存路径, 仅在模板模式下有效"""
     content: Dict[str, Any]
     """草稿文件内容"""
 
@@ -182,6 +184,8 @@ class Script_file:
             height (int): 视频高度, 单位为像素
             fps (int, optional): 视频帧率. 默认为30.
         """
+        self.save_path = None
+
         self.width = width
         self.height = height
         self.fps = fps
@@ -202,8 +206,14 @@ class Script_file:
 
         Args:
             json_path (str): JSON文件路径
+
+        Raises:
+            `FileNotFoundError`: JSON文件不存在
         """
         obj = Script_file(**util.provide_ctor_defaults(Script_file))
+        obj.save_path = json_path
+        if not os.path.exists(json_path):
+            raise FileNotFoundError("JSON file not found: '%s'" % json_path)
         with open(json_path, "r", encoding="utf-8") as f:
             obj.content = json.load(f)
 
@@ -606,3 +616,13 @@ class Script_file:
         """将草稿文件内容写入文件"""
         with open(file_path, "w", encoding="utf-8") as f:
             f.write(self.dumps())
+
+    def save(self) -> None:
+        """保存草稿文件, 仅在模板模式下可用
+
+        Raises:
+            `ValueError`: 不在模板模式下
+        """
+        if self.save_path is None:
+            raise ValueError("Save path not set, probably not in template mode")
+        self.dump(self.save_path)
