@@ -8,7 +8,7 @@ from typing import Dict, List, Any
 
 from . import util
 from . import exceptions
-from .template_mode import Imported_track, Static_track, Shrink_mode, Extend_mode
+from .template_mode import Imported_track, Editable_track, Imported_media_track, Imported_text_track, Shrink_mode, Extend_mode, import_track
 from .time_util import Timerange, tim, srt_tstamp
 from .local_materials import Video_material, Audio_material
 from .segment import Speed, Clip_settings
@@ -172,7 +172,7 @@ class Script_file:
 
     imported_materials: Dict[str, List[Dict[str, Any]]]
     """导入的素材信息"""
-    imported_tracks: List[Union[Imported_track, Static_track]]
+    imported_tracks: List[Imported_track]
     """导入的轨道信息"""
 
     TEMPLATE_FILE = "draft_content_template.json"
@@ -222,13 +222,7 @@ class Script_file:
         util.assign_attr_with_json(obj, ["width", "height"], obj.content["canvas_config"])
 
         obj.imported_materials = deepcopy(obj.content["materials"])
-        obj.imported_tracks = []
-        for track_data in obj.content["tracks"]:
-            track_type = Track_type.from_name(track_data["type"])
-            if track_type.value.allow_modify:  # 仅允许修改视频和音频轨道
-                obj.imported_tracks.append(Imported_track(track_data))
-            else:
-                obj.imported_tracks.append(Static_track(track_data))
+        obj.imported_tracks = [import_track(track_data) for track_data in obj.content["tracks"]]
 
         return obj
 
@@ -480,14 +474,14 @@ class Script_file:
 
         return self
 
-    def get_imported_track(self, track_type: Literal[Track_type.video, Track_type.audio],
-                           name: Optional[str] = None, index: Optional[int] = None) -> Imported_track:
+    def get_imported_track(self, track_type: Literal[Track_type.video, Track_type.audio, Track_type.text],
+                           name: Optional[str] = None, index: Optional[int] = None) -> Editable_track:
         """获取指定类型的导入轨道, 以便在其上进行素材替换
 
         推荐使用轨道名称进行筛选（若已知轨道名称）
 
         Args:
-            track_type (`Track_type.video` or `Track_type.audio`): 轨道类型, 目前只支持视频和音频
+            track_type (`Track_type.video`, `Track_type.audio` or `Track_type.text`): 轨道类型, 目前只支持音视频和文本轨道
             name (`str`, optional): 轨道名称. 不指定则不根据名称筛选.
             index (`int`, optional): 轨道在**同类型的导入轨道**中的下标, 以0为最下层轨道. 不指定则不根据下标筛选.
 
@@ -495,13 +489,13 @@ class Script_file:
             `TrackNotFound`: 未找到满足条件的轨道
             `AmbiguousTrack`: 找到多个满足条件的轨道
         """
-        tracks_of_same_type: List[Imported_track] = []
+        tracks_of_same_type: List[Editable_track] = []
         for track in self.imported_tracks:
             if track.track_type == track_type:
-                assert isinstance(track, Imported_track)
+                assert isinstance(track, Editable_track)
                 tracks_of_same_type.append(track)
 
-        ret: List[Imported_track] = []
+        ret: List[Editable_track] = []
         for ind, track in enumerate(tracks_of_same_type):
             if (name is not None) and (track.name != name): continue
             if (index is not None) and (ind != index): continue
@@ -549,14 +543,14 @@ class Script_file:
 
         return self
 
-    def replace_material_by_seg(self, track: Imported_track, segment_index: int, material: Union[Video_material, Audio_material],
+    def replace_material_by_seg(self, track: Editable_track, segment_index: int, material: Union[Video_material, Audio_material],
                                 source_timerange: Optional[Timerange] = None, *,
                                 handle_shrink: Shrink_mode = Shrink_mode.cut_tail,
                                 handle_extend: Union[Extend_mode, List[Extend_mode]] = Extend_mode.cut_material_tail) -> "Script_file":
-        """替换指定轨道上指定片段的素材, 暂不支持变速片段的素材替换
+        """替换指定音视频轨道上指定片段的素材, 暂不支持变速片段的素材替换
 
         Args:
-            track (`Imported_track`): 要替换素材的轨道, 由`get_imported_track`获取
+            track (`Editable_track`): 要替换素材的轨道, 由`get_imported_track`获取
             segment_index (`int`): 要替换素材的片段下标, 从0开始
             material (`Video_material` or `Audio_material`): 新素材, 必须与原素材类型一致
             source_timerange (`Timerange`, optional): 从原素材中截取的时间范围, 默认为全时段, 若是图片素材则默认与原片段等长.
@@ -566,10 +560,11 @@ class Script_file:
 
         Raises:
             `IndexError`: `segment_index`越界
-            `TypeError`: 素材类型不正确
+            `TypeError`: 轨道或素材类型不正确
             `ExtensionFailed`: 新素材比原素材长时处理失败
         """
-
+        if not isinstance(track, Imported_media_track):
+            raise TypeError("Track type %s not supported for material replacement" % track.track_type)
         if not 0 <= segment_index < len(track):
             raise IndexError("Segment index %d out of range [0, %d)" % (segment_index, len(track)))
         if not track.check_material_type(material):
@@ -592,6 +587,34 @@ class Script_file:
         self.add_material(material)
 
         # TODO: 更新总长
+        return self
+
+    def replace_text(self, track: Editable_track, segment_index: int, text: str) -> "Script_file":
+        """替换指定文本轨道上指定片段的文字内容
+
+        Args:
+            track (`Editable_track`): 要替换文字的文本轨道, 由`get_imported_track`获取
+            segment_index (`int`): 要替换文字的片段下标, 从0开始
+            text (`str`): 新的文字内容
+
+        Raises:
+            `IndexError`: `segment_index`越界
+            `TypeError`: 轨道类型不正确
+        """
+        if not isinstance(track, Imported_text_track):
+            raise TypeError("Track type %s not supported for text replacement" % track.track_type)
+        if not 0 <= segment_index < len(track):
+            raise IndexError("Segment index %d out of range [0, %d)" % (segment_index, len(track)))
+
+        material_id: str = track.segments[segment_index]["material_id"]
+        for mat in self.imported_materials["texts"]:
+            if mat["id"] != material_id: continue
+
+            content = json.loads(mat["content"])
+            content["text"] = text
+            mat["content"] = json.dumps(content, ensure_ascii=False)
+            break
+
         return self
 
     def dumps(self) -> str:

@@ -36,7 +36,7 @@ class Track_type(Enum):
     audio = Track_meta(Audio_segment, 0, True)
     effect = Track_meta(Effect_segment, 10000, False)
     filter = Track_meta(Filter_segment, 11000, False)
-    text = Track_meta(Text_segment, 14000, False)
+    text = Track_meta(Text_segment, 14000, True)
 
     @staticmethod
     def from_name(name: str) -> "Track_type":

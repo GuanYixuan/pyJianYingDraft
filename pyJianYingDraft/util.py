@@ -33,7 +33,11 @@ def assign_attr_with_json(obj: object, attrs: List[str], json_data: Dict[str, An
 
     若有复杂类型，则尝试调用其`import_json`方法进行构造
     """
-    type_hints: Dict[str, Type] = obj.__annotations__
+    type_hints: Dict[str, Type] = {}
+    for cls in obj.__class__.__mro__:
+        if '__annotations__' in cls.__dict__:
+            type_hints.update(cls.__annotations__)
+
     for attr in attrs:
         if hasattr(type_hints[attr], 'import_json'):
             obj.__setattr__(attr, type_hints[attr].import_json(json_data[attr]))
