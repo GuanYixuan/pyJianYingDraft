@@ -9,4 +9,4 @@ exclude =
     pyJianYingDraft/metadata/filter_meta.py,
     pyJianYingDraft/metadata/video_effect_meta.py,
     pyJianYingDraft/metadata/transition_meta.py
-max-line-length = 150
+max-line-length = 140

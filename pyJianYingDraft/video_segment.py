@@ -542,9 +542,9 @@ class Video_segment(Media_segment):
         if round_corner is None:
             round_corner = 0
 
+        width = rect_width or size * self.material_size[1] * mask_type.value.default_aspect_ratio / self.material_size[0]
         self.mask = Mask(mask_type.value, center_x, center_y,
-                         w=rect_width if rect_width else size * self.material_size[1] * mask_type.value.default_aspect_ratio / self.material_size[0],
-                         h=size, ratio=mask_type.value.default_aspect_ratio,
+                         w=width, h=size, ratio=mask_type.value.default_aspect_ratio,
                          rot=rotation, inv=invert, feather=feather/100, round_corner=round_corner/100)
         self.extra_material_refs.append(self.mask.global_id)
         return self

@@ -502,9 +502,11 @@ class Script_file:
             ret.append(track)
 
         if len(ret) == 0:
-            raise exceptions.TrackNotFound("No track satisfies the conditions: track_type=%s, name=%s, index=%s" % (track_type, name, index))
+            raise exceptions.TrackNotFound(
+                "No track satisfies the conditions: track_type=%s, name=%s, index=%s" % (track_type, name, index))
         if len(ret) > 1:
-            raise exceptions.AmbiguousTrack("Multiple tracks satisfy the conditions: track_type=%s, name=%s, index=%s" % (track_type, name, index))
+            raise exceptions.AmbiguousTrack(
+                "Multiple tracks satisfy the conditions: track_type=%s, name=%s, index=%s" % (track_type, name, index))
 
         return ret[0]
 
@@ -525,7 +527,7 @@ class Script_file:
         """
         # 查找素材
         target_json_obj: Optional[Dict[str, Any]] = None
-        target_material_list = self.imported_materials["videos"] if isinstance(material, Video_material) else self.imported_materials["audios"]
+        target_material_list = self.imported_materials["videos" if isinstance(material, Video_material) else "audios"]
         for mat in target_material_list:
             if mat["material_name"] == material_name:
                 if target_json_obj is not None:

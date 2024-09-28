@@ -55,8 +55,6 @@ class Base_segment:
     def export_json(self) -> Dict[str, Any]:
         """返回通用于各种片段的属性"""
         return {
-            "caption_info": None,
-            "cartoon": False,
             "enable_adjust": True,
             "enable_color_correct_adjust": False,
             "enable_color_curves": True,
@@ -64,15 +62,8 @@ class Base_segment:
             "enable_color_wheels": True,
             "enable_lut": True,
             "enable_smart_color_adjust": False,
-            "group_id": "",
-            "intensifies_audio": False,
-            "is_placeholder": False,
-            "is_tone_modify": False,
             "last_nonzero_volume": 1.0,
-            "responsive_layout": {"enable": False, "horizontal_pos_layout": 0, "size_layout": 0, "vertical_pos_layout": 0, "target_follow": ""},
             "reverse": False,
-            "template_id": "",
-            "template_scene": "default",
             "track_attribute": 0,
             "track_render_index": 0,
             "visible": True,

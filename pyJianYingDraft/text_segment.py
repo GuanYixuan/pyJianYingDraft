@@ -310,6 +310,6 @@ class Text_segment(Base_segment):
             "source_timerange": None,
             "speed": 1.0,
             "volume": 1.0,
-            "extra_material_refs": [self.extra_material_refs],
+            "extra_material_refs": self.extra_material_refs,
         })
         return ret

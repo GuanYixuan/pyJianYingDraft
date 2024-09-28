@@ -63,7 +63,7 @@ class Draft_folder:
         if not os.path.exists(template_path):
             raise FileNotFoundError(f"模板草稿 {template_name} 不存在")
         if os.path.exists(new_draft_path) and not allow_replace:
-            raise FileExistsError(f"新草稿 {new_draft_name} 已存在")
+            raise FileExistsError(f"新草稿 {new_draft_name} 已存在且不允许覆盖")
 
         # 复制草稿文件夹
         shutil.copytree(template_path, new_draft_path, dirs_exist_ok=allow_replace)
