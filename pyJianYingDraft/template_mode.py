@@ -184,7 +184,7 @@ class Imported_media_track(Editable_track):
                 if success_flag:
                     break
             if not success_flag:
-                raise exceptions.ExtensionFailed(f"Failed to extend segment to {new_duration} μs, tried modes: {extend}")
+                raise exceptions.ExtensionFailed(f"未能将片段延长至 {new_duration}μs, 尝试过以下方法: {extend}")
 
         # 写入素材时间范围
         seg.source_timerange = src_timerange

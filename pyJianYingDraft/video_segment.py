@@ -105,12 +105,12 @@ class Segment_animations:
     def add_animation(self, animation: Animation) -> None:
         # 不允许添加超过一个同类型的动画（如两个入场动画）
         if animation.animation_type in [ani.animation_type for ani in self.animations]:
-            raise ValueError(f"Duplicate animation type '{animation.animation_type}'")
+            raise ValueError(f"当前片段已存在类型为 '{animation.animation_type}' 的动画")
         # 不允许组合动画与出入场动画同时出现
         if any(ani.animation_type == "group" for ani in self.animations):
-            raise ValueError("Group animation contradicts with any other animation")
+            raise ValueError("当前片段已存在组合动画, 此时不能添加其它动画")
         if animation.animation_type == "group" and len(self.animations) > 0:
-            raise ValueError("Cannot add group animation when there are animations exist")
+            raise ValueError("当前片段已存在动画时, 不能添加组合动画")
 
         self.animations.append(animation)
 
@@ -412,7 +412,7 @@ class Video_segment(Media_segment):
             source_timerange = Timerange(0, round(target_timerange.duration * speed))
 
         if source_timerange.end > material.duration:
-            raise ValueError(f"Source timerange {source_timerange} exceeds material duration {material.duration}")
+            raise ValueError(f"截取的素材时间范围 {source_timerange} 超出了素材时长({material.duration})")
 
         super().__init__(material.material_id, source_timerange, target_timerange, speed, volume)
 
@@ -461,7 +461,7 @@ class Video_segment(Media_segment):
             `ValueError`: 提供的参数数量超过了该特效类型的参数数量, 或参数值超出范围.
         """
         if params is not None and len(params) > len(effect_type.value.params):
-            raise ValueError("Too many parameters for effect %s" % effect_type.value.name)
+            raise ValueError("为音频效果 %s 传入了过多的参数" % effect_type.value.name)
 
         effect_inst = Video_effect(effect_type, params)
         self.effects.append(effect_inst)
@@ -499,7 +499,8 @@ class Video_segment(Media_segment):
         if (_property == Keyframe_property.scale_x or _property == Keyframe_property.scale_y) and self.uniform_scale:
             self.uniform_scale = False
         elif _property == Keyframe_property.uniform_scale:
-            if not self.uniform_scale: raise ValueError("Cannot set uniform_scale when scale_x or scale_y already exist")
+            if not self.uniform_scale:
+                raise ValueError("已设置 scale_x 或 scale_y 时, 不能再设置 uniform_scale")
             _property = Keyframe_property.scale_x
 
         if isinstance(time_offset, str): time_offset = tim(time_offset)
@@ -534,9 +535,9 @@ class Video_segment(Media_segment):
         """
 
         if self.mask is not None:
-            raise ValueError("Cannot add multiple masks")
+            raise ValueError("当前片段已有蒙版, 不能再添加新的蒙版")
         if (rect_width is not None or round_corner is not None) and mask_type != Mask_type.矩形:
-            raise ValueError("`rect_width` and `round_corner` can only be set for rectangle mask")
+            raise ValueError("`rect_width` 以及 `round_corner` 仅在蒙版类型为矩形时允许设置")
         if rect_width is None and mask_type == Mask_type.矩形:
             rect_width = size
         if round_corner is None:
@@ -560,7 +561,7 @@ class Video_segment(Media_segment):
             `ValueError`: 试图添加多个转场.
         """
         if self.transition is not None:
-            raise ValueError("Cannot add multiple transitions")
+            raise ValueError("当前片段已有转场, 不能再添加新的转场")
         if isinstance(duration, str): duration = tim(duration)
 
         self.transition = Transition(transition_type, duration)

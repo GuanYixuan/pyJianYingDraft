@@ -77,7 +77,7 @@ class Audio_effect:
             self.category_id = "speech_to_song"
             self.category_name = "声音成曲"
         else:
-            raise TypeError("Invalid effect meta type %s" % type(effect_meta))
+            raise TypeError("不支持的元数据类型 %s" % type(effect_meta))
 
         self.audio_adjust_params = effect_meta.value.parse_params(params)
 
@@ -138,7 +138,7 @@ class Audio_segment(Media_segment):
             source_timerange = Timerange(0, round(target_timerange.duration * speed))
 
         if source_timerange.end > material.duration:
-            raise ValueError(f"Source timerange {source_timerange} exceeds material duration {material.duration}")
+            raise ValueError(f"截取的素材时间范围 {source_timerange} 超出了素材时长({material.duration})")
 
         super().__init__(material.material_id, source_timerange, target_timerange, speed, volume)
 
@@ -158,11 +158,11 @@ class Audio_segment(Media_segment):
             `ValueError`: 试图添加一个已经存在的音效类型、提供的参数数量超过了该音效类型的参数数量, 或参数值超出范围.
         """
         if params is not None and len(params) > len(effect_type.value.params):
-            raise ValueError("Too many parameters for effect %s" % effect_type.value.name)
+            raise ValueError("为音频效果 %s 传入了过多的参数" % effect_type.value.name)
 
         effect_inst = Audio_effect(effect_type, params)
         if effect_inst.category_id in [eff.category_id for eff in self.effects]:
-            raise ValueError("Audio segment already has an effect of this category (%s)" % effect_inst.category_name)
+            raise ValueError("当前音频片段已经有此类型 (%s) 的音效了" % effect_inst.category_name)
         self.effects.append(effect_inst)
         self.extra_material_refs.append(effect_inst.effect_id)
 
@@ -179,7 +179,7 @@ class Audio_segment(Media_segment):
             `ValueError`: 当前片段已存在淡入淡出效果
         """
         if self.fade is not None:
-            raise ValueError("Audio segment already has a fade")
+            raise ValueError("当前片段已存在淡入淡出效果")
 
         if isinstance(in_duration, str): in_duration = tim(in_duration)
         if isinstance(out_duration, str): out_duration = tim(out_duration)

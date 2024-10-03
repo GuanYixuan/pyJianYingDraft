@@ -80,7 +80,7 @@ class Video_material:
         path = os.path.abspath(path)
         postfix = os.path.splitext(path)[1]
         if not os.path.exists(path):
-            raise FileNotFoundError(f"File {path} does not exist")
+            raise FileNotFoundError(f"找不到 {path}")
 
         self.material_name = material_name if material_name else os.path.basename(path)
         self.material_id = uuid.uuid3(uuid.NAMESPACE_DNS, self.material_name).hex
@@ -89,7 +89,7 @@ class Video_material:
         self.local_material_id = ""
 
         if not pymediainfo.MediaInfo.can_parse():
-            raise ValueError(f"Unsupported file type '{postfix}'")
+            raise ValueError(f"不支持的视频素材类型 '{postfix}'")
 
         info: pymediainfo.MediaInfo = pymediainfo.MediaInfo.parse(path)  # type: ignore
         # 有视频轨道的视为视频素材
@@ -99,10 +99,7 @@ class Video_material:
             self.width, self.height = info.video_tracks[0].width, info.video_tracks[0].height  # type: ignore
         # gif文件使用imageio库获取长度
         elif postfix.lower() == ".gif":
-            try:
-                import imageio
-            except ImportError:
-                raise ImportError("Please install imageio to support GIF file")
+            import imageio
             gif = imageio.get_reader(path)
 
             self.material_type = "video"
@@ -114,7 +111,7 @@ class Video_material:
             self.duration = 10800000000  # 相当于3h
             self.width, self.height = info.image_tracks[0].width, info.image_tracks[0].height  # type: ignore
         else:
-            raise ValueError(f"Input file {path} has no video or image track")
+            raise ValueError(f"输入的素材文件 {path} 没有视频轨道或图片轨道")
 
     def export_json(self) -> Dict[str, Any]:
         video_material_json = {
@@ -164,19 +161,19 @@ class Audio_material:
         """
         path = os.path.abspath(path)
         if not os.path.exists(path):
-            raise FileNotFoundError(f"File {path} does not exist")
+            raise FileNotFoundError(f"找不到 {path}")
 
         self.material_name = material_name if material_name else os.path.basename(path)
         self.material_id = uuid.uuid3(uuid.NAMESPACE_DNS, self.material_name).hex
         self.path = path
 
         if not pymediainfo.MediaInfo.can_parse():
-            raise ValueError("Unsupported file type %s" % os.path.splitext(path)[1])
+            raise ValueError("不支持的音频素材类型 %s" % os.path.splitext(path)[1])
         info: pymediainfo.MediaInfo = pymediainfo.MediaInfo.parse(path)  # type: ignore
         if len(info.video_tracks):
-            raise ValueError("Audio file should not contain video track")
+            raise ValueError("音频素材不应包含视频轨道")
         if not len(info.audio_tracks):
-            raise ValueError(f"Input file {path} has no audio track")
+            raise ValueError(f"给定的素材文件 {path} 没有音频轨道")
         self.duration = int(info.audio_tracks[0].duration * 1e3)  # type: ignore
 
     def export_json(self) -> Dict[str, Any]:

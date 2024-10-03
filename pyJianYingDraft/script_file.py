@@ -4,14 +4,14 @@ import warnings
 from copy import deepcopy
 
 from typing import Optional, Literal, Union, overload
-from typing import Dict, List, Any
+from typing import Type, Dict, List, Any
 
 from . import util
 from . import exceptions
 from .template_mode import Imported_track, Editable_track, Imported_media_track, Imported_text_track, Shrink_mode, Extend_mode, import_track
 from .time_util import Timerange, tim, srt_tstamp
 from .local_materials import Video_material, Audio_material
-from .segment import Speed, Clip_settings
+from .segment import Base_segment, Speed, Clip_settings
 from .audio_segment import Audio_segment, Audio_fade, Audio_effect
 from .video_segment import Video_segment, Segment_animations, Video_effect, Transition, Filter
 from .effect_segment import Effect_segment, Filter_segment
@@ -214,7 +214,7 @@ class Script_file:
         obj = Script_file(**util.provide_ctor_defaults(Script_file))
         obj.save_path = json_path
         if not os.path.exists(json_path):
-            raise FileNotFoundError("JSON file not found: '%s'" % json_path)
+            raise FileNotFoundError("JSON文件 '%s' 不存在" % json_path)
         with open(json_path, "r", encoding="utf-8") as f:
             obj.content = json.load(f)
 
@@ -235,7 +235,7 @@ class Script_file:
         elif isinstance(material, Audio_material):
             self.materials.audios.append(material)
         else:
-            raise TypeError("Invalid argument type '%s'" % type(material))
+            raise TypeError("错误的素材类型: '%s'" % type(material))
         return self
 
     def add_track(self, track_type: Track_type, track_name: Optional[str] = None, *,
@@ -259,10 +259,10 @@ class Script_file:
 
         if track_name is None:
             if track_type in [track.track_type for track in self.tracks.values()]:
-                raise NameError("Track of type '%s' already exists, please specify a name" % track_type)
+                raise NameError("'%s' 类型的轨道已存在, 请为新轨道指定名称以避免混淆" % track_type)
             track_name = track_type.name
         if track_name in [track.name for track in self.tracks.values()]:
-            raise NameError("Track with name '%s' already exists" % track_name)
+            raise NameError("名为 '%s' 的轨道已存在" % track_name)
 
         render_index = track_type.value.render_index + relative_index
         if absolute_index is not None:
@@ -270,6 +270,19 @@ class Script_file:
 
         self.tracks[track_name] = Track(track_type, track_name, render_index)
         return self
+
+    def _get_track(self, segment_type: Type[Base_segment], track_name: Optional[str]) -> Track:
+        # 指定轨道名称
+        if track_name is not None:
+            if track_name not in self.tracks:
+                raise NameError("不存在名为 '%s' 的轨道" % track_name)
+            return self.tracks[track_name]
+        # 寻找唯一的同类型的轨道
+        count = sum([1 for track in self.tracks.values() if track.accept_segment_type == segment_type])
+        if count == 0: raise NameError("不存在接受 '%s' 的轨道" % segment_type)
+        if count > 1: raise NameError("存在多个接受 '%s' 的轨道, 请指定轨道名称" % segment_type)
+
+        return next(track for track in self.tracks.values() if track.accept_segment_type == segment_type)
 
     def add_segment(self, segment: Union[Video_segment, Audio_segment, Text_segment], track_name: Optional[str] = None) -> "Script_file":
         """向指定轨道中添加一个片段
@@ -283,16 +296,7 @@ class Script_file:
             `TypeError`: 片段类型不匹配轨道类型
             `ValueError`: 新片段与已有片段重叠
         """
-        target: Track
-        if track_name is not None:  # 指定轨道名称
-            if track_name not in self.tracks: raise NameError("Track with name '%s' not found" % track_name)
-            target = self.tracks[track_name]
-        else:  # 寻找唯一的同类型的轨道
-            count = sum([1 for track in self.tracks.values() if isinstance(segment, track.accept_segment_type)])
-            if count == 0: raise NameError("No track of type '%s' found" % type(segment))
-            if count > 1: raise NameError("Multiple tracks of type '%s' found, please specify a track name" % type(segment))
-
-            target = next(track for track in self.tracks.values() if isinstance(segment, track.accept_segment_type))
+        target = self._get_track(type(segment), track_name)
 
         # 加入轨道并更新时长
         target.add_segment(segment)
@@ -331,7 +335,7 @@ class Script_file:
 
         # 检查片段素材是否已添加
         if not self.materials.contains_material(segment):
-            warnings.warn("Material of segment '%s' hasn't been added yet" % str(segment.target_timerange))
+            warnings.warn("片段 '%s' 的素材尚未被添加至草稿中" % str(segment.target_timerange))
 
         return self
 
@@ -352,16 +356,7 @@ class Script_file:
             `TypeError`: 指定的轨道不是特效轨道
             `ValueError`: 新片段与已有片段重叠、提供的参数数量超过了该特效类型的参数数量, 或参数值超出范围.
         """
-        target: Track
-        if track_name is not None:  # 指定轨道名称
-            if track_name not in self.tracks: raise NameError("Track with name '%s' not found" % track_name)
-            target = self.tracks[track_name]
-        else:  # 寻找唯一的同类型的轨道
-            count = sum([1 for track in self.tracks.values() if track.accept_segment_type == Effect_segment])
-            if count == 0: raise NameError("No track of type 'Effect_segment' found")
-            if count > 1: raise NameError("Multiple tracks of type 'Effect_segment' found, please specify a track name")
-
-            target = next(track for track in self.tracks.values() if track.accept_segment_type == Effect_segment)
+        target = self._get_track(Effect_segment, track_name)
 
         # 加入轨道并更新时长
         segment = Effect_segment(effect, t_range, params)
@@ -388,16 +383,7 @@ class Script_file:
             `TypeError`: 指定的轨道不是滤镜轨道
             `ValueError`: 新片段与已有片段重叠
         """
-        target: Track
-        if track_name is not None:  # 指定轨道名称
-            if track_name not in self.tracks: raise NameError("Track with name '%s' not found" % track_name)
-            target = self.tracks[track_name]
-        else:  # 寻找唯一的同类型的轨道
-            count = sum([1 for track in self.tracks.values() if track.accept_segment_type == Filter_segment])
-            if count == 0: raise NameError("No track of type 'Filter_segment' found")
-            if count > 1: raise NameError("Multiple tracks of type 'Filter_segment' found, please specify a track name")
-
-            target = next(track for track in self.tracks.values() if track.accept_segment_type == Filter_segment)
+        target = self._get_track(Filter_segment, track_name)
 
         # 加入轨道并更新时长
         if intensity is not None: intensity /= 100  # 转换为0-1范围
@@ -503,10 +489,10 @@ class Script_file:
 
         if len(ret) == 0:
             raise exceptions.TrackNotFound(
-                "No track satisfies the conditions: track_type=%s, name=%s, index=%s" % (track_type, name, index))
+                "没有找到满足条件的轨道: track_type=%s, name=%s, index=%s" % (track_type, name, index))
         if len(ret) > 1:
             raise exceptions.AmbiguousTrack(
-                "Multiple tracks satisfy the conditions: track_type=%s, name=%s, index=%s" % (track_type, name, index))
+                "找到多个满足条件的轨道: track_type=%s, name=%s, index=%s" % (track_type, name, index))
 
         return ret[0]
 
@@ -531,10 +517,11 @@ class Script_file:
         for mat in target_material_list:
             if mat["material_name"] == material_name:
                 if target_json_obj is not None:
-                    raise exceptions.AmbiguousMaterial("Multiple %s with name '%s' found" % (type(material).__name__, material_name))
+                    raise exceptions.AmbiguousMaterial(
+                        "找到多个名为 '%s', 类型为 '%s' 的素材" % (material_name, type(material)))
                 target_json_obj = mat
         if target_json_obj is None:
-            raise exceptions.MaterialNotFound("No %s with name '%s' found" % (type(material).__name__, material_name))
+            raise exceptions.MaterialNotFound("没有找到名为 '%s', 类型为 '%s' 的素材" % (material_name, type(material)))
 
         # 更新素材信息
         target_json_obj.update({"material_name": material.material_name, "path": material.path, "duration": material.duration})
@@ -566,11 +553,11 @@ class Script_file:
             `ExtensionFailed`: 新素材比原素材长时处理失败
         """
         if not isinstance(track, Imported_media_track):
-            raise TypeError("Track type %s not supported for material replacement" % track.track_type)
+            raise TypeError("指定的轨道(类型为 %s)不支持素材替换" % track.track_type)
         if not 0 <= segment_index < len(track):
-            raise IndexError("Segment index %d out of range [0, %d)" % (segment_index, len(track)))
+            raise IndexError("片段下标 %d 超出 [0, %d) 的范围" % (segment_index, len(track)))
         if not track.check_material_type(material):
-            raise TypeError("Material type mismatch for track type %s, provided %s", (track.track_type, type(material)))
+            raise TypeError("指定的素材类型 %s 不匹配轨道类型 %s", (type(material), track.track_type))
         seg = track.segments[segment_index]
 
         if isinstance(handle_extend, Extend_mode):
@@ -604,9 +591,9 @@ class Script_file:
             `TypeError`: 轨道类型不正确
         """
         if not isinstance(track, Imported_text_track):
-            raise TypeError("Track type %s not supported for text replacement" % track.track_type)
+            raise TypeError("指定的轨道(类型为 %s)不支持文本内容替换" % track.track_type)
         if not 0 <= segment_index < len(track):
-            raise IndexError("Segment index %d out of range [0, %d)" % (segment_index, len(track)))
+            raise IndexError("片段下标 %d 超出 [0, %d) 的范围" % (segment_index, len(track)))
 
         material_id: str = track.segments[segment_index]["material_id"]
         for mat in self.imported_materials["texts"]:
@@ -647,11 +634,11 @@ class Script_file:
             f.write(self.dumps())
 
     def save(self) -> None:
-        """保存草稿文件, 仅在模板模式下可用
+        """保存草稿文件至打开时的路径, 仅在模板模式下可用
 
         Raises:
             `ValueError`: 不在模板模式下
         """
         if self.save_path is None:
-            raise ValueError("Save path not set, probably not in template mode")
+            raise ValueError("没有设置保存路径, 可能不在模板模式下")
         self.dump(self.save_path)
