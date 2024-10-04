@@ -14,3 +14,10 @@ class AmbiguousMaterial(ValueError):
 
 class ExtensionFailed(ValueError):
     """替换素材时延伸片段失败"""
+
+class DraftNotFound(NameError):
+    """未找到草稿"""
+class AutomationError(Exception):
+    """自动化操作失败"""
+class ExportTimeout(Exception):
+    """导出超时"""
