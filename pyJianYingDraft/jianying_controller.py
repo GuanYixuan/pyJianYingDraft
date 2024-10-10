@@ -20,7 +20,7 @@ class Jianying_controller:
         """初始化剪映控制器, 此时剪映应该处于目录页"""
         self.get_window()
 
-    def export_draft(self, draft_name: str, output_dir: Optional[str] = None, timeout: float = 1e9) -> None:
+    def export_draft(self, draft_name: str, output_dir: Optional[str] = None, timeout: float = 1200) -> None:
         """导出指定的剪映草稿
 
         **注意: 需要确认有导出草稿的权限(不使用VIP功能或已开通VIP), 否则可能陷入死循环**
@@ -28,12 +28,14 @@ class Jianying_controller:
         Args:
             draft_name (`str`): 要导出的剪映草稿名称
             output_path (`str`, optional): 导出路径, 导出完成后会将文件剪切到此, 不指定则使用剪映默认路径.
-            timeout (`float`, optional): 导出超时时间(秒), 默认无限制.
+            timeout (`float`, optional): 导出超时时间(秒), 默认为20分钟.
 
         Raises:
             `DraftNotFound`: 未找到指定名称的剪映草稿
             `AutomationError`: 剪映操作失败
         """
+        print(f"开始导出 {draft_name} 至 {output_dir}")
+        self.get_window()
         self.switch_to_home()
 
         # 点击对应草稿
@@ -52,7 +54,7 @@ class Jianying_controller:
         if not export_btn.Exists(0):
             raise AutomationError("未找到导出按钮")
         export_btn.Click(simulateMove=False)
-        time.sleep(3)
+        time.sleep(10)
         self.get_window()
 
         # 获取原始导出路径
@@ -68,7 +70,7 @@ class Jianying_controller:
         if not export_btn.Exists(0):
             raise AutomationError("未找到导出按钮")
         export_btn.Click(simulateMove=False)
-        time.sleep(2)
+        time.sleep(5)
 
         # 等待导出完成
         st = time.time()
@@ -89,9 +91,16 @@ class Jianying_controller:
             time.sleep(1)
         time.sleep(2)
 
+        # 回到目录页
+        self.get_window()
+        self.switch_to_home()
+        time.sleep(2)
+
         # 复制导出的文件到指定目录
         if output_dir is not None:
             shutil.move(export_path, output_dir)
+
+        print(f"导出 {draft_name} 至 {output_dir} 完成")
 
     def switch_to_home(self) -> None:
         """切换到剪映主页"""
