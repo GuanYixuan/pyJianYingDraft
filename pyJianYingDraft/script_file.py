@@ -462,13 +462,13 @@ class Script_file:
 
     def get_imported_track(self, track_type: Literal[Track_type.video, Track_type.audio, Track_type.text],
                            name: Optional[str] = None, index: Optional[int] = None) -> Editable_track:
-        """获取指定类型的导入轨道, 以便在其上进行素材替换
+        """获取指定类型的导入轨道, 以便在其上进行替换
 
         推荐使用轨道名称进行筛选（若已知轨道名称）
 
         Args:
             track_type (`Track_type.video`, `Track_type.audio` or `Track_type.text`): 轨道类型, 目前只支持音视频和文本轨道
-            name (`str`, optional): 轨道名称. 不指定则不根据名称筛选.
+            name (`str`, optional): 轨道名称, 不指定则不根据名称筛选.
             index (`int`, optional): 轨道在**同类型的导入轨道**中的下标, 以0为最下层轨道. 不指定则不根据下标筛选.
 
         Raises:

@@ -19,7 +19,7 @@ from .effect_segment import Effect_segment, Filter_segment
 class Track_meta:
     """与轨道类型关联的轨道元数据"""
 
-    segment_type: Union[Type[Video_segment], Type[Audio_segment], Type[Effect_segment], Type[Filter_segment], Type[Text_segment]]
+    segment_type: Union[Type[Video_segment], Type[Audio_segment], Type[Effect_segment], Type[Filter_segment], Type[Text_segment], None]
     """与轨道关联的片段类型"""
     render_index: int
     """默认渲染顺序, 值越大越接近前景"""
@@ -37,6 +37,9 @@ class Track_type(Enum):
     effect = Track_meta(Effect_segment, 10000, False)
     filter = Track_meta(Filter_segment, 11000, False)
     text = Track_meta(Text_segment, 14000, True)
+
+    adjust = Track_meta(None, 0, False)
+    """仅供导入时使用, 不要尝试新建此类型的轨道"""
 
     @staticmethod
     def from_name(name: str) -> "Track_type":
