@@ -4,10 +4,13 @@ import json
 import uuid
 
 from typing import Dict, List, Tuple, Any
-from typing import Optional, Literal
+from typing import Union, Optional, Literal
 
 from .time_util import Timerange
 from .segment import Base_segment, Clip_settings
+from .animation import Segment_animations, Text_animation
+
+from .metadata import Text_intro, Text_outro, Text_loop_anim
 
 class Text_style:
     """字体样式类"""
@@ -103,6 +106,12 @@ class Text_segment(Base_segment):
     border: Optional[Text_border]
     """文本描边参数, None表示无描边"""
 
+    animations_instance: Optional[Segment_animations]
+    """动画实例, 可能为空
+
+    在放入轨道时自动添加到素材列表中
+    """
+
     extra_material_refs: List[str]
     """附加的素材id列表, 用于链接动画/特效等"""
 
@@ -127,7 +136,36 @@ class Text_segment(Base_segment):
         self.clip_settings = clip_settings or Clip_settings()
         self.border = border
 
+        self.animations_instance = None
         self.extra_material_refs = []
+
+    def add_animation(self, animation_type: Union[Text_intro, Text_outro, Text_loop_anim]) -> "Text_segment":
+        """将给定的入场/出场/循环动画添加到此片段的动画列表中, 动画的起止时间自动确定
+
+        注意: 若希望同时使用循环动画和入出场动画, 请**先添加出入场动画再添加循环动画**
+        """
+        DEFAULT_DURATION = 500000  # 默认0.5s
+        if isinstance(animation_type, Text_intro):
+            start = 0
+            duration = DEFAULT_DURATION
+        elif isinstance(animation_type, Text_outro):
+            duration = DEFAULT_DURATION
+            start = self.target_timerange.duration - duration
+        elif isinstance(animation_type, Text_loop_anim):
+            has_intro = self.animations_instance is not None and (self.animations_instance.get_animation_trange("in") is not None)
+            has_outro = self.animations_instance is not None and (self.animations_instance.get_animation_trange("out") is not None)
+            start = DEFAULT_DURATION if has_intro else 0
+            duration = self.target_timerange.duration - start - (DEFAULT_DURATION if has_outro else 0)
+        else:
+            raise TypeError("Invalid animation type %s" % type(animation_type))
+
+        if self.animations_instance is None:
+            self.animations_instance = Segment_animations()
+            self.extra_material_refs.append(self.animations_instance.animation_id)
+
+        self.animations_instance.add_animation(Text_animation(animation_type, start, duration))
+
+        return self
 
     def export_material(self) -> Dict[str, Any]:
         """与此文本片段联系的素材, 以此不再单独定义Text_material类"""

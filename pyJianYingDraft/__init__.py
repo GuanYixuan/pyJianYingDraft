@@ -10,6 +10,7 @@ from .text_segment import Text_segment, Text_style, Text_border
 from .metadata import Mask_type
 from .metadata import Transition_type, Filter_type
 from .metadata import Intro_type, Outro_type, Group_animation_type
+from .metadata import Text_intro, Text_outro, Text_loop_anim
 from .metadata import Audio_scene_effect_type, Tone_effect_type, Speech_to_song_type
 from .metadata import Video_scene_effect_type, Video_character_effect_type
 
@@ -28,6 +29,9 @@ __all__ = [
     "Intro_type",
     "Outro_type",
     "Group_animation_type",
+    "Text_intro",
+    "Text_outro",
+    "Text_loop_anim",
     "Audio_scene_effect_type",
     "Tone_effect_type",
     "Speech_to_song_type",

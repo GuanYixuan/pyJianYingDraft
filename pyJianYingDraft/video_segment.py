@@ -13,114 +13,12 @@ from .time_util import tim, Timerange
 from .segment import Media_segment, Clip_settings
 from .local_materials import Video_material
 from .keyframe import Keyframe_property, Keyframe_list
+from .animation import Segment_animations, Video_animation
 
-from .metadata import *
-
-class Animation:
-    """一个动画效果"""
-
-    name: str
-    """动画名称, 默认取为动画效果的名称"""
-    effect_id: str
-    """另一种动画id, 由剪映本身提供"""
-    animation_type: Literal["in", "out", "group"]
-    resource_id: str
-    """资源id, 由剪映本身提供"""
-
-    start: int
-    """动画相对此片段开头的偏移, 单位为微秒"""
-    duration: int
-    """动画持续时间, 单位为微秒, 各动画有其默认值"""
-
-    category_id: Literal["ruchang", "chuchang", "group"]
-    category_name: Literal["入场", "出场", "组合"]
-    """动画类型, 入场/出场/组合"""
-
-    is_video_animation: bool
-
-    def __init__(self, animation_type: Union[Intro_type, Outro_type, Group_animation_type],
-                 start: int, duration: int):
-        type_meta = animation_type.value
-        self.name = type_meta.title
-        self.effect_id = type_meta.effect_id
-        self.resource_id = type_meta.resource_id
-
-        if isinstance(animation_type, Intro_type):
-            self.animation_type = "in"
-            self.category_id = "ruchang"
-            self.category_name = "入场"
-
-            self.is_video_animation = True
-        elif isinstance(animation_type, Outro_type):
-            self.animation_type = "out"
-            self.category_id = "chuchang"
-            self.category_name = "出场"
-
-            self.is_video_animation = True
-        elif isinstance(animation_type, Group_animation_type):
-            self.animation_type = "group"
-            self.category_id = "group"
-            self.category_name = "组合"
-
-            self.is_video_animation = True
-
-        self.start = start
-        self.duration = duration
-
-    def export_json(self) -> Dict[str, Any]:
-        return {
-            "anim_adjust_params": None,
-            "platform": "all",
-            "panel": "video" if self.is_video_animation else "",
-            "material_type": "video" if self.is_video_animation else "sticker",
-
-            "name": self.name,
-            "id": self.effect_id,
-            "type": self.animation_type,
-            "resource_id": self.resource_id,
-            "category_id": self.category_id,
-            "category_name": self.category_name,
-
-            "start": self.start,
-            "duration": self.duration,
-            # 不导出path和request_id字段
-        }
-
-class Segment_animations:
-    """附加于某素材上的一系列动画（一般是入场/出场/组合动画）"""
-
-    animation_id: str
-    """动画系列全局id, 自动生成"""
-    animation_type: str
-    """animation_type字段, 似乎总是'sticker_animation'"""
-
-    animations: List[Animation]
-    """动画列表"""
-
-    def __init__(self, animation_type: str = "sticker_animation"):
-        self.animation_id = uuid.uuid4().hex
-        self.animation_type = animation_type
-        self.animations = []
-
-    def add_animation(self, animation: Animation) -> None:
-        # 不允许添加超过一个同类型的动画（如两个入场动画）
-        if animation.animation_type in [ani.animation_type for ani in self.animations]:
-            raise ValueError(f"当前片段已存在类型为 '{animation.animation_type}' 的动画")
-        # 不允许组合动画与出入场动画同时出现
-        if any(ani.animation_type == "group" for ani in self.animations):
-            raise ValueError("当前片段已存在组合动画, 此时不能添加其它动画")
-        if animation.animation_type == "group" and len(self.animations) > 0:
-            raise ValueError("当前片段已存在动画时, 不能添加组合动画")
-
-        self.animations.append(animation)
-
-    def export_json(self) -> Dict[str, Any]:
-        return {
-            "id": self.animation_id,
-            "type": self.animation_type,
-            "multi_language_current": "none",
-            "animations": [animation.export_json() for animation in self.animations]
-        }
+from .metadata import Effect_meta, Effect_param_instance
+from .metadata import Mask_meta, Mask_type, Filter_type, Transition_type
+from .metadata import Intro_type, Outro_type, Group_animation_type
+from .metadata import Video_scene_effect_type, Video_character_effect_type
 
 class Mask:
     """蒙版对象"""
@@ -444,7 +342,7 @@ class Video_segment(Media_segment):
             self.animations_instance = Segment_animations()
             self.extra_material_refs.append(self.animations_instance.animation_id)
 
-        self.animations_instance.add_animation(Animation(animation_type, start, duration))
+        self.animations_instance.add_animation(Video_animation(animation_type, start, duration))
 
         return self
 

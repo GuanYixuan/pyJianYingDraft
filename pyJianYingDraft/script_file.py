@@ -294,7 +294,7 @@ class Script_file:
         Raises:
             `NameError`: 未找到指定名称的轨道, 或必须提供`track_name`参数时未提供
             `TypeError`: 片段类型不匹配轨道类型
-            `ValueError`: 新片段与已有片段重叠
+            `SegmentOverlap`: 新片段与已有片段重叠
         """
         target = self._get_track(type(segment), track_name)
 
@@ -304,7 +304,7 @@ class Script_file:
 
         # 自动添加相关素材
         if isinstance(segment, Video_segment):
-            # 出入场动画
+            # 出入场等动画
             if (segment.animations_instance is not None) and (segment.animations_instance not in self.materials):
                 self.materials.animations.append(segment.animations_instance)
             # 特效
@@ -324,13 +324,19 @@ class Script_file:
 
             self.materials.speeds.append(segment.speed)
         elif isinstance(segment, Audio_segment):
+            # 淡入淡出
             if (segment.fade is not None) and (segment.fade not in self.materials):
                 self.materials.audio_fades.append(segment.fade)
+            # 特效
             for effect in segment.effects:
                 if effect not in self.materials:
                     self.materials.audio_effects.append(effect)
             self.materials.speeds.append(segment.speed)
         elif isinstance(segment, Text_segment):
+            # 出入场等动画
+            if (segment.animations_instance is not None) and (segment.animations_instance not in self.materials):
+                self.materials.animations.append(segment.animations_instance)
+            # 字幕样式
             self.materials.texts.append(segment.export_material())
 
         # 检查片段素材是否已添加
