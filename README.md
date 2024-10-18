@@ -227,9 +227,9 @@ script.replace_text(
 
 > ℹ 导出程序会将剪映窗口置顶，且需要控制光标进行点击，**建议在闲时/夜间运行**
 
-> ℹ 本部分功能**目前在剪映专业版5.9中测试通过**，此后会尝试适配最新的6+版本
+> ℹ 本部分功能**在剪映专业版5.9和6.8中测试通过**
 
-> ℹ 有用户反映部分Python版本（如3.13）下`uiautomation`会出现依赖问题，推荐使用3.8、3.10或3.11版本，[详见此处](https://github.com/GuanYixuan/pyJianYingDraft/issues/12)
+> ℹ 有用户反映部分Python版本(如3.13)下`uiautomation`会出现依赖问题, 推荐使用3.8、3.10或3.11, [详见此处](https://github.com/GuanYixuan/pyJianYingDraft/issues/12)
 
 > ⚠️ 请**确认有导出草稿的相关权限(不使用VIP功能或已开通VIP)**, 否则可能陷入死循环
 
