@@ -31,8 +31,6 @@ class Filter_segment(Base_segment):
     在放入轨道时自动添加到素材列表中
     """
 
-    def __init__(self, meta: Filter_type, target_timerange: Timerange, intensity: Optional[float] = None):
-        if intensity is None: intensity = 1.0
-
+    def __init__(self, meta: Filter_type, target_timerange: Timerange, intensity: float):
         self.material = Filter(meta.value, intensity)
         super().__init__(self.material.global_id, target_timerange)

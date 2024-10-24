@@ -375,14 +375,14 @@ class Script_file:
         return self
 
     def add_filter(self, filter_meta: Filter_type, t_range: Timerange,
-                   track_name: Optional[str] = None, intensity: Optional[float] = None) -> "Script_file":
+                   track_name: Optional[str] = None, intensity: float = 100.0) -> "Script_file":
         """向指定的滤镜轨道中添加一个滤镜片段
 
         Args:
             filter_meta (`Filter_type`): 滤镜类型
             t_range (`Timerange`): 滤镜片段的时间范围
             track_name (`str`, optional): 添加到的轨道名称. 当滤镜轨道仅有一条时可省略.
-            intensity (`float`, optional): 滤镜强度(0-100). 仅当滤镜能够调节强度时有效.
+            intensity (`float`, optional): 滤镜强度(0-100). 仅当所选滤镜能够调节强度时有效. 默认为100.
 
         Raises:
             `NameError`: 未找到指定名称的轨道, 或必须提供`track_name`参数时未提供
@@ -392,8 +392,7 @@ class Script_file:
         target = self._get_track(Filter_segment, track_name)
 
         # 加入轨道并更新时长
-        if intensity is not None: intensity /= 100  # 转换为0-1范围
-        segment = Filter_segment(filter_meta, t_range, intensity)
+        segment = Filter_segment(filter_meta, t_range, intensity / 100.0)  # 转换为0-1范围
         target.add_segment(segment)
         self.duration = max(self.duration, t_range.end)
 

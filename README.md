@@ -453,13 +453,14 @@ video_segment.add_effect(Video_scene_effect_type.全息扫描,
 音频片段的特效添加方法与视频片段相似
 
 #### 添加片段滤镜
-滤镜的添加方法与特效类似，其使用的是`Video_segment.add_filter()`方法。与特效不同的是，滤镜只支持一个“滤镜强度”参数，且**不是所有滤镜都支持设置强度**。
+滤镜的添加方法与特效类似，其使用的是`Video_segment.add_filter()`方法。
+与特效不同的是，滤镜只支持一个“滤镜强度”参数，且仅当所选滤镜能够调节强度时有效。
 
 ```python
 from pyJianYingDraft import Filter_type
 
-video_segment1.add_filter(Filter_type.原生肤, 10) # 设置"原生肤"强度为10
-video_segment2.add_filter(Filter_type.冰雪世界, 50) # 这会产生一个警告，因为"冰雪世界"不支持设置强度
+video_segment1.add_filter(Filter_type.原生肤, 10)  # 设置"原生肤"强度为10
+video_segment2.add_filter(Filter_type.冰雪世界, 50)  # 设置"冰雪世界"强度为50
 ```
 
 #### 添加片段动画

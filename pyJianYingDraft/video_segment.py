@@ -4,7 +4,6 @@
 """
 
 import uuid
-import warnings
 
 from typing import Optional, Literal, Union
 from typing import Dict, List, Tuple, Any
@@ -160,9 +159,6 @@ class Filter:
     def __init__(self, meta: Effect_meta, intensity: float, *,
                  apply_target_type: Literal[0, 2] = 0):
         """根据给定的滤镜元数据及强度构造滤镜素材对象"""
-        if len(meta.params) == 0 and intensity != 1.0:
-            warnings.warn("Filter '%s' cannot set intensity, input intensity '%f' is ignored" % (meta.name, intensity))
-            intensity = 1.0
 
         self.global_id = uuid.uuid4().hex
         self.effect_meta = meta
@@ -367,16 +363,14 @@ class Video_segment(Media_segment):
 
         return self
 
-    def add_filter(self, filter_type: Filter_type, intensity: Optional[float] = None) -> "Video_segment":
+    def add_filter(self, filter_type: Filter_type, intensity: float = 100.0) -> "Video_segment":
         """为视频片段添加一个滤镜
 
         Args:
             filter_type (`Filter_type`): 滤镜类型
-            intensity (`float`, optional): 滤镜强度, 取值范围0~100, 仅当滤镜能够自定义强度时允许指定, 默认100.
+            intensity (`float`, optional): 滤镜强度(0-100), 仅当所选滤镜能够调节强度时有效. 默认为100.
         """
-        if intensity is not None: intensity /= 100  # 转化为0~1范围
-
-        filter_inst = Filter(filter_type.value, intensity if intensity is not None else 1.0)
+        filter_inst = Filter(filter_type.value, intensity / 100.0)  # 转化为0~1范围
         self.filters.append(filter_inst)
         self.extra_material_refs.append(filter_inst.global_id)
 
