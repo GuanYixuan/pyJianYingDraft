@@ -6,7 +6,7 @@ import uuid
 from typing import Dict, List, Tuple, Any
 from typing import Union, Optional, Literal
 
-from .time_util import Timerange
+from .time_util import Timerange, tim
 from .segment import Base_segment, Clip_settings
 from .animation import Segment_animations, Text_animation
 
@@ -139,23 +139,28 @@ class Text_segment(Base_segment):
         self.animations_instance = None
         self.extra_material_refs = []
 
-    def add_animation(self, animation_type: Union[Text_intro, Text_outro, Text_loop_anim]) -> "Text_segment":
-        """将给定的入场/出场/循环动画添加到此片段的动画列表中, 动画的起止时间自动确定
+    def add_animation(self, animation_type: Union[Text_intro, Text_outro, Text_loop_anim],
+                      duration: Union[str, float] = 500000) -> "Text_segment":
+        """将给定的入场/出场/循环动画添加到此片段的动画列表中, 出入场动画的持续时间可以自行设置, 循环动画则会自动填满其余无动画部分
 
         注意: 若希望同时使用循环动画和入出场动画, 请**先添加出入场动画再添加循环动画**
+
+        Args:
+            animation_type (`Text_intro`, `Text_outro` or `Text_loop_anim`): 文本动画类型.
+            duration (`str` or `float`, optional): 动画持续时间, 单位为微秒, 仅对入场/出场动画有效.
+                若传入字符串则会调用`tim()`函数进行解析. 默认为0.5秒
         """
-        DEFAULT_DURATION = 500000  # 默认0.5s
+        duration = min(tim(duration), self.target_timerange.duration)
+
         if isinstance(animation_type, Text_intro):
             start = 0
-            duration = DEFAULT_DURATION
         elif isinstance(animation_type, Text_outro):
-            duration = DEFAULT_DURATION
             start = self.target_timerange.duration - duration
         elif isinstance(animation_type, Text_loop_anim):
-            has_intro = self.animations_instance is not None and (self.animations_instance.get_animation_trange("in") is not None)
-            has_outro = self.animations_instance is not None and (self.animations_instance.get_animation_trange("out") is not None)
-            start = DEFAULT_DURATION if has_intro else 0
-            duration = self.target_timerange.duration - start - (DEFAULT_DURATION if has_outro else 0)
+            intro_trange = self.animations_instance and self.animations_instance.get_animation_trange("in")
+            outro_trange = self.animations_instance and self.animations_instance.get_animation_trange("out")
+            start = intro_trange.start if intro_trange else 0
+            duration = self.target_timerange.duration - start - (outro_trange.duration if outro_trange else 0)
         else:
             raise TypeError("Invalid animation type %s" % type(animation_type))
 
