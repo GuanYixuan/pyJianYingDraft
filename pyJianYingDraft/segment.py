@@ -2,7 +2,7 @@
 
 import uuid
 
-from typing import Dict, List, Any
+from typing import Optional, Dict, List, Any
 
 from .time_util import Timerange
 from .keyframe import Keyframe_list
@@ -154,8 +154,8 @@ class Clip_settings:
 class Media_segment(Base_segment):
     """媒体片段基类"""
 
-    source_timerange: Timerange
-    """截取的素材片段的时间范围"""
+    source_timerange: Optional[Timerange]
+    """截取的素材片段的时间范围, 对贴纸而言不存在"""
     speed: Speed
     """播放速度设置"""
     volume: float
@@ -164,7 +164,7 @@ class Media_segment(Base_segment):
     extra_material_refs: List[str]
     """附加的素材id列表, 用于链接动画/特效等"""
 
-    def __init__(self, material_id: str, source_timerange: Timerange, target_timerange: Timerange, speed: float, volume: float):
+    def __init__(self, material_id: str, source_timerange: Optional[Timerange], target_timerange: Timerange, speed: float, volume: float):
         super().__init__(material_id, target_timerange)
 
         self.source_timerange = source_timerange
@@ -177,7 +177,7 @@ class Media_segment(Base_segment):
         """返回通用于音频和视频片段的默认属性"""
         ret = super().export_json()
         ret.update({
-            "source_timerange": self.source_timerange.export_json(),
+            "source_timerange": self.source_timerange.export_json() if self.source_timerange else None,
             "speed": self.speed.speed,
             "volume": self.volume,
             "extra_material_refs": self.extra_material_refs,

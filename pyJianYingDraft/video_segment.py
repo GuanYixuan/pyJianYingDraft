@@ -468,3 +468,50 @@ class Video_segment(Media_segment):
             "uniform_scale": {"on": self.uniform_scale, "value": 1.0},
         })
         return json_dict
+
+class Sticker_segment(Media_segment):
+    """安放在轨道上的一个贴纸片段"""
+
+    resource_id: str
+    """贴纸资源id"""
+
+    clip_settings: Clip_settings
+    """图像调节设置, 其效果可被关键帧覆盖"""
+
+    uniform_scale: bool
+    """是否锁定XY轴缩放比例"""
+
+    # TODO: animations
+
+    def __init__(self, resource_id: str, target_timerange: Timerange, *, clip_settings: Optional[Clip_settings] = None):
+        """根据贴纸resource_id构建一个贴纸片段, 并指定其时间信息及图像调节设置
+
+        片段创建完成后, 可通过`Script_file.add_segment`方法将其添加到轨道中
+
+        Args:
+            resource_id (`str`): 贴纸resource_id, 可通过
+            target_timerange (`Timerange`): 片段在轨道上的目标时间范围
+            clip_settings (`Clip_settings`, optional): 图像调节设置, 默认不作任何变换
+        """
+        super().__init__(uuid.uuid4().hex, None, target_timerange, 1.0, 1.0)
+        self.clip_settings = clip_settings or Clip_settings()
+        self.uniform_scale = True
+        self.resource_id = resource_id
+
+    def export_material(self) -> Dict[str, Any]:
+        """创建极简的贴纸素材对象, 以此不再单独定义贴纸素材类"""
+        return {
+            "id": self.material_id,
+            "resource_id": self.resource_id,
+            "sticker_id": self.resource_id,
+            "source_platform": 1,
+            "type": "sticker",
+        }
+
+    def export_json(self) -> Dict[str, Any]:
+        json_dict = super().export_json()
+        json_dict.update({
+            "clip": self.clip_settings.export_json(),
+            "uniform_scale": {"on": self.uniform_scale, "value": 1.0},
+        })
+        return json_dict
