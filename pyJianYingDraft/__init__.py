@@ -3,7 +3,7 @@ from .keyframe import Keyframe_property
 
 from .time_util import Timerange
 from .audio_segment import Audio_segment
-from .video_segment import Video_segment, Clip_settings
+from .video_segment import Video_segment, Sticker_segment, Clip_settings
 from .effect_segment import Effect_segment, Filter_segment
 from .text_segment import Text_segment, Text_style, Text_border
 
@@ -44,6 +44,7 @@ __all__ = [
     "Timerange",
     "Audio_segment",
     "Video_segment",
+    "Sticker_segment",
     "Clip_settings",
     "Effect_segment",
     "Filter_segment",

@@ -489,7 +489,7 @@ class Sticker_segment(Media_segment):
         片段创建完成后, 可通过`Script_file.add_segment`方法将其添加到轨道中
 
         Args:
-            resource_id (`str`): 贴纸resource_id, 可通过
+            resource_id (`str`): 贴纸resource_id, 可通过`Script_file.inspect_material`从模板中获取
             target_timerange (`Timerange`): 片段在轨道上的目标时间范围
             clip_settings (`Clip_settings`, optional): 图像调节设置, 默认不作任何变换
         """

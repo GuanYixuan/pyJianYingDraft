@@ -13,7 +13,7 @@ from .time_util import Timerange, tim, srt_tstamp
 from .local_materials import Video_material, Audio_material
 from .segment import Base_segment, Speed, Clip_settings
 from .audio_segment import Audio_segment, Audio_fade, Audio_effect
-from .video_segment import Video_segment, Segment_animations, Video_effect, Transition, Filter
+from .video_segment import Video_segment, Sticker_segment, Segment_animations, Video_effect, Transition, Filter
 from .effect_segment import Effect_segment, Filter_segment
 from .text_segment import Text_segment, Text_style
 from .track import Track_type, Base_track, Track
@@ -27,7 +27,10 @@ class Script_material:
     """音频素材列表"""
     videos: List[Video_material]
     """视频素材列表"""
+    stickers: List[Dict[str, Any]]
+    """贴纸素材列表"""
     texts: List[Dict[str, Any]]
+    """文本素材列表"""
 
     audio_effects: List[Audio_effect]
     """音频特效列表"""
@@ -50,6 +53,7 @@ class Script_material:
     def __init__(self):
         self.audios = []
         self.videos = []
+        self.stickers = []
         self.texts = []
 
         self.audio_effects = []
@@ -89,13 +93,13 @@ class Script_material:
         else:
             raise TypeError("Invalid argument type '%s'" % type(item))
 
-    def contains_material(self, segment: Union[Video_segment, Audio_segment, Text_segment]) -> bool:
+    def contains_material(self, segment: Union[Video_segment, Sticker_segment, Audio_segment, Text_segment]) -> bool:
         if isinstance(segment, Video_segment):
             return segment.material_id in [video.material_id for video in self.videos]
         elif isinstance(segment, Audio_segment):
             return segment.material_id in [audio.material_id for audio in self.audios]
-        elif isinstance(segment, Text_segment):
-            return True  # 文本素材暂不检查
+        elif isinstance(segment, (Text_segment, Sticker_segment)):
+            return True  # 文本素材和贴纸素材暂不检查
         else:
             raise TypeError("Invalid argument type '%s'" % type(segment))
 
@@ -135,7 +139,7 @@ class Script_material:
             "smart_relights": [],
             "sound_channel_mappings": [],
             "speeds": [spd.export_json() for spd in self.speeds],
-            "stickers": [],
+            "stickers": self.stickers,
             "tail_leaders": [],
             "text_templates": [],
             "texts": self.texts,
@@ -284,11 +288,12 @@ class Script_file:
 
         return next(track for track in self.tracks.values() if track.accept_segment_type == segment_type)
 
-    def add_segment(self, segment: Union[Video_segment, Audio_segment, Text_segment], track_name: Optional[str] = None) -> "Script_file":
+    def add_segment(self, segment: Union[Video_segment, Sticker_segment, Audio_segment, Text_segment],
+                    track_name: Optional[str] = None) -> "Script_file":
         """向指定轨道中添加一个片段
 
         Args:
-            segment (`Video_segment`, `Audio_segment`, or `Text_segment`): 要添加的片段
+            segment (`Video_segment`, `Sticker_segment`, `Audio_segment`, or `Text_segment`): 要添加的片段
             track_name (`str`, optional): 添加到的轨道名称. 当此类型的轨道仅有一条时可省略.
 
         Raises:
@@ -323,6 +328,8 @@ class Script_file:
                 self.materials.transitions.append(segment.transition)
 
             self.materials.speeds.append(segment.speed)
+        elif isinstance(segment, Sticker_segment):
+            self.materials.stickers.append(segment.export_material())
         elif isinstance(segment, Audio_segment):
             # 淡入淡出
             if (segment.fade is not None) and (segment.fade not in self.materials):
