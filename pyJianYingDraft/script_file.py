@@ -523,11 +523,13 @@ class Script_file:
             `MaterialNotFound`: 根据指定名称未找到与新素材同类的素材
             `AmbiguousMaterial`: 根据指定名称找到多个与新素材同类的素材
         """
+        video_mode = isinstance(material, Video_material)
         # 查找素材
         target_json_obj: Optional[Dict[str, Any]] = None
-        target_material_list = self.imported_materials["videos" if isinstance(material, Video_material) else "audios"]
+        target_material_list = self.imported_materials["videos" if video_mode else "audios"]
+        name_key = "material_name" if video_mode else "name"
         for mat in target_material_list:
-            if mat["material_name"] == material_name:
+            if mat[name_key] == material_name:
                 if target_json_obj is not None:
                     raise exceptions.AmbiguousMaterial(
                         "找到多个名为 '%s', 类型为 '%s' 的素材" % (material_name, type(material)))
@@ -536,8 +538,8 @@ class Script_file:
             raise exceptions.MaterialNotFound("没有找到名为 '%s', 类型为 '%s' 的素材" % (material_name, type(material)))
 
         # 更新素材信息
-        target_json_obj.update({"material_name": material.material_name, "path": material.path, "duration": material.duration})
-        if isinstance(material, Video_material):
+        target_json_obj.update({name_key: material.material_name, "path": material.path, "duration": material.duration})
+        if video_mode:
             target_json_obj.update({"width": material.width, "height": material.height, "material_type": material.material_type})
             if replace_crop:
                 target_json_obj.update({"crop": material.crop_settings.export_json()})
@@ -622,7 +624,7 @@ class Script_file:
         """输出草稿中导入的贴纸素材的元数据"""
         print("贴纸素材:")
         for sticker in self.imported_materials["stickers"]:
-            print("\tResource id: %s '%s'" % (sticker["resource_id"], sticker["name"]))
+            print("\tResource id: %s '%s'" % (sticker["resource_id"], sticker.get("name", "")))
 
     def dumps(self) -> str:
         """将草稿文件内容导出为JSON字符串"""
