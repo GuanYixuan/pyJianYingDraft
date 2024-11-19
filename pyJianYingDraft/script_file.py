@@ -618,6 +618,12 @@ class Script_file:
 
         return self
 
+    def inspect_material(self) -> None:
+        """输出草稿中导入的贴纸素材的元数据"""
+        print("贴纸素材:")
+        for sticker in self.imported_materials["stickers"]:
+            print("\tResource id: %s '%s'" % (sticker["resource_id"], sticker["name"]))
+
     def dumps(self) -> str:
         """将草稿文件内容导出为JSON字符串"""
         self.content["fps"] = self.fps

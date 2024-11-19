@@ -3,6 +3,8 @@
 import os
 import shutil
 
+from typing import List
+
 from .script_file import Script_file
 
 class Draft_folder:
@@ -24,6 +26,44 @@ class Draft_folder:
 
         if not os.path.exists(self.folder_path):
             raise FileNotFoundError(f"根文件夹 {self.folder_path} 不存在")
+
+    def list_drafts(self) -> List[str]:
+        """列出文件夹中所有草稿的名称
+
+        注意: 本函数只是如实地列出子文件夹的名称, 并不检查它们是否符合草稿的格式
+        """
+        return [f for f in os.listdir(self.folder_path) if os.path.isdir(os.path.join(self.folder_path, f))]
+
+    def remove(self, draft_name: str) -> None:
+        """删除指定名称的草稿
+
+        Args:
+            draft_name (`str`): 草稿名称, 即相应文件夹名称
+
+        Raises:
+            `FileNotFoundError`: 对应的草稿不存在
+        """
+        draft_path = os.path.join(self.folder_path, draft_name)
+        if not os.path.exists(draft_path):
+            raise FileNotFoundError(f"草稿文件夹 {draft_name} 不存在")
+
+        shutil.rmtree(draft_path)
+
+    def inspect_material(self, draft_name: str) -> None:
+        """输出指定名称草稿中的贴纸素材元数据
+
+        Args:
+            draft_name (`str`): 草稿名称, 即相应文件夹名称
+
+        Raises:
+            `FileNotFoundError`: 对应的草稿不存在
+        """
+        draft_path = os.path.join(self.folder_path, draft_name)
+        if not os.path.exists(draft_path):
+            raise FileNotFoundError(f"草稿文件夹 {draft_name} 不存在")
+
+        script_file = self.load_template(draft_name)
+        script_file.inspect_material()
 
     def load_template(self, draft_name: str) -> Script_file:
         """在文件夹中打开一个草稿作为模板, 并在其上进行编辑
