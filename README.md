@@ -6,6 +6,8 @@
 
 > 🧪 本项目仍在快速更新中，欢迎⭐️此项目保持关注！
 
+> 📢 欢迎加入[Discord服务器](https://discord.gg/2aSBD7pT38)进行用法或新功能的讨论
+
 ## 使用思路
 ![使用思路](readme_assets/使用思路.jpg)
 
