@@ -78,11 +78,9 @@ class Jianying_controller:
             self.get_window()
             if self.app_status != "pre_export": continue
 
-            export_window = self.app.WindowControl(searchDepth=1, Name="JianyingPro")
-            if export_window.Exists(0):
-                close_btn = export_window.ButtonControl(Name="关闭")
-                if close_btn.Exists(1):
-                    close_btn.Click(simulateMove=False)
+            succeed_close_btn = self.app.TextControl(searchDepth=2, Compare=self.__export_succeed_close_btn_cmp)
+            if succeed_close_btn.Exists(0):
+                succeed_close_btn.Click(simulateMove=False)
                 break
 
             if time.time() - st > timeout:
@@ -169,3 +167,10 @@ class Jianying_controller:
             return False
         full_desc: str = control.GetPropertyValue(30159).lower()
         return "ExportPath".lower() in full_desc
+
+    @staticmethod
+    def __export_succeed_close_btn_cmp(control: uia.TextControl, depth: int) -> bool:
+        if depth != 2:
+            return False
+        full_desc: str = control.GetPropertyValue(30159).lower()
+        return "ExportSucceedCloseBtn".lower() in full_desc
