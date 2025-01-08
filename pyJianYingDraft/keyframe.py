@@ -37,7 +37,9 @@ class Keyframe_property(Enum):
     """关键帧所控制的属性类型"""
 
     position_x = "KFTypePositionX"
+    """右移为正, 此处的数值应该为`剪映中显示的值` / `草稿宽度`, 也即单位是半个画布宽"""
     position_y = "KFTypePositionY"
+    """上移为正, 此处的数值应该为`剪映中显示的值` / `草稿高度`, 也即单位是半个画布高"""
     rotation = "KFTypeRotation"
 
     scale_x = "KFTypeScaleX"
