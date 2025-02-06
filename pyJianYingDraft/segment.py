@@ -1,11 +1,11 @@
 """定义片段基类及部分比较通用的属性类"""
 
 import uuid
+from typing import Optional, Dict, List, Any, Union
 
-from typing import Optional, Dict, List, Any
-
-from .time_util import Timerange
-from .keyframe import Keyframe_list
+from .animation import Segment_animations
+from .time_util import Timerange, tim
+from .keyframe import Keyframe_list, Keyframe_property
 
 class Base_segment:
     """片段基类"""
@@ -183,3 +183,74 @@ class Media_segment(Base_segment):
             "extra_material_refs": self.extra_material_refs,
         })
         return ret
+
+class Visual_segment(Media_segment):
+    """视觉片段基类，用于处理所有可见片段（视频、贴纸、文本）的共同属性和行为"""
+
+    clip_settings: Clip_settings
+    """图像调节设置, 其效果可被关键帧覆盖"""
+
+    uniform_scale: bool
+    """是否锁定XY轴缩放比例"""
+
+    animations_instance: Optional[Segment_animations]
+    """动画实例, 可能为空
+
+    在放入轨道时自动添加到素材列表中
+    """
+
+    def __init__(self, material_id: str, source_timerange: Optional[Timerange], target_timerange: Timerange,
+                 speed: float, volume: float, *, clip_settings: Optional[Clip_settings]):
+        """初始化视觉片段基类
+
+        Args:
+            material_id (`str`): 素材id
+            source_timerange (`Timerange`, optional): 截取的素材片段的时间范围
+            target_timerange (`Timerange`): 片段在轨道上的目标时间范围
+            speed (`float`): 播放速度
+            volume (`float`): 音量
+            clip_settings (`Clip_settings`, optional): 图像调节设置, 默认不作任何变换
+        """
+        super().__init__(material_id, source_timerange, target_timerange, speed, volume)
+
+        self.clip_settings = clip_settings if clip_settings is not None else Clip_settings()
+        self.uniform_scale = True
+        self.animations_instance = None
+
+    def add_keyframe(self, _property: Keyframe_property, time_offset: Union[int, str], value: float) -> "Visual_segment":
+        """为给定属性创建一个关键帧, 并自动加入到关键帧列表中
+
+        Args:
+            _property (`Keyframe_property`): 要控制的属性
+            time_offset (`int` or `str`): 关键帧的时间偏移量, 单位为微秒. 若传入字符串则会调用`tim()`函数进行解析.
+            value (`float`): 属性在`time_offset`处的值
+
+        Raises:
+            `ValueError`: 试图同时设置`uniform_scale`以及`scale_x`或`scale_y`其中一者
+        """
+        if (_property == Keyframe_property.scale_x or _property == Keyframe_property.scale_y) and self.uniform_scale:
+            self.uniform_scale = False
+        elif _property == Keyframe_property.uniform_scale:
+            if not self.uniform_scale:
+                raise ValueError("已设置 scale_x 或 scale_y 时, 不能再设置 uniform_scale")
+            _property = Keyframe_property.scale_x
+
+        if isinstance(time_offset, str): time_offset = tim(time_offset)
+
+        for kf_list in self.common_keyframes:
+            if kf_list.keyframe_property == _property:
+                kf_list.add_keyframe(time_offset, value)
+                return self
+        kf_list = Keyframe_list(_property)
+        kf_list.add_keyframe(time_offset, value)
+        self.common_keyframes.append(kf_list)
+        return self
+
+    def export_json(self) -> Dict[str, Any]:
+        """导出通用于所有视觉片段的JSON数据"""
+        json_dict = super().export_json()
+        json_dict.update({
+            "clip": self.clip_settings.export_json(),
+            "uniform_scale": {"on": self.uniform_scale, "value": 1.0},
+        })
+        return json_dict

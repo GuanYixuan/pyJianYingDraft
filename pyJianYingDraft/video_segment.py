@@ -5,13 +5,12 @@
 
 import uuid
 
-from typing import Optional, Literal, Union
+from typing import Optional, Literal, Union, NoReturn
 from typing import Dict, List, Tuple, Any
 
 from .time_util import tim, Timerange
-from .segment import Media_segment, Clip_settings
+from .segment import Visual_segment, Clip_settings
 from .local_materials import Video_material
-from .keyframe import Keyframe_property, Keyframe_list
 from .animation import Segment_animations, Video_animation
 
 from .metadata import Effect_meta, Effect_param_instance
@@ -241,17 +240,11 @@ class Transition:
             # 不导出path和request_id字段
         }
 
-class Video_segment(Media_segment):
+class Video_segment(Visual_segment):
     """安放在轨道上的一个视频/图片片段"""
 
     material_size: Tuple[int, int]
     """素材尺寸"""
-
-    clip_settings: Clip_settings
-    """图像调节设置, 其效果可被关键帧覆盖"""
-
-    uniform_scale: bool
-    """是否锁定XY轴缩放比例"""
 
     effects: List[Video_effect]
     """特效列表
@@ -260,11 +253,6 @@ class Video_segment(Media_segment):
     """
     filters: List[Filter]
     """滤镜列表
-
-    在放入轨道时自动添加到素材列表中
-    """
-    animations_instance: Optional[Segment_animations]
-    """动画实例, 可能为空
 
     在放入轨道时自动添加到素材列表中
     """
@@ -308,15 +296,11 @@ class Video_segment(Media_segment):
         if source_timerange.end > material.duration:
             raise ValueError(f"截取的素材时间范围 {source_timerange} 超出了素材时长({material.duration})")
 
-        super().__init__(material.material_id, source_timerange, target_timerange, speed, volume)
+        super().__init__(material.material_id, source_timerange, target_timerange, speed, volume, clip_settings=clip_settings)
 
         self.material_size = (material.width, material.height)
-
-        self.clip_settings = clip_settings if clip_settings is not None else Clip_settings()
-        self.uniform_scale = True
         self.effects = []
         self.filters = []
-        self.animations_instance = None
         self.transition = None
         self.mask = None
 
@@ -376,36 +360,6 @@ class Video_segment(Media_segment):
 
         return self
 
-    def add_keyframe(self, _property: Keyframe_property, time_offset: Union[int, str], value: float) -> "Video_segment":
-        """为给定属性创建一个关键帧, 并自动加入到关键帧列表中
-
-        Args:
-            _property (`Keyframe_property`): 要控制的属性
-            time_offset (`int` or `str`): 关键帧的时间偏移量, 单位为微秒. 若传入字符串则会调用`tim()`函数进行解析.
-            value (`float`): 属性在`time_offset`处的值
-
-        Raises:
-            `ValueError`: 试图同时设置`uniform_scale`以及`scale_x`或`scale_y`其中一者
-        """
-
-        if (_property == Keyframe_property.scale_x or _property == Keyframe_property.scale_y) and self.uniform_scale:
-            self.uniform_scale = False
-        elif _property == Keyframe_property.uniform_scale:
-            if not self.uniform_scale:
-                raise ValueError("已设置 scale_x 或 scale_y 时, 不能再设置 uniform_scale")
-            _property = Keyframe_property.scale_x
-
-        if isinstance(time_offset, str): time_offset = tim(time_offset)
-
-        for kf_list in self.common_keyframes:
-            if kf_list.keyframe_property == _property:
-                kf_list.add_keyframe(time_offset, value)
-                return self
-        kf_list = Keyframe_list(_property)
-        kf_list.add_keyframe(time_offset, value)
-        self.common_keyframes.append(kf_list)
-        return self
-
     def add_mask(self, mask_type: Mask_type, *, center_x: float = 0.0, center_y: float = 0.0, size: float = 0.5,
                  rotation: float = 0.0, feather: float = 0.0, invert: bool = False,
                  rect_width: Optional[float] = None, round_corner: Optional[float] = None) -> "Video_segment":
@@ -415,7 +369,7 @@ class Video_segment(Media_segment):
             mask_type (`Mask_type`): 蒙版类型
             center_x (`float`, optional): 蒙版中心点X坐标(以素材的像素为单位), 默认设置在素材中心
             center_y (`float`, optional): 蒙版中心点Y坐标(以素材的像素为单位), 默认设置在素材中心
-            size (`float`, optional): 蒙版的“主要尺寸”(镜面的可视部分高度/圆形直径/爱心高度等), 以占素材高度的比例表示, 默认为0.5
+            size (`float`, optional): 蒙版的"主要尺寸"(镜面的可视部分高度/圆形直径/爱心高度等), 以占素材高度的比例表示, 默认为0.5
             rotation (`float`, optional): 蒙版顺时针旋转的**角度**, 默认不旋转
             feather (`float`, optional): 蒙版的羽化参数, 取值范围0~100, 默认无羽化
             invert (`bool`, optional): 是否反转蒙版, 默认不反转
@@ -463,25 +417,15 @@ class Video_segment(Media_segment):
     def export_json(self) -> Dict[str, Any]:
         json_dict = super().export_json()
         json_dict.update({
-            "clip": self.clip_settings.export_json(),
             "hdr_settings": {"intensity": 1.0, "mode": 1, "nits": 1000},
-            "uniform_scale": {"on": self.uniform_scale, "value": 1.0},
         })
         return json_dict
 
-class Sticker_segment(Media_segment):
+class Sticker_segment(Visual_segment):
     """安放在轨道上的一个贴纸片段"""
 
     resource_id: str
     """贴纸资源id"""
-
-    clip_settings: Clip_settings
-    """图像调节设置, 其效果可被关键帧覆盖"""
-
-    uniform_scale: bool
-    """是否锁定XY轴缩放比例"""
-
-    # TODO: animations
 
     def __init__(self, resource_id: str, target_timerange: Timerange, *, clip_settings: Optional[Clip_settings] = None):
         """根据贴纸resource_id构建一个贴纸片段, 并指定其时间信息及图像调节设置
@@ -493,9 +437,7 @@ class Sticker_segment(Media_segment):
             target_timerange (`Timerange`): 片段在轨道上的目标时间范围
             clip_settings (`Clip_settings`, optional): 图像调节设置, 默认不作任何变换
         """
-        super().__init__(uuid.uuid4().hex, None, target_timerange, 1.0, 1.0)
-        self.clip_settings = clip_settings or Clip_settings()
-        self.uniform_scale = True
+        super().__init__(uuid.uuid4().hex, None, target_timerange, 1.0, 1.0, clip_settings=clip_settings)
         self.resource_id = resource_id
 
     def export_material(self) -> Dict[str, Any]:
@@ -507,11 +449,3 @@ class Sticker_segment(Media_segment):
             "source_platform": 1,
             "type": "sticker",
         }
-
-    def export_json(self) -> Dict[str, Any]:
-        json_dict = super().export_json()
-        json_dict.update({
-            "clip": self.clip_settings.export_json(),
-            "uniform_scale": {"on": self.uniform_scale, "value": 1.0},
-        })
-        return json_dict

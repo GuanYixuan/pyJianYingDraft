@@ -3,11 +3,11 @@
 import json
 import uuid
 
-from typing import Dict, List, Tuple, Any
+from typing import Dict, Tuple, Any
 from typing import Union, Optional, Literal
 
 from .time_util import Timerange, tim
-from .segment import Base_segment, Clip_settings
+from .segment import Clip_settings, Visual_segment
 from .animation import Segment_animations, Text_animation
 
 from .metadata import Text_intro, Text_outro, Text_loop_anim
@@ -93,7 +93,7 @@ class Text_border:
             "width": self.width
         }
 
-class Text_segment(Base_segment):
+class Text_segment(Visual_segment):
     """文本片段类, 目前仅支持设置基本的字体样式"""
 
     text: str
@@ -101,19 +101,8 @@ class Text_segment(Base_segment):
     style: Text_style
     """字体样式"""
 
-    clip_settings: Clip_settings
-    """图像调节设置"""
     border: Optional[Text_border]
     """文本描边参数, None表示无描边"""
-
-    animations_instance: Optional[Segment_animations]
-    """动画实例, 可能为空
-
-    在放入轨道时自动添加到素材列表中
-    """
-
-    extra_material_refs: List[str]
-    """附加的素材id列表, 用于链接动画/特效等"""
 
     def __init__(self, text: str, timerange: Timerange, *,
                  style: Optional[Text_style] = None, clip_settings: Optional[Clip_settings] = None,
@@ -129,15 +118,11 @@ class Text_segment(Base_segment):
             clip_settings (`Clip_settings`, optional): 图像调节设置, 默认不做任何变换
             border (`Text_border`, optional): 文本描边参数, 默认无描边
         """
-        super().__init__(uuid.uuid4().hex, timerange)
+        super().__init__(uuid.uuid4().hex, None, timerange, 1.0, 1.0, clip_settings=clip_settings)
 
         self.text = text
         self.style = style or Text_style()
-        self.clip_settings = clip_settings or Clip_settings()
         self.border = border
-
-        self.animations_instance = None
-        self.extra_material_refs = []
 
     def add_animation(self, animation_type: Union[Text_intro, Text_outro, Text_loop_anim],
                       duration: Union[str, float] = 500000) -> "Text_segment":
@@ -340,19 +325,3 @@ class Text_segment(Base_segment):
                 "text": []
             }
         }
-
-    def export_json(self) -> Dict[str, Any]:
-        ret = super().export_json()
-        ret.update({
-            # 与Video_segment一致的部分
-            "clip": self.clip_settings.export_json(),
-            # "hdr_settings": null,
-            # "uniform_scale": {},
-
-            # 与Media_segment一致的部分
-            "source_timerange": None,
-            "speed": 1.0,
-            "volume": 1.0,
-            "extra_material_refs": self.extra_material_refs,
-        })
-        return ret
