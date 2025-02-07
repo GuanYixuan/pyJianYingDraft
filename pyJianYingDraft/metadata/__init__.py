@@ -2,6 +2,7 @@
 
 from .effect_meta import Effect_meta, Effect_param_instance
 
+from .font_meta import Font_type
 from .mask_meta import Mask_type, Mask_meta
 from .filter_meta import Filter_type
 from .transition_meta import Transition_type
@@ -16,6 +17,7 @@ __all__ = [
     "Mask_type",
     "Mask_meta",
     "Filter_type",
+    "Font_type",
     "Transition_type",
     "Intro_type",
     "Outro_type",

@@ -62,7 +62,7 @@ class Effect_meta:
     params: List[Effect_param]
     """效果的参数信息"""
 
-    def __init__(self, name: str, is_vip: bool, resource_id: str, effect_id: str, md5: str, params: List[Effect_param]):
+    def __init__(self, name: str, is_vip: bool, resource_id: str, effect_id: str, md5: str, params: List[Effect_param] = []):
         self.name = name
         self.is_vip = is_vip
         self.resource_id = resource_id

@@ -7,6 +7,7 @@ from .video_segment import Video_segment, Sticker_segment, Clip_settings
 from .effect_segment import Effect_segment, Filter_segment
 from .text_segment import Text_segment, Text_style, Text_border
 
+from .metadata import Font_type
 from .metadata import Mask_type
 from .metadata import Transition_type, Filter_type
 from .metadata import Intro_type, Outro_type, Group_animation_type
@@ -23,6 +24,7 @@ from .jianying_controller import Jianying_controller
 from .time_util import SEC, tim, trange
 
 __all__ = [
+    "Font_type",
     "Mask_type",
     "Filter_type",
     "Transition_type",

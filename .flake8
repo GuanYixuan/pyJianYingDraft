@@ -8,5 +8,6 @@ exclude =
     pyJianYingDraft/metadata/audio_effect_meta.py,
     pyJianYingDraft/metadata/filter_meta.py,
     pyJianYingDraft/metadata/video_effect_meta.py,
-    pyJianYingDraft/metadata/transition_meta.py
+    pyJianYingDraft/metadata/transition_meta.py,
+    pyJianYingDraft\metadata\font_meta.py
 max-line-length = 140
