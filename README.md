@@ -64,7 +64,7 @@
 - ☑️ 添加[转场](#草稿生成快速上手)，并自定义其时长
 ### 文本及字幕
 - ☑️ 添加[普通文本](#添加文本)
-- ☑️ 设置基础[字体样式](#添加文本)
+- ☑️ 设置[字体及样式](#添加文本)
 - ☑️ 文本[位置及旋转设置](#视频整体调节)
 - ☑️ 文本的[关键帧](#关键帧)生成
 - ☑️ 文字描边
@@ -121,6 +121,7 @@ script.add_segment(audio_segment).add_segment(video_segment).add_segment(sticker
 
 # 创建一行类似字幕的文本片段并添加到轨道中
 text_segment = draft.Text_segment("据说pyJianYingDraft效果还不错?", trange(0, script.duration),  # 文本将持续整个视频（注意script.duration在上方片段添加到轨道后才会自动更新）
+                                  font=draft.Font_type.文轩体,                                  # 设置字体为文轩体
                                   style=draft.Text_style(color=(1.0, 1.0, 0.0)),                # 设置字体颜色为黄色
                                   clip_settings=draft.Clip_settings(transform_y=-0.8))          # 模拟字幕的位置
 script.add_segment(text_segment)
@@ -520,15 +521,16 @@ text_seg.add_animation(Text_loop_anim.色差故障)  # 注意：循环动画必�
 ### 文本及字幕
 #### 添加文本
 添加文本与添加视频/音频片段类似，只需创建`Text_segment`对象并利用`add_segment`添加到`Script_file`中即可。
-其**文字样式**及**图像调节**设置可分别通过`style`和`clip_settings`参数设置。
+其**字体**、**文字样式**及**图像调节**设置可分别通过`font`, `style`和`clip_settings`参数设置。
 
 例如：
 ```python
 import pyJianYingDraft as draft
-from pyJianYingDraft import Text_style, Clip_settings
+from pyJianYingDraft import Font_type, Text_style, Clip_settings
 
 # 带下划线、位置及大小类似字幕的浅蓝色文本
 seg1 = draft.Text_segment("Subtitle", trange("0s", "10s"),
+                          font=Font_type.文轩体,
                           style=Text_style(size=5.0, color=(0.7, 0.7, 1.0), underline=True, align=1),
                           clip_settings=Clip_settings(transform_y=-0.8))
 ```

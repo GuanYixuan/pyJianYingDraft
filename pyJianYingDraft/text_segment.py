@@ -10,6 +10,7 @@ from .time_util import Timerange, tim
 from .segment import Clip_settings, Visual_segment
 from .animation import Segment_animations, Text_animation
 
+from .metadata import Font_type, Effect_meta
 from .metadata import Text_intro, Text_outro, Text_loop_anim
 
 class Text_style:
@@ -98,6 +99,8 @@ class Text_segment(Visual_segment):
 
     text: str
     """文本内容"""
+    font: Optional[Effect_meta]
+    """字体类型"""
     style: Text_style
     """字体样式"""
 
@@ -105,6 +108,7 @@ class Text_segment(Visual_segment):
     """文本描边参数, None表示无描边"""
 
     def __init__(self, text: str, timerange: Timerange, *,
+                 font: Optional[Font_type] = None,
                  style: Optional[Text_style] = None, clip_settings: Optional[Clip_settings] = None,
                  border: Optional[Text_border] = None):
         """创建文本片段, 并指定其时间信息、字体样式及图像调节设置
@@ -114,13 +118,15 @@ class Text_segment(Visual_segment):
         Args:
             text (`str`): 文本内容
             timerange (`Timerange`): 片段在轨道上的时间范围
-            style (`Text_style`, optional): 字体样式
+            font (`Font_type`, optional): 字体类型, 默认为系统字体
+            style (`Text_style`, optional): 字体样式, 包含大小/颜色/对齐/透明度等.
             clip_settings (`Clip_settings`, optional): 图像调节设置, 默认不做任何变换
             border (`Text_border`, optional): 文本描边参数, 默认无描边
         """
         super().__init__(uuid.uuid4().hex, None, timerange, 1.0, 1.0, clip_settings=clip_settings)
 
         self.text = text
+        self.font = font.value if font else None
         self.style = style or Text_style()
         self.border = border
 
@@ -162,6 +168,35 @@ class Text_segment(Visual_segment):
         # 叠加各类效果的flag
         check_flag: int = 7
         if self.border: check_flag |= 8
+
+        content_json = {
+            "styles": [
+                {
+                    "fill": {
+                        "alpha": 1.0,
+                        "content": {
+                            "render_type": "solid",
+                            "solid": {
+                                "alpha": self.style.alpha,
+                                "color": list(self.style.color)
+                            }
+                        }
+                    },
+                    "range": [0, len(self.text)],
+                    "size": self.style.size,
+                    "bold": self.style.bold,
+                    "italic": self.style.italic,
+                    "underline": self.style.underline,
+                    "strokes": [self.border.export_json()] if self.border else []
+                }
+            ],
+            "text": self.text
+        }
+        if self.font:
+            content_json["styles"][0]["font"] = {
+                "id": self.font.resource_id,
+                "path": "C:/%s.ttf" % self.font.name
+            }
 
         return {
             "add_type": 0,
@@ -244,33 +279,7 @@ class Text_segment(Visual_segment):
             "combo_info": {
                 "text_templates": []
             },
-            "content": json.dumps({
-                "styles": [
-                    {
-                        "fill": {
-                            "alpha": 1.0,
-                            "content": {
-                                "render_type": "solid",
-                                "solid": {
-                                    "alpha": self.style.alpha,
-                                    "color": list(self.style.color)
-                                }
-                            }
-                        },
-                        # "font": {
-                        #     "id": "",
-                        #     "path": "***.ttf"
-                        # },
-                        "range": [0, len(self.text)],
-                        "size": self.style.size,
-                        "bold": self.style.bold,
-                        "italic": self.style.italic,
-                        "underline": self.style.underline,
-                        "strokes": [self.border.export_json()] if self.border else []
-                    }
-                ],
-                "text": self.text
-            }),
+            "content": json.dumps(content_json, ensure_ascii=False),
             "fixed_height": -1.0,
             "fixed_width": -1.0,
             "force_apply_line_max_width": False,
