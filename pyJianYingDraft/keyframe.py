@@ -41,20 +41,26 @@ class Keyframe_property(Enum):
     position_y = "KFTypePositionY"
     """上移为正, 此处的数值应该为`剪映中显示的值` / `草稿高度`, 也即单位是半个画布高"""
     rotation = "KFTypeRotation"
+    """顺时针旋转的**角度**"""
 
     scale_x = "KFTypeScaleX"
-    """单独控制X轴缩放比例, 与`uniform_scale`互斥"""
+    """单独控制X轴缩放比例(1.0为不缩放), 与`uniform_scale`互斥"""
     scale_y = "KFTypeScaleY"
-    """单独控制Y轴缩放比例, 与`uniform_scale`互斥"""
+    """单独控制Y轴缩放比例(1.0为不缩放), 与`uniform_scale`互斥"""
     uniform_scale = "UNIFORM_SCALE"
-    """同时控制X轴及Y轴缩放比例, 与`scale_x`和`scale_y`互斥"""
+    """同时控制X轴及Y轴缩放比例(1.0为不缩放), 与`scale_x`和`scale_y`互斥"""
 
     alpha = "KFTypeAlpha"
+    """不透明度, 1.0为完全不透明, 仅对`Video_segment`有效"""
     saturation = "KFTypeSaturation"
+    """饱和度, 0.0为原始饱和度, 范围为-1.0到1.0, 仅对`Video_segment`有效"""
     contrast = "KFTypeContrast"
+    """对比度, 0.0为原始对比度, 范围为-1.0到1.0, 仅对`Video_segment`有效"""
     brightness = "KFTypeBrightness"
+    """亮度, 0.0为原始亮度, 范围为-1.0到1.0, 仅对`Video_segment`有效"""
 
     volume = "KFTypeVolume"
+    """音量, 1.0为原始音量, 仅对`Audio_segment`和`Video_segment`有效"""
 
 class Keyframe_list:
     """关键帧列表, 记录与某个特定属性相关的一系列关键帧"""

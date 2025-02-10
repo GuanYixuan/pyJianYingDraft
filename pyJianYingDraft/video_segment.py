@@ -5,7 +5,7 @@
 
 import uuid
 
-from typing import Optional, Literal, Union, NoReturn
+from typing import Optional, Literal, Union
 from typing import Dict, List, Tuple, Any
 
 from .time_util import tim, Timerange
