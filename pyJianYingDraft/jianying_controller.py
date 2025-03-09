@@ -4,10 +4,28 @@ import time
 import shutil
 import uiautomation as uia
 
+from enum import Enum
 from typing import Optional, Literal
 
 from . import exceptions
 from .exceptions import AutomationError
+
+class Export_resolution(Enum):
+    """导出分辨率"""
+    RES_8K = "8K"
+    RES_4K = "4K"
+    RES_2K = "2K"
+    RES_1080P = "1080P"
+    RES_720P = "720P"
+    RES_480P = "480P"
+
+class Export_framerate(Enum):
+    """导出帧率"""
+    FR_24 = "24fps"
+    FR_25 = "25fps"
+    FR_30 = "30fps"
+    FR_50 = "50fps"
+    FR_60 = "60fps"
 
 class Jianying_controller:
     """剪映控制器"""
@@ -20,21 +38,26 @@ class Jianying_controller:
         """初始化剪映控制器, 此时剪映应该处于目录页"""
         self.get_window()
 
-    def export_draft(self, draft_name: str, output_dir: Optional[str] = None, timeout: float = 1200) -> None:
-        """导出指定的剪映草稿
+    def export_draft(self, draft_name: str, output_path: Optional[str] = None, *,
+                     resolution: Optional[Export_resolution] = None,
+                     framerate: Optional[Export_framerate] = None,
+                     timeout: float = 1200) -> None:
+        """导出指定的剪映草稿, **目前仅支持剪映6及以下版本**
 
         **注意: 需要确认有导出草稿的权限(不使用VIP功能或已开通VIP), 否则可能陷入死循环**
 
         Args:
             draft_name (`str`): 要导出的剪映草稿名称
-            output_path (`str`, optional): 导出路径, 导出完成后会将文件剪切到此, 不指定则使用剪映默认路径.
+            output_path (`str`, optional): 导出路径, 支持指向文件夹或直接指向文件, 不指定则使用剪映默认路径.
+            resolution (`Export_resolution`, optional): 导出分辨率, 默认不改变剪映导出窗口中的设置.
+            framerate (`Export_framerate`, optional): 导出帧率, 默认不改变剪映导出窗口中的设置.
             timeout (`float`, optional): 导出超时时间(秒), 默认为20分钟.
 
         Raises:
             `DraftNotFound`: 未找到指定名称的剪映草稿
             `AutomationError`: 剪映操作失败
         """
-        print(f"开始导出 {draft_name} 至 {output_dir}")
+        print(f"开始导出 {draft_name} 至 {output_path}")
         self.get_window()
         self.switch_to_home()
 
@@ -52,12 +75,12 @@ class Jianying_controller:
         # 点击导出按钮
         export_btn = self.app.TextControl(searchDepth=2, Compare=self.__edit_page_export_cmp)
         if not export_btn.Exists(0):
-            raise AutomationError("未找到导出按钮")
+            raise AutomationError("未在编辑窗口中找到导出按钮")
         export_btn.Click(simulateMove=False)
         time.sleep(10)
         self.get_window()
 
-        # 获取原始导出路径
+        # 获取原始导出路径（带后缀名）
         export_path_sib = self.app.TextControl(searchDepth=2, Compare=self.__export_path_cmp)
         if not export_path_sib.Exists(0):
             raise AutomationError("未找到导出路径框")
@@ -65,10 +88,49 @@ class Jianying_controller:
         assert export_path_text is not None
         export_path = export_path_text.GetPropertyValue(30159)
 
+        # 设置分辨率
+        if resolution is not None:
+            setting_group = self.app.GroupControl(searchDepth=1, foundIndex=4)
+            if not setting_group.Exists(0):
+                raise AutomationError("未找到导出设置组")
+            resolution_btn = setting_group.TextControl(searchDepth=2, Compare=self.__export_resolution_cmp)
+            if not resolution_btn.Exists(0.5):
+                raise AutomationError("未找到导出分辨率下拉框")
+            resolution_btn.Click(simulateMove=False)
+            time.sleep(0.5)
+            resolution_item = self.app.TextControl(
+                searchDepth=2,
+                Compare=lambda ctrl, depth: self.__export_setting_item_cmp(resolution.value, ctrl, depth)
+            )
+            if not resolution_item.Exists(0.5):
+                raise AutomationError(f"未找到{resolution.value}分辨率选项")
+            resolution_item.Click(simulateMove=False)
+            time.sleep(0.5)
+
+        # 设置帧率
+        if framerate is not None:
+            setting_group = self.app.GroupControl(searchDepth=1, foundIndex=4)
+            if not setting_group.Exists(0):
+                raise AutomationError("未找到导出设置组")
+            framerate_btn = setting_group.TextControl(searchDepth=2, Compare=self.__export_framerate_cmp)
+            if not framerate_btn.Exists(0.5):
+                raise AutomationError("未找到导出帧率下拉框")
+            framerate_btn.Click(simulateMove=False)
+            time.sleep(0.5)
+            framerate_item = self.app.TextControl(
+                searchDepth=2,
+                Compare=lambda ctrl, depth: self.__export_setting_item_cmp(framerate.value, ctrl, depth)
+            )
+            if not framerate_item.Exists(0.5):
+                raise AutomationError(f"未找到{framerate.value}帧率选项")
+            framerate_item.Click(simulateMove=False)
+            time.sleep(0.5)
+
+
         # 点击导出
         export_btn = self.app.TextControl(searchDepth=2, Compare=self.__export_btn_cmp)
         if not export_btn.Exists(0):
-            raise AutomationError("未找到导出按钮")
+            raise AutomationError("未在导出窗口中找到导出按钮")
         export_btn.Click(simulateMove=False)
         time.sleep(5)
 
@@ -95,10 +157,10 @@ class Jianying_controller:
         time.sleep(2)
 
         # 复制导出的文件到指定目录
-        if output_dir is not None:
-            shutil.move(export_path, output_dir)
+        if output_path is not None:
+            shutil.move(export_path, output_path)
 
-        print(f"导出 {draft_name} 至 {output_dir} 完成")
+        print(f"导出 {draft_name} 至 {output_path} 完成")
 
     def switch_to_home(self) -> None:
         """切换到剪映主页"""
@@ -139,7 +201,6 @@ class Jianying_controller:
             self.app_status = "edit"
             return True
         return False
-
     @staticmethod
     def __draft_name_cmp(draft_name: str, control: uia.TextControl, depth: int) -> bool:
         if depth != 2:
@@ -167,6 +228,25 @@ class Jianying_controller:
             return False
         full_desc: str = control.GetPropertyValue(30159).lower()
         return "ExportPath".lower() in full_desc
+
+    @staticmethod
+    def __export_resolution_cmp(control: uia.TextControl, depth: int) -> bool:
+        if depth != 2:
+            return False
+        full_desc: str = control.GetPropertyValue(30159).lower()
+        return "ExportSharpnessInput".lower() in full_desc
+    @staticmethod
+    def __export_framerate_cmp(control: uia.TextControl, depth: int) -> bool:
+        if depth != 2:
+            return False
+        full_desc: str = control.GetPropertyValue(30159).lower()
+        return "FrameRateInput".lower() in full_desc
+    @staticmethod
+    def __export_setting_item_cmp(description: str, control: uia.TextControl, depth: int) -> bool:
+        if depth != 2:
+            return False
+        full_desc: str = control.GetPropertyValue(30159).lower()
+        return description.lower() in full_desc
 
     @staticmethod
     def __export_succeed_close_btn_cmp(control: uia.TextControl, depth: int) -> bool:
