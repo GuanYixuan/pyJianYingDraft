@@ -43,8 +43,7 @@
   - ❔ 关键帧曲线
 - ☑️ 添加[蒙版](#蒙版)，并设置参数
 - ☑️ 视频片段的[入场/出场/组合动画](#添加片段动画)
-- ☑️ 添加[片段特效](#添加片段特效)，并设置参数
-- ☑️ 添加[片段滤镜](#添加片段滤镜)，并设置强度
+- ☑️ 添加[片段特效](#添加片段特效)和[滤镜](#添加片段滤镜)
 ### 贴纸
 - ☑️ 根据元信息[添加贴纸](#提取素材元数据)
 - ☑️ 贴纸的[关键帧](#关键帧)生成
@@ -62,8 +61,8 @@
 - ☑️ 将片段添加到[指定轨道](#多轨道操作)
 - ☑️ 自定义视频/滤镜/特效轨道的[层级关系](#多轨道操作)
 ### 特效、滤镜和转场
-- ☑️ 位于**独立轨道的特效**
-- ☑️ 位于**独立轨道的滤镜**
+- ☑️ 吸附于片段上的[特效](#添加片段特效)、[滤镜](#添加片段滤镜)和[动画](#添加片段动画)
+- ☑️ 位于[独立轨道的特效和滤镜](#独立轨道上的特效和滤镜)
 - ☑️ 添加[转场](#草稿生成快速上手)，并自定义其时长
 ### 文本及字幕
 - ☑️ [添加文本、设置字体及样式](#添加文本)
@@ -469,9 +468,7 @@ video_segment2.add_mask(Mask_type.圆形, size=0.5)
 
 更具体的参数说明请参见`add_mask`方法的注释。
 
-### 片段上的特效、动画和滤镜
-> 本节介绍的是**吸附在片段上**的特效、动画和滤镜
-
+### 特效、动画和滤镜
 #### 特效类型
 目前支持的**特效**类型由以下枚举类定义：
 - 音频：`Audio_scene_effect_type`（场景音）、`Tone_effect_type`（音色）、`Speech_to_song_type`（声音成曲，此类效果**目前不能自动触发剪映生成相应文件**）
@@ -514,6 +511,30 @@ from pyJianYingDraft import Filter_type
 
 video_segment1.add_filter(Filter_type.原生肤, 10)  # 设置"原生肤"强度为10
 video_segment2.add_filter(Filter_type.冰雪世界, 50)  # 设置"冰雪世界"强度为50
+```
+
+#### 独立轨道上的特效和滤镜
+除了为视频片段添加特效和滤镜外，你还可以创建独立的特效轨道和滤镜轨道，并在其上添加特效和滤镜片段。
+
+首先使用`Script_file.add_track()`方法创建特效轨道或滤镜轨道。若需要指定顺序请参考[多轨道操作](#多轨道操作)
+```python
+script.add_track(draft.Track_type.effect, "my_effect")  # 创建名为"my_effect"的特效轨道
+script.add_track(draft.Track_type.filter, "my_filter")  # 创建名为"my_filter"的滤镜轨道
+```
+
+接下来便可使用`add_effect`和`add_filter`方法向这些轨道添加片段：
+```python
+from pyJianYingDraft import Video_scene_effect_type, Filter_type, trange
+
+# 在特效轨道上添加一个"胶片闪切"特效，持续5秒，并设置其参数
+script.add_effect(Video_scene_effect_type.胶片闪切, trange("0s", "5s"),
+                  track_name="my_effect",  # 当特效轨道只有一条时可省略
+                  params=[50, None, 80])  # 设置速度为50，保持强度默认(100)，设置纹理为80
+
+# 在滤镜轨道上添加一个"哈苏蓝"滤镜，持续整个视频，强度为70
+script.add_filter(Filter_type.哈苏蓝, trange(0, script.duration),
+                  track_name="my_filter",  # 当滤镜轨道只有一条时可省略
+                  intensity=70)
 ```
 
 #### 添加片段动画
