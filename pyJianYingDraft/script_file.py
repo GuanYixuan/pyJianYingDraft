@@ -621,10 +621,21 @@ class Script_file:
         return self
 
     def inspect_material(self) -> None:
-        """输出草稿中导入的贴纸素材的元数据"""
+        """输出草稿中导入的贴纸、文本气泡以及花字素材的元数据"""
         print("贴纸素材:")
         for sticker in self.imported_materials["stickers"]:
             print("\tResource id: %s '%s'" % (sticker["resource_id"], sticker.get("name", "")))
+
+        print("文字气泡效果:")
+        for effect in self.imported_materials["effects"]:
+            if effect["type"] == "text_shape":
+                print("\tEffect id: %s ,Resource id: %s '%s'" %
+                      (effect["effect_id"], effect["resource_id"], effect.get("name", "")))
+
+        print("花字效果:")
+        for effect in self.imported_materials["effects"]:
+            if effect["type"] == "text_effect":
+                print("\tResource id: %s '%s'" % (effect["resource_id"], effect.get("name", "")))
 
     def dumps(self) -> str:
         """将草稿文件内容导出为JSON字符串"""
