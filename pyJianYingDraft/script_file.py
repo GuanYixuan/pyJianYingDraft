@@ -1,5 +1,6 @@
 import os
 import json
+import math
 import warnings
 from copy import deepcopy
 
@@ -595,31 +596,88 @@ class Script_file:
         # TODO: 更新总长
         return self
 
-    def replace_text(self, track: Editable_track, segment_index: int, text: str) -> "Script_file":
-        """替换指定文本轨道上指定片段的文字内容
+    def replace_text(self, track: Editable_track, segment_index: int, text: Union[str, List[str]],
+                     recalc_style: bool = True) -> "Script_file":
+        """替换指定文本轨道上指定片段的文字内容, 支持普通文本片段或文本模板片段
 
         Args:
             track (`Editable_track`): 要替换文字的文本轨道, 由`get_imported_track`获取
             segment_index (`int`): 要替换文字的片段下标, 从0开始
-            text (`str`): 新的文字内容
+            text (`str` or `List[str]`): 新的文字内容, 对于文本模板而言应传入一个字符串列表.
+            recalc_style (`bool`): 是否重新计算字体样式分布, 即调整各字体样式应用范围以尽量维持原有占比不变, 默认开启.
 
         Raises:
             `IndexError`: `segment_index`越界
             `TypeError`: 轨道类型不正确
+            `ValueError`: 文本模板片段的文本数量不匹配
         """
         if not isinstance(track, Imported_text_track):
             raise TypeError("指定的轨道(类型为 %s)不支持文本内容替换" % track.track_type)
         if not 0 <= segment_index < len(track):
             raise IndexError("片段下标 %d 超出 [0, %d) 的范围" % (segment_index, len(track)))
 
+        def __recalc_style_range(old_len: int, new_len: int, styles: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+            """调整字体样式分布"""
+            new_styles: List[Dict[str, Any]] = []
+            for style in styles:
+                start = math.ceil(style["range"][0] / old_len * new_len)
+                end = math.ceil(style["range"][1] / old_len * new_len)
+                style["range"] = [start, end]
+                if start != end:
+                    new_styles.append(style)
+            return new_styles
+
+        replaced: bool = False
         material_id: str = track.segments[segment_index]["material_id"]
+        # 尝试在文本素材中替换
         for mat in self.imported_materials["texts"]:
-            if mat["id"] != material_id: continue
+            if mat["id"] != material_id:
+                continue
+
+            if isinstance(text, list):
+                if len(text) != 1:
+                    raise ValueError(f"正常文本片段只能有一个文字内容, 但替换内容是 {text}")
+                text = text[0]
 
             content = json.loads(mat["content"])
+            if recalc_style:
+                content["styles"] = __recalc_style_range(len(content["text"]), len(text), content["styles"])
             content["text"] = text
             mat["content"] = json.dumps(content, ensure_ascii=False)
+            replaced = True
             break
+        if replaced:
+            return self
+
+        # 尝试在文本模板中替换
+        for template in self.imported_materials["text_templates"]:
+            if template["id"] != material_id:
+                continue
+
+            resources = template["text_info_resources"]
+            if isinstance(text, str):
+                text = [text]
+            if len(text) > len(resources):
+                raise ValueError(f"文字模板'{template['name']}'只有{len(resources)}段文本, 但提供了{len(text)}段替换内容")
+
+            for sub_material_id, new_text in zip(map(lambda x: x["text_material_id"], resources), text):
+                for mat in self.imported_materials["texts"]:
+                    if mat["id"] != sub_material_id:
+                        continue
+
+                    if isinstance(mat["content"], str):
+                        mat["content"] = new_text
+                    else:
+                        content = json.loads(mat["content"])
+                        if recalc_style:
+                            content["styles"] = __recalc_style_range(len(content["text"]), len(new_text), content["styles"])
+                        content["text"] = new_text
+                        mat["content"] = json.dumps(content, ensure_ascii=False)
+                    break
+            replaced = True
+            break
+
+        assert replaced, f"未找到指定片段的素材 {material_id}"
 
         return self
 
