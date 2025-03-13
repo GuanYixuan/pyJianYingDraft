@@ -15,7 +15,7 @@ from .segment import Base_segment, Speed, Clip_settings
 from .audio_segment import Audio_segment, Audio_fade, Audio_effect
 from .video_segment import Video_segment, Sticker_segment, Segment_animations, Video_effect, Transition, Filter
 from .effect_segment import Effect_segment, Filter_segment
-from .text_segment import Text_segment, Text_style
+from .text_segment import Text_segment, Text_style, TextBubble
 from .track import Track_type, Base_track, Track
 
 from .metadata import Video_scene_effect_type, Video_character_effect_type, Filter_type
@@ -47,8 +47,8 @@ class Script_material:
     """蒙版列表"""
     transitions: List[Transition]
     """转场效果列表"""
-    filters: List[Filter]
-    """滤镜效果列表"""
+    filters: List[Union[Filter, TextBubble]]
+    """滤镜/文本花字/文本气泡列表, 导出到`effects`中"""
 
     def __init__(self):
         self.audios = []
@@ -343,7 +343,10 @@ class Script_file:
             # 出入场等动画
             if (segment.animations_instance is not None) and (segment.animations_instance not in self.materials):
                 self.materials.animations.append(segment.animations_instance)
-            # 字幕样式
+            # 气泡效果
+            if segment.bubble is not None:
+                self.materials.filters.append(segment.bubble)
+            # 字体样式
             self.materials.texts.append(segment.export_material())
 
         # 检查片段素材是否已添加

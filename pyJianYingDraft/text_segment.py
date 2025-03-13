@@ -131,6 +131,8 @@ class Text_segment(Visual_segment):
 
     border: Optional[Text_border]
     """文本描边参数, None表示无描边"""
+    bubble: Optional[TextBubble]
+    """文本气泡效果, 在放入轨道时加入素材列表中"""
 
     def __init__(self, text: str, timerange: Timerange, *,
                  font: Optional[Font_type] = None,
@@ -186,6 +188,17 @@ class Text_segment(Visual_segment):
 
         self.animations_instance.add_animation(Text_animation(animation_type, start, duration))
 
+        return self
+
+    def add_bubble(self, effect_id: str, resource_id: str) -> "Text_segment":
+        """根据素材信息添加气泡效果, 相应素材信息可通过`Script_file.inspect_material`从模板中获取
+
+        Args:
+            effect_id (`str`): 气泡效果的effect_id
+            resource_id (`str`): 气泡效果的resource_id
+        """
+        self.bubble = TextBubble(effect_id, resource_id)
+        self.extra_material_refs.append(self.bubble.global_id)
         return self
 
     def export_material(self) -> Dict[str, Any]:
