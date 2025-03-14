@@ -156,6 +156,7 @@ class Text_segment(Visual_segment):
         self.font = font.value if font else None
         self.style = style or Text_style()
         self.border = border
+        self.bubble = None
 
     def add_animation(self, animation_type: Union[Text_intro, Text_outro, Text_loop_anim],
                       duration: Union[str, float] = 500000) -> "Text_segment":
