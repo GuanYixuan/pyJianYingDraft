@@ -33,12 +33,23 @@ class ControlFinder:
     @staticmethod
     def desc_matcher(target_desc: str, depth: int = 2, exact: bool = False) -> Callable[[uia.Control, int], bool]:
         """根据full_description查找控件的匹配器"""
+        target_desc = target_desc.lower()
         def matcher(control: uia.Control, _depth: int) -> bool:
             if _depth != depth:
                 return False
             full_desc: str = control.GetPropertyValue(30159).lower()
-            target = target_desc.lower()
-            return (target == full_desc) if exact else (target in full_desc)
+            return (target_desc == full_desc) if exact else (target_desc in full_desc)
+        return matcher
+
+    @staticmethod
+    def class_name_matcher(class_name: str, depth: int = 1, exact: bool = False) -> Callable[[uia.Control, int], bool]:
+        """根据ClassName查找控件的匹配器"""
+        class_name = class_name.lower()
+        def matcher(control: uia.Control, _depth: int) -> bool:
+            if _depth != depth:
+                return False
+            curr_class_name: str = control.ClassName.lower()
+            return (class_name == curr_class_name) if exact else (class_name in curr_class_name)
         return matcher
 
 class Jianying_controller:
@@ -106,7 +117,8 @@ class Jianying_controller:
 
         # 设置分辨率
         if resolution is not None:
-            setting_group = self.app.GroupControl(searchDepth=1, foundIndex=4)
+            setting_group = self.app.GroupControl(searchDepth=1,
+                                                  Compare=ControlFinder.class_name_matcher("PanelSettingsGroup_QMLTYPE"))
             if not setting_group.Exists(0):
                 raise AutomationError("未找到导出设置组")
             resolution_btn = setting_group.TextControl(searchDepth=2, Compare=ControlFinder.desc_matcher("ExportSharpnessInput"))
@@ -115,7 +127,7 @@ class Jianying_controller:
             resolution_btn.Click(simulateMove=False)
             time.sleep(0.5)
             resolution_item = self.app.TextControl(
-                searchDepth=2, Compare=ControlFinder.desc_matcher(resolution.value, exact=True)
+                searchDepth=2, Compare=ControlFinder.desc_matcher(resolution.value)
             )
             if not resolution_item.Exists(0.5):
                 raise AutomationError(f"未找到{resolution.value}分辨率选项")
@@ -124,7 +136,8 @@ class Jianying_controller:
 
         # 设置帧率
         if framerate is not None:
-            setting_group = self.app.GroupControl(searchDepth=1, foundIndex=4)
+            setting_group = self.app.GroupControl(searchDepth=1,
+                                                  Compare=ControlFinder.class_name_matcher("PanelSettingsGroup_QMLTYPE"))
             if not setting_group.Exists(0):
                 raise AutomationError("未找到导出设置组")
             framerate_btn = setting_group.TextControl(searchDepth=2, Compare=ControlFinder.desc_matcher("FrameRateInput"))
@@ -133,7 +146,7 @@ class Jianying_controller:
             framerate_btn.Click(simulateMove=False)
             time.sleep(0.5)
             framerate_item = self.app.TextControl(
-                searchDepth=2, Compare=ControlFinder.desc_matcher(framerate.value, exact=True)
+                searchDepth=2, Compare=ControlFinder.desc_matcher(framerate.value)
             )
             if not framerate_item.Exists(0.5):
                 raise AutomationError(f"未找到{framerate.value}帧率选项")
