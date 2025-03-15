@@ -238,23 +238,21 @@ class Text_segment(Visual_segment):
             }
 
         return {
-            "add_type": 0,
+            "id": self.material_id,
+            "content": json.dumps(content_json, ensure_ascii=False),
 
             "typesetting": int(self.style.vertical),
             "alignment": self.style.align,
+            "letter_spacing": 0.0,
+            "line_spacing": 0.02,
 
-            # ?
-            # "caption_template_info": {
-            #     "category_id": "",
-            #     "category_name": "",
-            #     "effect_id": "",
-            #     "is_new": False,
-            #     "path": "",
-            #     "request_id": "",
-            #     "resource_id": "",
-            #     "resource_name": "",
-            #     "source_platform": 0
-            # },
+            "line_feed": 1,
+            "line_max_width": 0.82,
+            "force_apply_line_max_width": False,
+
+            "check_flag": check_flag,
+
+            "type": "text",
 
             # 混合 (+4)
             # "global_alpha": 1.0,
@@ -309,67 +307,4 @@ class Text_segment(Visual_segment):
             # "text_preset_resource_id": "",
             # "text_size": 30,
             # "underline": False,
-
-
-            "base_content": "",
-            "bold_width": 0.0,
-
-            "check_flag": check_flag,
-            "combo_info": {
-                "text_templates": []
-            },
-            "content": json.dumps(content_json, ensure_ascii=False),
-            "fixed_height": -1.0,
-            "fixed_width": -1.0,
-            "force_apply_line_max_width": False,
-
-            "group_id": "",
-
-            "id": self.material_id,
-            "initial_scale": 1.0,
-            "inner_padding": -1.0,
-            "is_rich_text": False,
-            "italic_degree": 0,
-            "ktv_color": "",
-            "language": "",
-            "layer_weight": 1,
-            "letter_spacing": 0.0,
-            "line_feed": 1,
-            "line_max_width": 0.82,
-            "line_spacing": 0.02,
-            "multi_language_current": "none",
-            "name": "",
-            "original_size": [],
-
-            "preset_category": "",
-            "preset_category_id": "",
-            "preset_has_set_alignment": False,
-            "preset_id": "",
-            "preset_index": 0,
-            "preset_name": "",
-
-            "recognize_task_id": "",
-            "recognize_type": 0,
-            "relevance_segment": [],
-
-            "shape_clip_x": False,
-            "shape_clip_y": False,
-            "source_from": "",
-            "style_name": "",
-            "sub_type": 0,
-            "subtitle_keywords": None,
-            "subtitle_template_original_fontsize": 0.0,
-            "text_to_audio_ids": [],
-            "tts_auto_update": False,
-            "type": "text",
-
-            "underline_offset": 0.22,
-            "underline_width": 0.05,
-
-            "use_effect_default_color": True,
-            "words": {
-                "end_time": [],
-                "start_time": [],
-                "text": []
-            }
         }
