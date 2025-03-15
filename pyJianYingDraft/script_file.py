@@ -244,6 +244,7 @@ class Script_file:
         return self
 
     def add_track(self, track_type: Track_type, track_name: Optional[str] = None, *,
+                  mute: bool = False,
                   relative_index: int = 0, absolute_index: Optional[int] = None) -> "Script_file":
         """向草稿文件中添加一个指定类型、指定名称的轨道, 可以自定义轨道层级
 
@@ -254,6 +255,7 @@ class Script_file:
         Args:
             track_type (Track_type): 轨道类型
             track_name (str, optional): 轨道名称. 仅在创建第一个同类型轨道时允许不指定.
+            mute (bool, optional): 轨道是否静音. 默认不静音.
             relative_index (int, optional): 相对(同类型轨道的)图层位置, 越高越接近前景. 默认为0.
             absolute_index (int, optional): 绝对图层位置, 越高越接近前景. 此参数将直接覆盖相应片段的`render_index`属性, 供有经验的用户使用.
                 此参数不能与`relative_index`同时使用.
@@ -273,7 +275,7 @@ class Script_file:
         if absolute_index is not None:
             render_index = absolute_index
 
-        self.tracks[track_name] = Track(track_type, track_name, render_index)
+        self.tracks[track_name] = Track(track_type, track_name, render_index, mute)
         return self
 
     def _get_track(self, segment_type: Type[Base_segment], track_name: Optional[str]) -> Track:

@@ -72,15 +72,19 @@ Seg_type = TypeVar("Seg_type", bound=Base_segment)
 class Track(Base_track, Generic[Seg_type]):
     """非模板模式下的轨道"""
 
+    mute: bool
+    """是否静音"""
+
     segments: List[Seg_type]
     """该轨道包含的片段列表"""
 
-    def __init__(self, track_type: Track_type, name: str, render_index: int):
+    def __init__(self, track_type: Track_type, name: str, render_index: int, mute: bool):
         self.track_type = track_type
         self.name = name
         self.track_id = uuid.uuid4().hex
         self.render_index = render_index
 
+        self.mute = mute
         self.segments = []
 
     @property
@@ -124,7 +128,7 @@ class Track(Base_track, Generic[Seg_type]):
             seg["render_index"] = self.render_index
 
         return {
-            "attribute": 0,
+            "attribute": int(self.mute),
             "flag": 0,
             "id": self.track_id,
             "is_default_name": len(self.name) == 0,
