@@ -10,10 +10,10 @@
 ## 使用思路
 ![使用思路](readme_assets/使用思路.jpg)
 
-# 特性清单
+# 功能清单
 > ℹ 如未额外注明，一般仅在5.9版本上测试过
 
-> 标注☑️的特性**已实现**，标注⬜的特性**待实现**，标注❔的特性**暂不在计划中**
+> 标注☑️的特性**已实现**，标注⬜的特性**待实现**
 
 ### 模板模式
 > ⚠️ 剪映6+版本对`draft_content.json`文件进行了加密，故**本系列功能目前仅支持剪映5.9及以下版本**
@@ -34,109 +34,45 @@
 ### 视频与图片
 > ℹ 以下草稿生成功能（音视频、贴纸、文本、特效等）支持剪映5及以上的所有版本
 
-- ☑️ 添加本地视频/图片素材
-- ☑️ 将视频/图片素材添加至轨道
-  - ☑️ 截取素材并自定义放置在轨道上的[时间、持续时长或播放速度](#素材截取与整体变速)
-    - ❔ 曲线变速
-- ☑️ [视频整体调节](#视频整体调节)（裁剪、旋转、翻转、缩放、透明度、亮度等）
-- ☑️ 除裁剪外上述属性的[关键帧](#关键帧)生成
-  - ❔ 关键帧曲线
-- ☑️ 添加[蒙版](#蒙版)，并设置参数
+- ☑️ 添加本地视频/图片素材，并[自定义片段的时间、持续时长或播放速度](#素材截取与整体变速)
+- ☑️ [视频整体调节](#视频整体调节)（旋转、缩放、亮度等）以及[关键帧生成](#关键帧)
 - ☑️ 视频片段的[入场/出场/组合动画](#添加片段动画)
-- ☑️ 添加[片段特效](#添加片段特效)和[滤镜](#添加片段滤镜)
+- ☑️ 添加[蒙版](#蒙版)、[片段特效](#添加片段特效)和[滤镜](#添加片段滤镜)
 ### 贴纸
 - ☑️ 根据元信息[添加贴纸](#提取素材元数据)
 - ☑️ 贴纸的[关键帧](#关键帧)生成
 ### 音频
-- ☑️ 添加本地音频素材
-- ☑️ 将音频素材添加至轨道
-  - ☑️ 截取素材并自定义放置在轨道上的[时间、持续时长或播放速度](#素材截取与整体变速)
-    - ❔ 曲线变速
-- ☑️ 调整[音量、淡入淡出时长](#草稿生成快速上手)
-- ☑️ 音量的[关键帧](#关键帧)生成
+- ☑️ 添加本地音频素材，并[自定义片段的时间、持续时长或播放速度](#素材截取与整体变速)
+- ☑️ 调整[淡入淡出时长](#快速上手)，调整[音量](#快速上手)及其[关键帧](#关键帧)
 - ☑️ 添加音频片段的[音色、场景音效果](#添加片段特效)，并设置参数
-- ❔ 自动触发**声音成曲**效果的文件生成
 ### 轨道
-- ☑️ [添加轨道](#多轨道操作)
-- ☑️ 将片段添加到[指定轨道](#多轨道操作)
+- ☑️ [添加轨道](#多轨道操作)以及[将片段添加到指定轨道](#多轨道操作)
 - ☑️ 自定义视频/滤镜/特效轨道的[层级关系](#多轨道操作)
 ### 特效、滤镜和转场
 - ☑️ 吸附于片段上的[特效](#添加片段特效)、[滤镜](#添加片段滤镜)和[动画](#添加片段动画)
 - ☑️ 位于[独立轨道的特效和滤镜](#独立轨道上的特效和滤镜)
-- ☑️ 添加[转场](#草稿生成快速上手)，并自定义其时长
+- ☑️ 添加[转场](#快速上手)，并自定义其时长
 ### 文本及字幕
-- ☑️ [添加文本、设置字体及样式](#添加文本)
-- ☑️ 文本[位置及旋转设置](#视频整体调节)
-- ☑️ 文本的[关键帧](#关键帧)生成
-- ☑️ [文本动画](#添加片段动画)
-- ☑️ 文字描边
+- ☑️ [添加文本、设置字体及样式](#添加文本)、修改文本片段的[位置及旋转设置](#视频整体调节)
+- ☑️ 文本的[关键帧](#关键帧)以及[动画](#添加片段动画)
+- ☑️ 文字描边效果、文字气泡效果
 - ☑️ [导入`.srt`文件](#导入字幕)生成字幕
 
 
-# 用法速查
-### 草稿生成快速上手
-下方的例子将创建包含音视频素材和一行字幕的剪映草稿文件，并且添加了音频淡入、视频入场动画和转场效果。
+# 快速上手
+例程`demo.py`将创建包含音视频素材和一行字幕的剪映草稿文件，并且添加了音频淡入、视频入场动画和转场效果。
 
-这个例子的操作方法如下：
+这个例程的操作方法如下：
 1. 在剪映里**创建一个空草稿**，找到它对应的**文件夹路径**（类似`.../JianyingPro Drafts/9月5日`）
 2. **返回剪映首页**或退出剪映
-3. 将下方代码**保存到项目文件夹根目录**下（即与此`README.md`同级）
-4. 将代码中最后一行`dump`的**保存路径改为草稿文件夹下的`draft_content.json`路径**，随后运行代码
-```python
-# 导入模块
-import os
-import pyJianYingDraft as draft
-from pyJianYingDraft import Intro_type, Transition_type, trange
-
-tutorial_asset_dir = os.path.join(os.path.dirname(__file__), 'readme_assets', 'tutorial')
-
-# 创建剪映草稿
-script = draft.Script_file(1080, 1080) # 1080x1080分辨率
-
-# 添加音频、视频和文本轨道
-script.add_track(draft.Track_type.audio).add_track(draft.Track_type.video).add_track(draft.Track_type.text)
-
-# 从本地读取音视频素材和一个gif表情包
-audio_material = draft.Audio_material(os.path.join(tutorial_asset_dir, 'audio.mp3'))
-video_material = draft.Video_material(os.path.join(tutorial_asset_dir, 'video.mp4'))
-sticker_material = draft.Video_material(os.path.join(tutorial_asset_dir, 'sticker.gif'))
-script.add_material(audio_material).add_material(video_material).add_material(sticker_material) # 随手添加素材是好习惯
-
-# 创建音频片段
-audio_segment = draft.Audio_segment(audio_material,
-                                    trange("0s", "5s"), # 片段将位于轨道上的0s-5s（注意5s表示持续时长而非结束时间）
-                                    volume=0.6)         # 音量设置为60%(-4.4dB)
-audio_segment.add_fade("1s", "0s")                      # 增加一个1s的淡入
-
-# 创建视频片段
-video_segment = draft.Video_segment(video_material, trange("0s", "4.2s")) # 片段将位于轨道上的0s-4.2s（取素材前4.2s内容，注意此处4.2s表示持续时长）
-video_segment.add_animation(Intro_type.斜切)                              # 添加一个入场动画“斜切”
-
-sticker_segment = draft.Video_segment(sticker_material,
-                                      trange(video_segment.end, sticker_material.duration)) # 紧跟上一片段，长度与gif一致
-
-# 为二者添加一个转场
-video_segment.add_transition(Transition_type.信号故障) # 注意转场添加在“前一个”视频片段上
-
-# 将上述片段添加到轨道中
-script.add_segment(audio_segment).add_segment(video_segment).add_segment(sticker_segment)
-
-# 创建一行类似字幕的文本片段并添加到轨道中
-text_segment = draft.Text_segment("据说pyJianYingDraft效果还不错?", trange(0, script.duration),  # 文本将持续整个视频（注意script.duration在上方片段添加到轨道后才会自动更新）
-                                  font=draft.Font_type.文轩体,                                  # 设置字体为文轩体
-                                  style=draft.Text_style(color=(1.0, 1.0, 0.0)),                # 设置字体颜色为黄色
-                                  clip_settings=draft.Clip_settings(transform_y=-0.8))          # 模拟字幕的位置
-script.add_segment(text_segment)
-
-# 保存草稿（覆盖掉原有的draft_content.json）
-script.dump("<你的草稿文件夹>/draft_content.json")
-```
-5. 现在在剪映中**重新打开这个草稿**，你应该看到如下时间轴：
+3. 将代码中`DUMP_PATH`变量的值改为**草稿文件夹下的`draft_content.json`路径**，随后运行`demo.py`
+4. 现在在剪映中**重新打开这个草稿**，你应该看到如下时间轴：
 
 ![快速上手](readme_assets/快速上手.png)
 
 你可以仔细检查音频片段的音量设置、淡入效果时长以及视频片段的入场动画效果，看看是否符合上述代码的设置
 
+# 用法文档
 ### 模板模式
 为了保留部分复杂特性（文本特效、复合片段...），可以加载一个已有的剪映草稿作为模板，然后**替换其中部分片段的内容**。
 
@@ -208,7 +144,7 @@ script.inspect_material()
 
 > ℹ 由于不涉及时间范围的修改，这种替换方式**尤其适合图像素材**，且几乎不会产生兼容性的问题
 
-以[快速上手](#草稿生成快速上手)中的草稿为例，假如我们希望换用新的音频素材，可以：
+以[快速上手](#快速上手)中的草稿为例，假如我们希望换用新的音频素材，可以：
 ```python
 new_material = draft.Audio_material("<新的音频素材路径>")
 script.replace_material_by_name("audio.mp3", new_material)  # 替换名称为"audio.mp3"的素材
