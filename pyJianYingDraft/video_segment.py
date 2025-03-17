@@ -313,7 +313,7 @@ class Video_segment(Visual_segment):
         Args:
             animation_type (`Intro_type`, `Outro_type`, or `Group_animation_type`): 动画类型
             duration (`int` or `str`, optional): 动画持续时间, 单位为微秒. 若传入字符串则会调用`tim()`函数进行解析.
-                若不指定则使用动画类型定义的默认值.
+                若不指定则使用动画类型定义的默认值. 理论上只适用于入场和出场动画.
         """
         if duration is not None:
             duration = tim(duration)
@@ -321,8 +321,8 @@ class Video_segment(Visual_segment):
             start = 0
             duration = duration or animation_type.value.duration
         elif isinstance(animation_type, Outro_type):
-            start = self.target_timerange.duration - animation_type.value.duration
             duration = duration or animation_type.value.duration
+            start = self.target_timerange.duration - duration
         elif isinstance(animation_type, Group_animation_type):
             start = 0
             duration = duration or self.target_timerange.duration
