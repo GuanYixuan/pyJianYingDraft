@@ -304,17 +304,26 @@ class Video_segment(Visual_segment):
         self.transition = None
         self.mask = None
 
-    def add_animation(self, animation_type: Union[Intro_type, Outro_type, Group_animation_type]) -> "Video_segment":
-        """将给定的入场/出场/组合动画添加到此片段的动画列表中, 动画的起止时间自动确定"""
+    def add_animation(self, animation_type: Union[Intro_type, Outro_type, Group_animation_type],
+                      duration: Optional[Union[int, str]] = None) -> "Video_segment":
+        """将给定的入场/出场/组合动画添加到此片段的动画列表中
+
+        Args:
+            animation_type (`Intro_type`, `Outro_type`, or `Group_animation_type`): 动画类型
+            duration (`int` or `str`, optional): 动画持续时间, 单位为微秒. 若传入字符串则会调用`tim()`函数进行解析.
+                若不指定则使用动画类型定义的默认值.
+        """
+        if duration is not None:
+            duration = tim(duration)
         if isinstance(animation_type, Intro_type):
             start = 0
-            duration = animation_type.value.duration
+            duration = duration or animation_type.value.duration
         elif isinstance(animation_type, Outro_type):
             start = self.target_timerange.duration - animation_type.value.duration
-            duration = animation_type.value.duration
+            duration = duration or animation_type.value.duration
         elif isinstance(animation_type, Group_animation_type):
             start = 0
-            duration = self.target_timerange.duration
+            duration = duration or self.target_timerange.duration
         else:
             raise TypeError("Invalid animation type %s" % type(animation_type))
 
