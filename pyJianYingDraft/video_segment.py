@@ -27,7 +27,9 @@ class Mask:
     """蒙版全局id, 由程序自动生成"""
 
     center_x: float
+    """蒙版中心x坐标, 以半素材宽为单位"""
     center_y: float
+    """蒙版中心y坐标, 以半素材高为单位"""
     width: float
     height: float
     aspect_ratio: float
@@ -304,17 +306,26 @@ class Video_segment(Visual_segment):
         self.transition = None
         self.mask = None
 
-    def add_animation(self, animation_type: Union[Intro_type, Outro_type, Group_animation_type]) -> "Video_segment":
-        """将给定的入场/出场/组合动画添加到此片段的动画列表中, 动画的起止时间自动确定"""
+    def add_animation(self, animation_type: Union[Intro_type, Outro_type, Group_animation_type],
+                      duration: Optional[Union[int, str]] = None) -> "Video_segment":
+        """将给定的入场/出场/组合动画添加到此片段的动画列表中
+
+        Args:
+            animation_type (`Intro_type`, `Outro_type`, or `Group_animation_type`): 动画类型
+            duration (`int` or `str`, optional): 动画持续时间, 单位为微秒. 若传入字符串则会调用`tim()`函数进行解析.
+                若不指定则使用动画类型定义的默认值.
+        """
+        if duration is not None:
+            duration = tim(duration)
         if isinstance(animation_type, Intro_type):
             start = 0
-            duration = animation_type.value.duration
+            duration = duration or animation_type.value.duration
         elif isinstance(animation_type, Outro_type):
             start = self.target_timerange.duration - animation_type.value.duration
-            duration = animation_type.value.duration
+            duration = duration or animation_type.value.duration
         elif isinstance(animation_type, Group_animation_type):
             start = 0
-            duration = self.target_timerange.duration
+            duration = duration or self.target_timerange.duration
         else:
             raise TypeError("Invalid animation type %s" % type(animation_type))
 
@@ -390,7 +401,7 @@ class Video_segment(Visual_segment):
             round_corner = 0
 
         width = rect_width or size * self.material_size[1] * mask_type.value.default_aspect_ratio / self.material_size[0]
-        self.mask = Mask(mask_type.value, center_x, center_y,
+        self.mask = Mask(mask_type.value, center_x / (self.material_size[0] / 2), center_y / (self.material_size[1] / 2),
                          w=width, h=size, ratio=mask_type.value.default_aspect_ratio,
                          rot=rotation, inv=invert, feather=feather/100, round_corner=round_corner/100)
         self.extra_material_refs.append(self.mask.global_id)

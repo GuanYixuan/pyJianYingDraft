@@ -94,6 +94,31 @@ class Text_border:
             "width": self.width
         }
 
+class TextBubble:
+    """文本气泡素材, 与滤镜素材本质上一致"""
+
+    global_id: str
+    """花字全局id, 由程序自动生成"""
+
+    effect_id: str
+    resource_id: str
+
+    def __init__(self, effect_id: str, resource_id: str):
+        self.global_id = uuid.uuid4().hex
+        self.effect_id = effect_id
+        self.resource_id = resource_id
+
+    def export_json(self) -> Dict[str, Any]:
+        return {
+            "apply_target_type": 0,
+            "effect_id": self.effect_id,
+            "id": self.global_id,
+            "resource_id": self.resource_id,
+            "type": "text_shape",
+            "value": 1.0,
+            # 不导出path和request_id
+        }
+
 class Text_segment(Visual_segment):
     """文本片段类, 目前仅支持设置基本的字体样式"""
 
@@ -106,6 +131,8 @@ class Text_segment(Visual_segment):
 
     border: Optional[Text_border]
     """文本描边参数, None表示无描边"""
+    bubble: Optional[TextBubble]
+    """文本气泡效果, 在放入轨道时加入素材列表中"""
 
     def __init__(self, text: str, timerange: Timerange, *,
                  font: Optional[Font_type] = None,
@@ -129,6 +156,7 @@ class Text_segment(Visual_segment):
         self.font = font.value if font else None
         self.style = style or Text_style()
         self.border = border
+        self.bubble = None
 
     def add_animation(self, animation_type: Union[Text_intro, Text_outro, Text_loop_anim],
                       duration: Union[str, float] = 500000) -> "Text_segment":
@@ -161,6 +189,17 @@ class Text_segment(Visual_segment):
 
         self.animations_instance.add_animation(Text_animation(animation_type, start, duration))
 
+        return self
+
+    def add_bubble(self, effect_id: str, resource_id: str) -> "Text_segment":
+        """根据素材信息添加气泡效果, 相应素材信息可通过`Script_file.inspect_material`从模板中获取
+
+        Args:
+            effect_id (`str`): 气泡效果的effect_id
+            resource_id (`str`): 气泡效果的resource_id
+        """
+        self.bubble = TextBubble(effect_id, resource_id)
+        self.extra_material_refs.append(self.bubble.global_id)
         return self
 
     def export_material(self) -> Dict[str, Any]:
@@ -199,23 +238,21 @@ class Text_segment(Visual_segment):
             }
 
         return {
-            "add_type": 0,
+            "id": self.material_id,
+            "content": json.dumps(content_json, ensure_ascii=False),
 
             "typesetting": int(self.style.vertical),
             "alignment": self.style.align,
+            "letter_spacing": 0.0,
+            "line_spacing": 0.02,
 
-            # ?
-            # "caption_template_info": {
-            #     "category_id": "",
-            #     "category_name": "",
-            #     "effect_id": "",
-            #     "is_new": False,
-            #     "path": "",
-            #     "request_id": "",
-            #     "resource_id": "",
-            #     "resource_name": "",
-            #     "source_platform": 0
-            # },
+            "line_feed": 1,
+            "line_max_width": 0.82,
+            "force_apply_line_max_width": False,
+
+            "check_flag": check_flag,
+
+            "type": "text",
 
             # 混合 (+4)
             # "global_alpha": 1.0,
@@ -270,67 +307,4 @@ class Text_segment(Visual_segment):
             # "text_preset_resource_id": "",
             # "text_size": 30,
             # "underline": False,
-
-
-            "base_content": "",
-            "bold_width": 0.0,
-
-            "check_flag": check_flag,
-            "combo_info": {
-                "text_templates": []
-            },
-            "content": json.dumps(content_json, ensure_ascii=False),
-            "fixed_height": -1.0,
-            "fixed_width": -1.0,
-            "force_apply_line_max_width": False,
-
-            "group_id": "",
-
-            "id": self.material_id,
-            "initial_scale": 1.0,
-            "inner_padding": -1.0,
-            "is_rich_text": False,
-            "italic_degree": 0,
-            "ktv_color": "",
-            "language": "",
-            "layer_weight": 1,
-            "letter_spacing": 0.0,
-            "line_feed": 1,
-            "line_max_width": 0.82,
-            "line_spacing": 0.02,
-            "multi_language_current": "none",
-            "name": "",
-            "original_size": [],
-
-            "preset_category": "",
-            "preset_category_id": "",
-            "preset_has_set_alignment": False,
-            "preset_id": "",
-            "preset_index": 0,
-            "preset_name": "",
-
-            "recognize_task_id": "",
-            "recognize_type": 0,
-            "relevance_segment": [],
-
-            "shape_clip_x": False,
-            "shape_clip_y": False,
-            "source_from": "",
-            "style_name": "",
-            "sub_type": 0,
-            "subtitle_keywords": None,
-            "subtitle_template_original_fontsize": 0.0,
-            "text_to_audio_ids": [],
-            "tts_auto_update": False,
-            "type": "text",
-
-            "underline_offset": 0.22,
-            "underline_width": 0.05,
-
-            "use_effect_default_color": True,
-            "words": {
-                "end_time": [],
-                "start_time": [],
-                "text": []
-            }
         }

@@ -1,5 +1,6 @@
 import os
 import json
+import math
 import warnings
 from copy import deepcopy
 
@@ -15,7 +16,7 @@ from .segment import Base_segment, Speed, Clip_settings
 from .audio_segment import Audio_segment, Audio_fade, Audio_effect
 from .video_segment import Video_segment, Sticker_segment, Segment_animations, Video_effect, Transition, Filter
 from .effect_segment import Effect_segment, Filter_segment
-from .text_segment import Text_segment, Text_style
+from .text_segment import Text_segment, Text_style, TextBubble
 from .track import Track_type, Base_track, Track
 
 from .metadata import Video_scene_effect_type, Video_character_effect_type, Filter_type
@@ -47,8 +48,8 @@ class Script_material:
     """蒙版列表"""
     transitions: List[Transition]
     """转场效果列表"""
-    filters: List[Filter]
-    """滤镜效果列表"""
+    filters: List[Union[Filter, TextBubble]]
+    """滤镜/文本花字/文本气泡列表, 导出到`effects`中"""
 
     def __init__(self):
         self.audios = []
@@ -243,6 +244,7 @@ class Script_file:
         return self
 
     def add_track(self, track_type: Track_type, track_name: Optional[str] = None, *,
+                  mute: bool = False,
                   relative_index: int = 0, absolute_index: Optional[int] = None) -> "Script_file":
         """向草稿文件中添加一个指定类型、指定名称的轨道, 可以自定义轨道层级
 
@@ -253,6 +255,7 @@ class Script_file:
         Args:
             track_type (Track_type): 轨道类型
             track_name (str, optional): 轨道名称. 仅在创建第一个同类型轨道时允许不指定.
+            mute (bool, optional): 轨道是否静音. 默认不静音.
             relative_index (int, optional): 相对(同类型轨道的)图层位置, 越高越接近前景. 默认为0.
             absolute_index (int, optional): 绝对图层位置, 越高越接近前景. 此参数将直接覆盖相应片段的`render_index`属性, 供有经验的用户使用.
                 此参数不能与`relative_index`同时使用.
@@ -272,7 +275,7 @@ class Script_file:
         if absolute_index is not None:
             render_index = absolute_index
 
-        self.tracks[track_name] = Track(track_type, track_name, render_index)
+        self.tracks[track_name] = Track(track_type, track_name, render_index, mute)
         return self
 
     def _get_track(self, segment_type: Type[Base_segment], track_name: Optional[str]) -> Track:
@@ -343,7 +346,10 @@ class Script_file:
             # 出入场等动画
             if (segment.animations_instance is not None) and (segment.animations_instance not in self.materials):
                 self.materials.animations.append(segment.animations_instance)
-            # 字幕样式
+            # 气泡效果
+            if segment.bubble is not None:
+                self.materials.filters.append(segment.bubble)
+            # 字体样式
             self.materials.texts.append(segment.export_material())
 
         # 检查片段素材是否已添加
@@ -592,39 +598,107 @@ class Script_file:
         # TODO: 更新总长
         return self
 
-    def replace_text(self, track: Editable_track, segment_index: int, text: str) -> "Script_file":
-        """替换指定文本轨道上指定片段的文字内容
+    def replace_text(self, track: Editable_track, segment_index: int, text: Union[str, List[str]],
+                     recalc_style: bool = True) -> "Script_file":
+        """替换指定文本轨道上指定片段的文字内容, 支持普通文本片段或文本模板片段
 
         Args:
             track (`Editable_track`): 要替换文字的文本轨道, 由`get_imported_track`获取
             segment_index (`int`): 要替换文字的片段下标, 从0开始
-            text (`str`): 新的文字内容
+            text (`str` or `List[str]`): 新的文字内容, 对于文本模板而言应传入一个字符串列表.
+            recalc_style (`bool`): 是否重新计算字体样式分布, 即调整各字体样式应用范围以尽量维持原有占比不变, 默认开启.
 
         Raises:
             `IndexError`: `segment_index`越界
             `TypeError`: 轨道类型不正确
+            `ValueError`: 文本模板片段的文本数量不匹配
         """
         if not isinstance(track, Imported_text_track):
             raise TypeError("指定的轨道(类型为 %s)不支持文本内容替换" % track.track_type)
         if not 0 <= segment_index < len(track):
             raise IndexError("片段下标 %d 超出 [0, %d) 的范围" % (segment_index, len(track)))
 
+        def __recalc_style_range(old_len: int, new_len: int, styles: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+            """调整字体样式分布"""
+            new_styles: List[Dict[str, Any]] = []
+            for style in styles:
+                start = math.ceil(style["range"][0] / old_len * new_len)
+                end = math.ceil(style["range"][1] / old_len * new_len)
+                style["range"] = [start, end]
+                if start != end:
+                    new_styles.append(style)
+            return new_styles
+
+        replaced: bool = False
         material_id: str = track.segments[segment_index]["material_id"]
+        # 尝试在文本素材中替换
         for mat in self.imported_materials["texts"]:
-            if mat["id"] != material_id: continue
+            if mat["id"] != material_id:
+                continue
+
+            if isinstance(text, list):
+                if len(text) != 1:
+                    raise ValueError(f"正常文本片段只能有一个文字内容, 但替换内容是 {text}")
+                text = text[0]
 
             content = json.loads(mat["content"])
+            if recalc_style:
+                content["styles"] = __recalc_style_range(len(content["text"]), len(text), content["styles"])
             content["text"] = text
             mat["content"] = json.dumps(content, ensure_ascii=False)
+            replaced = True
             break
+        if replaced:
+            return self
+
+        # 尝试在文本模板中替换
+        for template in self.imported_materials["text_templates"]:
+            if template["id"] != material_id:
+                continue
+
+            resources = template["text_info_resources"]
+            if isinstance(text, str):
+                text = [text]
+            if len(text) > len(resources):
+                raise ValueError(f"文字模板'{template['name']}'只有{len(resources)}段文本, 但提供了{len(text)}段替换内容")
+
+            for sub_material_id, new_text in zip(map(lambda x: x["text_material_id"], resources), text):
+                for mat in self.imported_materials["texts"]:
+                    if mat["id"] != sub_material_id:
+                        continue
+
+                    if isinstance(mat["content"], str):
+                        mat["content"] = new_text
+                    else:
+                        content = json.loads(mat["content"])
+                        if recalc_style:
+                            content["styles"] = __recalc_style_range(len(content["text"]), len(new_text), content["styles"])
+                        content["text"] = new_text
+                        mat["content"] = json.dumps(content, ensure_ascii=False)
+                    break
+            replaced = True
+            break
+
+        assert replaced, f"未找到指定片段的素材 {material_id}"
 
         return self
 
     def inspect_material(self) -> None:
-        """输出草稿中导入的贴纸素材的元数据"""
+        """输出草稿中导入的贴纸、文本气泡以及花字素材的元数据"""
         print("贴纸素材:")
         for sticker in self.imported_materials["stickers"]:
             print("\tResource id: %s '%s'" % (sticker["resource_id"], sticker.get("name", "")))
+
+        print("文字气泡效果:")
+        for effect in self.imported_materials["effects"]:
+            if effect["type"] == "text_shape":
+                print("\tEffect id: %s ,Resource id: %s '%s'" %
+                      (effect["effect_id"], effect["resource_id"], effect.get("name", "")))
+
+        print("花字效果:")
+        for effect in self.imported_materials["effects"]:
+            if effect["type"] == "text_effect":
+                print("\tResource id: %s '%s'" % (effect["resource_id"], effect.get("name", "")))
 
     def dumps(self) -> str:
         """将草稿文件内容导出为JSON字符串"""
