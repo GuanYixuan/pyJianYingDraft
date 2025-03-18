@@ -415,27 +415,43 @@ class Script_file:
 
     def import_srt(self, srt_path: str, track_name: str, *,
                    time_offset: Union[str, float] = 0.0,
+                   style_reference: Optional[Text_segment] = None,
                    text_style: Text_style = Text_style(size=5, align=1),
-                   clip_settings: Clip_settings = Clip_settings(transform_y=-0.8)) -> "Script_file":
-        """从SRT文件中导入字幕
+                   clip_settings: Optional[Clip_settings] = Clip_settings(transform_y=-0.8)) -> "Script_file":
+        """从SRT文件中导入字幕, 支持传入一个`Text_segment`作为样式参考
+
+        注意: 默认不会使用参考片段的`clip_settings`属性, 若需要请显式为此函数传入`clip_settings=None`
 
         Args:
             srt_path (`str`): SRT文件路径
             track_name (`str`): 导入到的文本轨道名称, 若不存在则自动创建
+            style_reference (`Text_segment`, optional): 作为样式参考的文本片段, 若提供则使用其样式.
             time_offset (`Union[str, float]`, optional): 字幕整体时间偏移, 单位为微秒, 默认为0.
-            text_style (`Text_style`, optional): 字幕样式, 默认模仿剪映导入字幕时的样式.
-            clip_settings (`Clip_settings`, optional): 图像调节设置, 默认模仿剪映导入字幕时的设置.
+            text_style (`Text_style`, optional): 字幕样式, 默认模仿剪映导入字幕时的样式, 会被`style_reference`覆盖.
+            clip_settings (`Clip_settings`, optional): 图像调节设置, 默认模仿剪映导入字幕时的设置, 会覆盖`style_reference`的设置除非指定为`None`.
 
         Raises:
             `NameError`: 已存在同名轨道
             `TypeError`: 轨道类型不匹配
         """
+        if style_reference is None and clip_settings is None:
+            raise ValueError("未提供样式参考时请提供`clip_settings`参数")
+
         time_offset = tim(time_offset)
         if track_name not in self.tracks:
             self.add_track(Track_type.text, track_name, relative_index=999)  # 在所有文本轨道的最上层
 
         with open(srt_path, "r", encoding="utf-8") as srt_file:
             lines = srt_file.readlines()
+
+        def __add_text_segment(text: str, t_range: Timerange) -> None:
+            if style_reference:
+                seg = Text_segment.create_from_template(text, t_range, style_reference)
+                if clip_settings is not None:
+                    seg.clip_settings = deepcopy(clip_settings)
+            else:
+                seg = Text_segment(text, t_range, style=text_style, clip_settings=clip_settings)
+            self.add_segment(seg, track_name)
 
         index = 0
         text: str = ""
@@ -462,8 +478,7 @@ class Script_file:
             elif read_state == "content":
                 # 内容结束, 生成片段
                 if len(line) == 0:
-                    seg = Text_segment(text, text_trange, style=text_style, clip_settings=clip_settings)
-                    self.add_segment(seg, track_name)
+                    __add_text_segment(text.strip(), text_trange)
 
                     text = ""
                     read_state = "index"
@@ -473,8 +488,7 @@ class Script_file:
 
         # 添加最后一个片段
         if len(text) > 0:
-            seg = Text_segment(text, text_trange, style=text_style, clip_settings=clip_settings)
-            self.add_segment(seg, track_name)
+            __add_text_segment(text.strip(), text_trange)
 
         return self
 

@@ -170,6 +170,23 @@ class Text_segment(Visual_segment):
         self.border = border
         self.bubble = None
 
+    @classmethod
+    def create_from_template(cls, text: str, timerange: Timerange, template: "Text_segment") -> "Text_segment":
+        """根据模板创建新的文本片段, 并指定其文本内容"""
+        new_segment = cls(text, timerange, style=deepcopy(template.style),
+                          clip_settings=deepcopy(template.clip_settings), border=deepcopy(template.border))
+        new_segment.font = template.font
+
+        # 处理动画等
+        if template.animations_instance:
+            new_segment.animations_instance = deepcopy(template.animations_instance)
+            new_segment.animations_instance.animation_id = uuid.uuid4().hex
+            new_segment.extra_material_refs.append(new_segment.animations_instance.animation_id)
+        if template.bubble:
+            new_segment.add_bubble(template.bubble.effect_id, template.bubble.resource_id)
+
+        return new_segment
+
     def add_animation(self, animation_type: Union[Text_intro, Text_outro, Text_loop_anim],
                       duration: Union[str, float] = 500000) -> "Text_segment":
         """将给定的入场/出场/循环动画添加到此片段的动画列表中, 出入场动画的持续时间可以自行设置, 循环动画则会自动填满其余无动画部分
