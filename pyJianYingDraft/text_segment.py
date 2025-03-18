@@ -2,6 +2,7 @@
 
 import json
 import uuid
+from copy import deepcopy
 
 from typing import Dict, Tuple, Any
 from typing import Union, Optional, Literal
@@ -34,11 +35,17 @@ class Text_style:
     align: Literal[0, 1, 2]
     """对齐方式"""
     vertical: bool
-    """竖排文本"""
+    """是否为竖排文本"""
+
+    letter_spacing: int
+    """字符间距"""
+    line_spacing: int
+    """行间距"""
 
     def __init__(self, *, size: float = 8.0, bold: bool = False, italic: bool = False, underline: bool = False,
                  color: Tuple[float, float, float] = (1.0, 1.0, 1.0), alpha: float = 1.0,
-                 align: Literal[0, 1, 2] = 0, vertical: bool = False):
+                 align: Literal[0, 1, 2] = 0, vertical: bool = False,
+                 letter_spacing: int = 0, line_spacing: int = 0):
         """
         Args:
             size (`float`, optional): 字体大小, 默认为8.0
@@ -48,7 +55,9 @@ class Text_style:
             color (`Tuple[float, float, float]`, optional): 字体颜色, RGB三元组, 取值范围为[0, 1], 默认为白色
             alpha (`float`, optional): 字体不透明度, 取值范围[0, 1], 默认不透明
             align (`int`, optional): 对齐方式, 0: 左对齐, 1: 居中, 2: 右对齐, 默认为左对齐
-            vertical (`bool`, optional): 是否是竖排文本, 默认为否
+            vertical (`bool`, optional): 是否为竖排文本, 默认为否
+            letter_spacing (`int`, optional): 字符间距, 定义与剪映中一致, 默认为0
+            line_spacing (`int`, optional): 行间距, 定义与剪映中一致, 默认为0
         """
         self.size = size
         self.bold = bold
@@ -60,6 +69,9 @@ class Text_style:
 
         self.align = align
         self.vertical = vertical
+
+        self.letter_spacing = letter_spacing
+        self.line_spacing = line_spacing
 
 class Text_border:
     """文本描边的参数"""
@@ -234,7 +246,7 @@ class Text_segment(Visual_segment):
         if self.font:
             content_json["styles"][0]["font"] = {
                 "id": self.font.resource_id,
-                "path": "C:/%s.ttf" % self.font.name
+                "path": "C:/%s.ttf" % self.font.name  # 并不会真正在此处放置字体文件
             }
 
         return {
@@ -243,8 +255,8 @@ class Text_segment(Visual_segment):
 
             "typesetting": int(self.style.vertical),
             "alignment": self.style.align,
-            "letter_spacing": 0.0,
-            "line_spacing": 0.02,
+            "letter_spacing": self.style.letter_spacing * 0.05,
+            "line_spacing": 0.02 + self.style.line_spacing * 0.05,
 
             "line_feed": 1,
             "line_max_width": 0.82,
