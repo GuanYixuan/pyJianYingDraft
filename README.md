@@ -43,20 +43,20 @@
 - ☑️ 贴纸的[关键帧](#关键帧)生成
 ### 音频
 - ☑️ 添加本地音频素材，并[自定义片段的时间、持续时长或播放速度](#素材截取与整体变速)
-- ☑️ 调整[淡入淡出时长](#快速上手)，调整[音量](#快速上手)及其[关键帧](#关键帧)
-- ☑️ 添加音频片段的[音色、场景音效果](#添加片段特效)，并设置参数
+- ☑️ 调整淡入淡出时长[(示例代码)](demo.py)，调整音量[(示例代码)](demo.py)及其[关键帧](#关键帧)
+- ☑️ 添加音频片段的[场景音效果](#添加片段特效)，并设置参数
 ### 轨道
 - ☑️ [添加轨道](#多轨道操作)以及[将片段添加到指定轨道](#多轨道操作)
 - ☑️ 自定义视频/滤镜/特效轨道的[层级关系](#多轨道操作)
 ### 特效、滤镜和转场
 - ☑️ 吸附于片段上的[特效](#添加片段特效)、[滤镜](#添加片段滤镜)和[动画](#添加片段动画)
 - ☑️ 位于[独立轨道的特效和滤镜](#独立轨道上的特效和滤镜)
-- ☑️ 添加[转场](#快速上手)，并自定义其时长
+- ☑️ 添加转场[(示例代码)](demo.py)，并自定义其时长
 ### 文本及字幕
 - ☑️ [添加文本、设置字体及样式](#添加文本)、修改文本片段的[位置及旋转设置](#视频整体调节)
 - ☑️ 文本的[关键帧](#关键帧)以及[动画](#添加片段动画)
 - ☑️ 文字描边效果、文字气泡效果
-- ☑️ [导入`.srt`文件](#导入字幕)生成字幕
+- ☑️ [导入`.srt`文件](#导入字幕)生成字幕并批量设置格式
 
 
 # 快速上手
@@ -509,7 +509,6 @@ seg1 = draft.Text_segment("Subtitle", trange("0s", "10s"),
 > ℹ 目前只支持导入**SRT格式**的字幕文件
 
 导入字幕本质上是根据每条字幕的时间戳及内容创建一系列文本，并添加到轨道中。这一过程通过`Script_file.import_srt`来实现。
-上述方法同样支持`text_style`和`clip_settings`参数，还支持指定`time_offset`参数来对字幕进行整体时间偏移。
 
 例如：
 ```python
@@ -519,7 +518,17 @@ script = draft.Script_file(1080, 1080)
 
 # 将字幕导入到名为"subtitle"的轨道中，若轨道不存在将自动创建
 # 不指定style和clip_settings，则默认模拟剪映导入字幕时的样式
-script.import_srt("subtitle.srt", track_name="subtitle")
-```
+script.import_srt("subtitle.srt", track_name="subtitle", time_offset="1.5s")  # 字幕整体后移1.5秒
 
-`text_style`和`clip_settings`参数的意义与`Text_segment()`中的相同。
+# 可以利用`text_style`和`clip_settings`参数对字幕的样式进行调整, 上述参数的意义与`Text_segment()`中的相同
+script.import_srt("subtitle.srt", track_name="subtitle",
+                  text_style=draft.Text_style(size=10.0, color=(1.0, 0.0, 0.0))
+                  clip_settings=draft.Clip_settings(transform_y=0.8))  # 将字幕放置在屏幕上方
+
+# 如果需要更复杂的样式或希望为字幕应用动画，可以为`style_reference`参数传入一个`Text_segment`对象作为样式参考（忽略其文本和片段长度设置）
+# 注意动画时间不会根据字幕片段长度进行调节，故当字幕片段过短时可能出现奇怪的效果
+script.import_srt("subtitle.srt", track_name="subtitle", style_reference=seg1)  # 以上一节“添加文本”中的文本作为参考
+
+# 默认不会采用`style_reference`片段中的`clip_settings`设置，如果需要的话请显式传入`clip_settings=None`
+script.import_srt("subtitle.srt", track_name="subtitle", style_reference=seg1, clip_settings=None)  # 相当于clip_settings=seg1.clip_settings
+```
