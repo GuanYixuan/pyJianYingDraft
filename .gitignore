@@ -1,2 +1,5 @@
 __pycache__
 ignored
+
+.venv
+venv
