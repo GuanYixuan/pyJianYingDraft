@@ -1,2 +1,13 @@
 __pycache__
 ignored
+
+build/
+dist/
+*.egg-info/
+
+.vscode/
+.idea/
+.DS_Store
+
+.venv/
+venv/

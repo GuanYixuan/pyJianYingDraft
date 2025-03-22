@@ -4,6 +4,7 @@ exclude =
     .git,
     __pycache__,
     ignored,
+    build,
     pyJianYingDraft/metadata/animation_meta.py,
     pyJianYingDraft/metadata/audio_effect_meta.py,
     pyJianYingDraft/metadata/filter_meta.py,
