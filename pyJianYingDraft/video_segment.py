@@ -4,6 +4,7 @@
 """
 
 import uuid
+from copy import deepcopy
 
 from typing import Optional, Literal, Union
 from typing import Dict, List, Tuple, Any
@@ -245,6 +246,8 @@ class Transition:
 class Video_segment(Visual_segment):
     """安放在轨道上的一个视频/图片片段"""
 
+    material_instance: Video_material
+    """素材实例"""
     material_size: Tuple[int, int]
     """素材尺寸"""
 
@@ -269,15 +272,14 @@ class Video_segment(Visual_segment):
     在放入轨道时自动添加到素材列表中
     """
 
+    # TODO: material参数接受path进行便捷构造
     def __init__(self, material: Video_material, target_timerange: Timerange, *,
                  source_timerange: Optional[Timerange] = None, speed: Optional[float] = None, volume: float = 1.0,
                  clip_settings: Optional[Clip_settings] = None):
         """利用给定的视频/图片素材构建一个轨道片段, 并指定其时间信息及图像调节设置
 
-        片段创建完成后, 可通过`Script_file.add_segment`方法将其添加到轨道中
-
         Args:
-            material (`Video_material`): 素材实例, 注意你仍然需要为其调用`Script_file.add_material`来将其添加到素材列表中
+            material (`Video_material`): 素材实例
             target_timerange (`Timerange`): 片段在轨道上的目标时间范围
             source_timerange (`Timerange`, optional): 截取的素材片段的时间范围, 默认从开头根据`speed`截取与`target_timerange`等长的一部分
             speed (`float`, optional): 播放速度, 默认为1.0. 此项与`source_timerange`同时指定时, 将覆盖`target_timerange`中的时长
@@ -300,6 +302,7 @@ class Video_segment(Visual_segment):
 
         super().__init__(material.material_id, source_timerange, target_timerange, speed, volume, clip_settings=clip_settings)
 
+        self.material_instance = deepcopy(material)
         self.material_size = (material.width, material.height)
         self.effects = []
         self.filters = []

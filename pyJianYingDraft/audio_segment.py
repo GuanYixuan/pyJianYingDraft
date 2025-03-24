@@ -4,6 +4,7 @@
 """
 
 import uuid
+from copy import deepcopy
 
 from typing import Optional, Literal, Union
 from typing import Dict, List, Any
@@ -101,6 +102,9 @@ class Audio_effect:
 class Audio_segment(Media_segment):
     """安放在轨道上的一个音频片段"""
 
+    material_instance: Audio_material
+    """音频素材实例"""
+
     fade: Optional[Audio_fade]
     """音频淡入淡出效果, 可能为空
 
@@ -117,10 +121,8 @@ class Audio_segment(Media_segment):
                  source_timerange: Optional[Timerange] = None, speed: Optional[float] = None, volume: float = 1.0):
         """利用给定的音频素材构建一个轨道片段, 并指定其时间信息及播放速度/音量
 
-        片段创建完成后, 可通过`Script_file.add_segment`方法将其添加到轨道中
-
         Args:
-            material (`Audio_material`): 素材实例, 注意你仍然需要为其调用`Script_file.add_material`来将其添加到素材列表中
+            material (`Audio_material`): 素材实例
             target_timerange (`Timerange`): 片段在轨道上的目标时间范围
             source_timerange (`Timerange`, optional): 截取的素材片段的时间范围, 默认从开头根据`speed`截取与`target_timerange`等长的一部分
             speed (`float`, optional): 播放速度, 默认为1.0. 此项与`source_timerange`同时指定时, 将覆盖`target_timerange`中的时长
@@ -142,6 +144,7 @@ class Audio_segment(Media_segment):
 
         super().__init__(material.material_id, source_timerange, target_timerange, speed, volume)
 
+        self.material_instance = deepcopy(material)
         self.fade = None
         self.effects = []
 

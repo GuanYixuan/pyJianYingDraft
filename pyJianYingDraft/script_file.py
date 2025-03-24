@@ -1,7 +1,6 @@
 import os
 import json
 import math
-import warnings
 from copy import deepcopy
 
 from typing import Optional, Literal, Union, overload
@@ -93,16 +92,6 @@ class Script_material:
             return item.global_id in [filter_.global_id for filter_ in self.filters]
         else:
             raise TypeError("Invalid argument type '%s'" % type(item))
-
-    def contains_material(self, segment: Union[Video_segment, Sticker_segment, Audio_segment, Text_segment]) -> bool:
-        if isinstance(segment, Video_segment):
-            return segment.material_id in [video.material_id for video in self.videos]
-        elif isinstance(segment, Audio_segment):
-            return segment.material_id in [audio.material_id for audio in self.audios]
-        elif isinstance(segment, (Text_segment, Sticker_segment)):
-            return True  # 文本素材和贴纸素材暂不检查
-        else:
-            raise TypeError("Invalid argument type '%s'" % type(segment))
 
     def export_json(self) -> Dict[str, List[Any]]:
         return {
@@ -352,9 +341,9 @@ class Script_file:
             # 字体样式
             self.materials.texts.append(segment.export_material())
 
-        # 检查片段素材是否已添加
-        if not self.materials.contains_material(segment):
-            warnings.warn("片段 '%s' 的素材尚未被添加至草稿中" % str(segment.target_timerange))
+        # 添加片段素材
+        if isinstance(segment, (Video_segment, Audio_segment)):
+            self.add_material(segment.material_instance)
 
         return self
 
