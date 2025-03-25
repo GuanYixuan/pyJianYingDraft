@@ -285,7 +285,6 @@ for i in range(3, 0, -1): # 倒序
 # 读取视频素材
 tutorial_asset_dir = os.path.join(os.path.dirname(__file__), 'readme_assets', 'tutorial')
 mat = draft.Video_material(os.path.join(tutorial_asset_dir, 'video.mp4'))
-script.add_material(mat) # 随手添加素材是好习惯
 
 # 视频素材长度为 5s
 print("Video material length: %f s" % (mat.duration / SEC))
@@ -369,8 +368,7 @@ video_segment = draft.Video_segment(video_material,
 video_segment.add_keyframe(Keyframe_property.alpha, video_segment.duration - SEC, 1.0) # 结束前1s完全不透明
 video_segment.add_keyframe(Keyframe_property.alpha, video_segment.duration, 0.0) # 片段结束时完全透明
 
-# 添加素材及片段
-script.add_material(video_material)
+# 添加片段到轨道
 script.add_segment(video_segment)
 
 # 保存草稿

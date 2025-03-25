@@ -4,7 +4,7 @@ import pyJianYingDraft as draft
 from pyJianYingDraft import Intro_type, Transition_type, trange
 
 # 保存路径
-DUMP_PATH = "<你的草稿文件夹>/draft_content.json"
+DUMP_PATH = r"<你的草稿文件夹>/draft_content.json"
 assert os.path.exists(DUMP_PATH), f"未找到草稿文件{os.path.abspath(DUMP_PATH)}"
 
 tutorial_asset_dir = os.path.join(os.path.dirname(__file__), 'readme_assets', 'tutorial')
@@ -20,7 +20,6 @@ script.add_track(draft.Track_type.audio).add_track(draft.Track_type.video).add_t
 audio_material = draft.Audio_material(os.path.join(tutorial_asset_dir, 'audio.mp3'))
 video_material = draft.Video_material(os.path.join(tutorial_asset_dir, 'video.mp4'))
 sticker_material = draft.Video_material(os.path.join(tutorial_asset_dir, 'sticker.gif'))
-script.add_material(audio_material).add_material(video_material).add_material(sticker_material)  # 随手添加素材是好习惯
 
 # 创建音频片段
 audio_segment = draft.Audio_segment(audio_material,
