@@ -106,6 +106,64 @@ class Text_border:
             "width": self.width
         }
 
+class Text_background:
+    """文本背景参数"""
+
+    style: Literal[0, 2]
+    """背景样式"""
+
+    alpha: float
+    """背景不透明度"""
+    color: str
+    """背景颜色, 格式为'#RRGGBB'"""
+    round_radius: float
+    """背景圆角半径"""
+    height: float
+    """背景高度"""
+    width: float
+    """背景宽度"""
+    horizontal_offset: float
+    """背景水平偏移"""
+    vertical_offset: float
+    """背景竖直偏移"""
+
+    def __init__(self, *, color: str, style: Literal[1, 2] = 1, alpha: float = 1.0, round_radius: float = 0.0,
+                 height: float = 0.14, width: float = 0.14,
+                 horizontal_offset: float = 0.5, vertical_offset: float = 0.5):
+        """
+        Args:
+            color (`str`): 背景颜色, 格式为'#RRGGBB'
+            style (`int`, optional): 背景样式, 1和2分别对应剪映中的两种样式, 默认为1
+            alpha (`float`, optional): 背景不透明度, 与剪映中一致, 取值范围[0, 1], 默认为1.0
+            round_radius (`float`, optional): 背景圆角半径, 与剪映中一致, 取值范围[0, 1], 默认为0.0
+            height (`float`, optional): 背景高度, 与剪映中一致, 取值范围为[0, 1], 默认为0.14
+            width (`float`, optional): 背景宽度, 与剪映中一致, 取值范围为[0, 1], 默认为0.14
+            horizontal_offset (`float`, optional): 背景水平偏移, 与剪映中一致, 取值范围为[0, 1], 默认为0.5
+            vertical_offset (`float`, optional): 背景竖直偏移, 与剪映中一致, 取值范围为[0, 1], 默认为0.5
+        """
+        self.style = (0, 2)[style - 1]
+
+        self.alpha = alpha
+        self.color = color
+        self.round_radius = round_radius
+        self.height = height
+        self.width = width
+        self.horizontal_offset = horizontal_offset * 2 - 1
+        self.vertical_offset = vertical_offset * 2 - 1
+
+    def export_json(self) -> Dict[str, Any]:
+        """生成子JSON数据, 在Text_segment导出时合并到其中"""
+        return {
+            "background_style": self.style,
+            "background_color": self.color,
+            "background_alpha": self.alpha,
+            "background_round_radius": self.round_radius,
+            "background_height": self.height,
+            "background_width": self.width,
+            "background_horizontal_offset": self.horizontal_offset,
+            "background_vertical_offset": self.vertical_offset,
+        }
+
 class TextBubble:
     """文本气泡素材, 与滤镜素材本质上一致"""
 
@@ -143,13 +201,16 @@ class Text_segment(Visual_segment):
 
     border: Optional[Text_border]
     """文本描边参数, None表示无描边"""
+    background: Optional[Text_background]
+    """文本背景参数, None表示无背景"""
+
     bubble: Optional[TextBubble]
     """文本气泡效果, 在放入轨道时加入素材列表中"""
 
     def __init__(self, text: str, timerange: Timerange, *,
                  font: Optional[Font_type] = None,
                  style: Optional[Text_style] = None, clip_settings: Optional[Clip_settings] = None,
-                 border: Optional[Text_border] = None):
+                 border: Optional[Text_border] = None, background: Optional[Text_background] = None):
         """创建文本片段, 并指定其时间信息、字体样式及图像调节设置
 
         片段创建完成后, 可通过`Script_file.add_segment`方法将其添加到轨道中
@@ -161,6 +222,7 @@ class Text_segment(Visual_segment):
             style (`Text_style`, optional): 字体样式, 包含大小/颜色/对齐/透明度等.
             clip_settings (`Clip_settings`, optional): 图像调节设置, 默认不做任何变换
             border (`Text_border`, optional): 文本描边参数, 默认无描边
+            background (`Text_background`, optional): 文本背景参数, 默认无背景
         """
         super().__init__(uuid.uuid4().hex, None, timerange, 1.0, 1.0, clip_settings=clip_settings)
 
@@ -168,6 +230,8 @@ class Text_segment(Visual_segment):
         self.font = font.value if font else None
         self.style = style or Text_style()
         self.border = border
+        self.background = background
+
         self.bubble = None
 
     @classmethod
@@ -235,7 +299,10 @@ class Text_segment(Visual_segment):
         """与此文本片段联系的素材, 以此不再单独定义Text_material类"""
         # 叠加各类效果的flag
         check_flag: int = 7
-        if self.border: check_flag |= 8
+        if self.border:
+            check_flag |= 8
+        if self.background:
+            check_flag |= 16
 
         content_json = {
             "styles": [
@@ -266,7 +333,7 @@ class Text_segment(Visual_segment):
                 "path": "C:/%s.ttf" % self.font.name  # 并不会真正在此处放置字体文件
             }
 
-        return {
+        ret = {
             "id": self.material_id,
             "content": json.dumps(content_json, ensure_ascii=False),
 
@@ -285,21 +352,6 @@ class Text_segment(Visual_segment):
 
             # 混合 (+4)
             # "global_alpha": 1.0,
-
-            # 描边 (+8), 似乎也会被content覆盖
-            # "border_alpha": 1.0,
-            # "border_color": "",
-            # "border_width": 0.08,
-
-            # 背景 (+16)
-            # "background_style": 0,
-            # "background_color": "",
-            # "background_alpha": 1.0,
-            # "background_round_radius": 0.0,
-            # "background_height": 0.14,
-            # "background_width": 0.14,
-            # "background_horizontal_offset": 0.0,
-            # "background_vertical_offset": 0.0,
 
             # 发光 (+64)，属性由extra_material_refs记录
 
@@ -337,3 +389,8 @@ class Text_segment(Visual_segment):
             # "text_size": 30,
             # "underline": False,
         }
+
+        if self.background:
+            ret.update(self.background.export_json())
+
+        return ret
