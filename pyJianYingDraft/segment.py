@@ -113,9 +113,9 @@ class Clip_settings:
     scale_y: float
     """垂直缩放比例"""
     transform_x: float
-    """水平位移, 单位为半个画布宽?"""
+    """水平位移, 单位为半个画布宽"""
     transform_y: float
-    """垂直位移, 单位为半个画布高?"""
+    """垂直位移, 单位为半个画布高"""
 
     def __init__(self, *, alpha: float = 1.0,
                  flip_horizontal: bool = False, flip_vertical: bool = False,
