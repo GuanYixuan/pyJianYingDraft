@@ -338,6 +338,9 @@ class Script_file:
             # 气泡效果
             if segment.bubble is not None:
                 self.materials.filters.append(segment.bubble)
+            # 花字效果
+            if segment.effect is not None:
+                self.materials.filters.append(segment.effect)
             # 字体样式
             self.materials.texts.append(segment.export_material())
 

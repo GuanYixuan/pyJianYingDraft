@@ -168,7 +168,7 @@ class TextBubble:
     """文本气泡素材, 与滤镜素材本质上一致"""
 
     global_id: str
-    """花字全局id, 由程序自动生成"""
+    """气泡全局id, 由程序自动生成"""
 
     effect_id: str
     resource_id: str
@@ -189,6 +189,15 @@ class TextBubble:
             # 不导出path和request_id
         }
 
+class TextEffect(TextBubble):
+    """文本花字素材, 与滤镜素材本质上也一致"""
+
+    def export_json(self) -> Dict[str, Any]:
+        ret = super().export_json()
+        ret["type"] = "text_effect"
+        ret["source_platform"] = 1
+        return ret
+
 class Text_segment(Visual_segment):
     """文本片段类, 目前仅支持设置基本的字体样式"""
 
@@ -206,6 +215,8 @@ class Text_segment(Visual_segment):
 
     bubble: Optional[TextBubble]
     """文本气泡效果, 在放入轨道时加入素材列表中"""
+    effect: Optional[TextEffect]
+    """文本花字效果, 在放入轨道时加入素材列表中, 目前仅支持一部分花字效果"""
 
     def __init__(self, text: str, timerange: Timerange, *,
                  font: Optional[Font_type] = None,
@@ -233,6 +244,7 @@ class Text_segment(Visual_segment):
         self.background = background
 
         self.bubble = None
+        self.effect = None
 
     @classmethod
     def create_from_template(cls, text: str, timerange: Timerange, template: "Text_segment") -> "Text_segment":
@@ -295,6 +307,16 @@ class Text_segment(Visual_segment):
         self.extra_material_refs.append(self.bubble.global_id)
         return self
 
+    def add_effect(self, effect_id: str) -> "Text_segment":
+        """根据素材信息添加花字效果, 相应素材信息可通过`Script_file.inspect_material`从模板中获取
+
+        Args:
+            effect_id (`str`): 花字效果的effect_id, 也同时是其resource_id
+        """
+        self.effect = TextEffect(effect_id, effect_id)
+        self.extra_material_refs.append(self.effect.global_id)
+        return self
+
     def export_material(self) -> Dict[str, Any]:
         """与此文本片段联系的素材, 以此不再单独定义Text_material类"""
         # 叠加各类效果的flag
@@ -331,6 +353,11 @@ class Text_segment(Visual_segment):
             content_json["styles"][0]["font"] = {
                 "id": self.font.resource_id,
                 "path": "C:/%s.ttf" % self.font.name  # 并不会真正在此处放置字体文件
+            }
+        if self.effect:
+            content_json["styles"][0]["effectStyle"] = {
+                "id": self.effect.effect_id,
+                "path": "C:"  # 并不会真正在此处放置素材文件
             }
 
         ret = {
