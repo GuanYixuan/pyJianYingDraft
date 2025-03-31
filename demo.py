@@ -49,6 +49,7 @@ text_segment = draft.Text_segment(
 )
 text_segment.add_animation(draft.Text_outro.故障闪动, duration=tim("1s"))  # 添加出场动画“故障闪动”, 设置时长为1s
 text_segment.add_bubble("361595", "6742029398926430728")                  # 添加文本气泡效果, 相应素材元数据的获取参见readme中"提取素材元数据"部分
+text_segment.add_effect("7296357486490144036")                            # 添加花字效果, 相应素材元数据的获取参见readme中"提取素材元数据"部分
 script.add_segment(text_segment)
 
 # 保存草稿（覆盖掉原有的draft_content.json）
