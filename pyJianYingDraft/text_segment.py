@@ -249,9 +249,9 @@ class Text_segment(Visual_segment):
     @classmethod
     def create_from_template(cls, text: str, timerange: Timerange, template: "Text_segment") -> "Text_segment":
         """根据模板创建新的文本片段, 并指定其文本内容"""
-        new_segment = cls(text, timerange, style=deepcopy(template.style),
-                          clip_settings=deepcopy(template.clip_settings), border=deepcopy(template.border))
-        new_segment.font = template.font
+        new_segment = cls(text, timerange, style=deepcopy(template.style), clip_settings=deepcopy(template.clip_settings),
+                          border=deepcopy(template.border), background=deepcopy(template.background))
+        new_segment.font = deepcopy(template.font)
 
         # 处理动画等
         if template.animations_instance:
@@ -260,6 +260,8 @@ class Text_segment(Visual_segment):
             new_segment.extra_material_refs.append(new_segment.animations_instance.animation_id)
         if template.bubble:
             new_segment.add_bubble(template.bubble.effect_id, template.bubble.resource_id)
+        if template.effect:
+            new_segment.add_effect(template.effect.effect_id)
 
         return new_segment
 
