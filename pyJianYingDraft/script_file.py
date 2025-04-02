@@ -433,7 +433,7 @@ class Script_file:
         if track_name not in self.tracks:
             self.add_track(Track_type.text, track_name, relative_index=999)  # 在所有文本轨道的最上层
 
-        with open(srt_path, "r", encoding="utf-8") as srt_file:
+        with open(srt_path, "r", encoding="utf-8-sig") as srt_file:
             lines = srt_file.readlines()
 
         def __add_text_segment(text: str, t_range: Timerange) -> None:
