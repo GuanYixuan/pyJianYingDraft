@@ -1,6 +1,6 @@
 {
     "canvas_config": {
-        "height": 1737,
+        "height": 1080,
         "ratio": "original",
         "width": 1920
     },
@@ -49,6 +49,12 @@
         "stickers": [],
         "texts": [],
         "videos": []
+    },
+    "last_modified_platform": {
+        "app_id": 3704,
+        "app_source": "lv",
+        "app_version": "5.9.0",
+        "os": "windows"
     },
     "materials": {
         "ai_translates": [],
