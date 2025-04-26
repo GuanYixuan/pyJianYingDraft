@@ -8,7 +8,7 @@ from typing import Type, Dict, List, Any
 
 from . import util
 from . import exceptions
-from .template_mode import Imported_track, Editable_track, Imported_media_track, Imported_text_track, Shrink_mode, Extend_mode, import_track
+from .template_mode import ImportedTrack, EditableTrack, ImportedMediaTrack, ImportedTextTrack, Shrink_mode, Extend_mode, import_track
 from .time_util import Timerange, tim, srt_tstamp
 from .local_materials import Video_material, Audio_material
 from .segment import Base_segment, Speed, Clip_settings
@@ -166,7 +166,7 @@ class Script_file:
 
     imported_materials: Dict[str, List[Dict[str, Any]]]
     """导入的素材信息"""
-    imported_tracks: List[Imported_track]
+    imported_tracks: List[ImportedTrack]
     """导入的轨道信息"""
 
     TEMPLATE_FILE = "draft_content_template.json"
@@ -485,7 +485,7 @@ class Script_file:
         return self
 
     def get_imported_track(self, track_type: Literal[Track_type.video, Track_type.audio, Track_type.text],
-                           name: Optional[str] = None, index: Optional[int] = None) -> Editable_track:
+                           name: Optional[str] = None, index: Optional[int] = None) -> EditableTrack:
         """获取指定类型的导入轨道, 以便在其上进行替换
 
         推荐使用轨道名称进行筛选（若已知轨道名称）
@@ -499,13 +499,13 @@ class Script_file:
             `TrackNotFound`: 未找到满足条件的轨道
             `AmbiguousTrack`: 找到多个满足条件的轨道
         """
-        tracks_of_same_type: List[Editable_track] = []
+        tracks_of_same_type: List[EditableTrack] = []
         for track in self.imported_tracks:
             if track.track_type == track_type:
-                assert isinstance(track, Editable_track)
+                assert isinstance(track, EditableTrack)
                 tracks_of_same_type.append(track)
 
-        ret: List[Editable_track] = []
+        ret: List[EditableTrack] = []
         for ind, track in enumerate(tracks_of_same_type):
             if (name is not None) and (track.name != name): continue
             if (index is not None) and (ind != index): continue
@@ -558,7 +558,7 @@ class Script_file:
 
         return self
 
-    def replace_material_by_seg(self, track: Editable_track, segment_index: int, material: Union[Video_material, Audio_material],
+    def replace_material_by_seg(self, track: EditableTrack, segment_index: int, material: Union[Video_material, Audio_material],
                                 source_timerange: Optional[Timerange] = None, *,
                                 handle_shrink: Shrink_mode = Shrink_mode.cut_tail,
                                 handle_extend: Union[Extend_mode, List[Extend_mode]] = Extend_mode.cut_material_tail) -> "Script_file":
@@ -578,7 +578,7 @@ class Script_file:
             `TypeError`: 轨道或素材类型不正确
             `ExtensionFailed`: 新素材比原素材长时处理失败
         """
-        if not isinstance(track, Imported_media_track):
+        if not isinstance(track, ImportedMediaTrack):
             raise TypeError("指定的轨道(类型为 %s)不支持素材替换" % track.track_type)
         if not 0 <= segment_index < len(track):
             raise IndexError("片段下标 %d 超出 [0, %d) 的范围" % (segment_index, len(track)))
@@ -604,7 +604,7 @@ class Script_file:
         # TODO: 更新总长
         return self
 
-    def replace_text(self, track: Editable_track, segment_index: int, text: Union[str, List[str]],
+    def replace_text(self, track: EditableTrack, segment_index: int, text: Union[str, List[str]],
                      recalc_style: bool = True) -> "Script_file":
         """替换指定文本轨道上指定片段的文字内容, 支持普通文本片段或文本模板片段
 
@@ -619,7 +619,7 @@ class Script_file:
             `TypeError`: 轨道类型不正确
             `ValueError`: 文本模板片段的文本数量不匹配
         """
-        if not isinstance(track, Imported_text_track):
+        if not isinstance(track, ImportedTextTrack):
             raise TypeError("指定的轨道(类型为 %s)不支持文本内容替换" % track.track_type)
         if not 0 <= segment_index < len(track):
             raise IndexError("片段下标 %d 超出 [0, %d) 的范围" % (segment_index, len(track)))
@@ -636,7 +636,7 @@ class Script_file:
             return new_styles
 
         replaced: bool = False
-        material_id: str = track.segments[segment_index]["material_id"]
+        material_id: str = track.segments[segment_index].material_id
         # 尝试在文本素材中替换
         for mat in self.imported_materials["texts"]:
             if mat["id"] != material_id:

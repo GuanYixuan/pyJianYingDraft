@@ -40,16 +40,13 @@ class Extend_mode(Enum):
     push_tail = "push_tail"
     """延伸尾部, 若有必要则依次后移后续片段, 此方法总是成功"""
 
-class Imported_media_segment(Base_segment):
-    """导入的视频/音频片段"""
+class ImportedSegment(Base_segment):
+    """导入的片段"""
 
     raw_data: Dict[str, Any]
-    """原始数据"""
+    """原始json数据"""
 
-    source_timerange: Timerange
-    """片段取用的素材时间范围"""
-
-    __DATA_ATTRS = ["material_id", "source_timerange", "target_timerange"]
+    __DATA_ATTRS = ["material_id", "target_timerange"]
     def __init__(self, json_data: Dict[str, Any]):
         self.raw_data = deepcopy(json_data)
 
@@ -60,7 +57,25 @@ class Imported_media_segment(Base_segment):
         json_data.update(util.export_attr_to_json(self, self.__DATA_ATTRS))
         return json_data
 
-class Imported_track(Base_track):
+class ImportedMediaSegment(ImportedSegment):
+    """导入的视频/音频片段"""
+
+    source_timerange: Timerange
+    """片段取用的素材时间范围"""
+
+    __DATA_ATTRS = ["source_timerange"]
+    def __init__(self, json_data: Dict[str, Any]):
+        super().__init__(json_data)
+
+        util.assign_attr_with_json(self, self.__DATA_ATTRS, json_data)
+
+    def export_json(self) -> Dict[str, Any]:
+        json_data = super().export_json()
+        json_data.update(util.export_attr_to_json(self, self.__DATA_ATTRS))
+        return json_data
+
+
+class ImportedTrack(Base_track):
     """模板模式下导入的轨道"""
 
     raw_data: Dict[str, Any]
@@ -77,35 +92,11 @@ class Imported_track(Base_track):
     def export_json(self) -> Dict[str, Any]:
         return self.raw_data
 
-class Editable_track(Imported_track):
-    """模板模式下导入且可修改的轨道"""
+class EditableTrack(ImportedTrack):
+    """模板模式下导入且可修改的轨道(音视频及文本轨道)"""
 
-class Imported_text_track(Editable_track):
-    """模板模式下导入的文本轨道"""
-
-    segments: List[Dict[str, Any]]
+    segments: List[ImportedSegment]
     """该轨道包含的片段列表"""
-
-    def __init__(self, json_data: Dict[str, Any]):
-        super().__init__(json_data)
-        self.segments = deepcopy(json_data["segments"])
-
-    def __len__(self):
-        return len(self.segments)
-
-    def export_json(self) -> Dict[str, Any]:
-        self.raw_data.update({"segments": deepcopy(self.segments)})
-        return self.raw_data
-
-class Imported_media_track(Editable_track):
-    """模板模式下导入的音频/视频轨道"""
-
-    segments: List[Imported_media_segment]
-    """该轨道包含的片段列表"""
-
-    def __init__(self, json_data: Dict[str, Any]):
-        super().__init__(json_data)
-        self.segments = [Imported_media_segment(seg) for seg in json_data["segments"]]
 
     def __len__(self):
         return len(self.segments)
@@ -123,6 +114,27 @@ class Imported_media_track(Editable_track):
         if len(self.segments) == 0:
             return 0
         return self.segments[-1].target_timerange.end
+
+    def export_json(self) -> Dict[str, Any]:
+        self.raw_data.update({"segments": [seg.export_json() for seg in self.segments]})
+        return self.raw_data
+
+class ImportedTextTrack(EditableTrack):
+    """模板模式下导入的文本轨道"""
+
+    def __init__(self, json_data: Dict[str, Any]):
+        super().__init__(json_data)
+        self.segments = [ImportedSegment(seg) for seg in json_data["segments"]]
+
+class ImportedMediaTrack(EditableTrack):
+    """模板模式下导入的音频/视频轨道"""
+
+    segments: List[ImportedMediaSegment]
+    """该轨道包含的片段列表"""
+
+    def __init__(self, json_data: Dict[str, Any]):
+        super().__init__(json_data)
+        self.segments = [ImportedMediaSegment(seg) for seg in json_data["segments"]]
 
     def check_material_type(self, material: object) -> bool:
         """检查素材类型是否与轨道类型匹配"""
@@ -189,15 +201,11 @@ class Imported_media_track(Editable_track):
         # 写入素材时间范围
         seg.source_timerange = src_timerange
 
-    def export_json(self) -> Dict[str, Any]:
-        self.raw_data.update({"segments": [seg.export_json() for seg in self.segments]})
-        return self.raw_data
-
-def import_track(json_data: Dict[str, Any]) -> Imported_track:
+def import_track(json_data: Dict[str, Any]) -> ImportedTrack:
     """导入轨道"""
     track_type = Track_type.from_name(json_data["type"])
     if not track_type.value.allow_modify:
-        return Imported_track(json_data)
+        return ImportedTrack(json_data)
     if track_type == Track_type.text:
-        return Imported_text_track(json_data)
-    return Imported_media_track(json_data)
+        return ImportedTextTrack(json_data)
+    return ImportedMediaTrack(json_data)
