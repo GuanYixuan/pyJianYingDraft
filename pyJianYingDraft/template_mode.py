@@ -90,7 +90,12 @@ class ImportedTrack(Base_track):
         self.raw_data = deepcopy(json_data)
 
     def export_json(self) -> Dict[str, Any]:
-        return self.raw_data
+        ret = deepcopy(self.raw_data)
+        ret.update({
+            "name": self.name,
+            "id": self.track_id
+        })
+        return ret
 
 class EditableTrack(ImportedTrack):
     """模板模式下导入且可修改的轨道(音视频及文本轨道)"""
@@ -116,8 +121,13 @@ class EditableTrack(ImportedTrack):
         return self.segments[-1].target_timerange.end
 
     def export_json(self) -> Dict[str, Any]:
-        self.raw_data.update({"segments": [seg.export_json() for seg in self.segments]})
-        return self.raw_data
+        ret = super().export_json()
+        # 为每个片段写入render_index
+        segment_exports = [seg.export_json() for seg in self.segments]
+        for seg in segment_exports:
+            seg["render_index"] = self.render_index
+        ret["segments"] = segment_exports
+        return ret
 
 class ImportedTextTrack(EditableTrack):
     """模板模式下导入的文本轨道"""
