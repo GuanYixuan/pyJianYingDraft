@@ -85,7 +85,7 @@ class ImportedTrack(Base_track):
         self.track_type = Track_type.from_name(json_data["type"])
         self.name = json_data["name"]
         self.track_id = json_data["id"]
-        self.render_index = max([int(seg["render_index"]) for seg in json_data["segments"]] + [0])
+        self.render_index = max([int(seg["render_index"]) for seg in json_data["segments"]], default=0)
 
         self.raw_data = deepcopy(json_data)
 

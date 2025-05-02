@@ -520,6 +520,53 @@ class Script_file:
 
         return ret[0]
 
+    def import_track(self, source_file: "Script_file", track: EditableTrack, *,
+                     new_name: Optional[str] = None, relative_index: Optional[int] = None) -> "Script_file":
+        """将一个`Editable_track`导入到当前`Script_file`中, 如从模板草稿中导入特定的文本或视频轨道到当前正在编辑的草稿文件中
+
+        注意: 本方法会保留各片段及其素材的id, 因而不支持向同一草稿多次导入同一轨道
+
+        Args:
+            source_file (`Script_file`): 源文件，包含要导入的轨道
+            track (`EditableTrack`): 要导入的轨道, 可通过`get_imported_track`方法获取
+            new_name (`str`, optional): 新轨道名称, 默认使用源轨道名称.
+            relative_index (`int`, optional): 相对索引，用于调整导入轨道的渲染层级. 默认保持原有层级.
+        """
+        # 直接拷贝原始轨道结构, 按需修改渲染层级
+        imported_track = deepcopy(track)
+        if relative_index is not None:
+            imported_track.render_index = track.track_type.value.render_index + relative_index
+        if new_name is not None:
+            imported_track.name = new_name
+        self.imported_tracks.append(imported_track)
+
+        # 收集所有需要复制的素材ID
+        material_ids = set()
+        segments: List[Dict[str, Any]] = track.raw_data.get("segments", [])
+        for segment in segments:
+            # 主素材ID
+            material_id = segment.get("material_id")
+            if material_id:
+                material_ids.add(material_id)
+
+            # extra_material_refs中的素材ID
+            extra_refs: List[str] = segment.get("extra_material_refs", [])
+            material_ids.update(extra_refs)
+
+        # 复制素材
+        for material_type, material_list in source_file.imported_materials.items():
+            for material in material_list:
+                if material.get("id") in material_ids:
+                    self.imported_materials[material_type].append(deepcopy(material))
+                    material_ids.remove(material.get("id"))
+
+        assert len(material_ids) == 0, "未找到以下素材: %s" % material_ids
+
+        # 更新总时长
+        self.duration = max(self.duration, track.end_time)
+
+        return self
+
     def replace_material_by_name(self, material_name: str, material: Union[Video_material, Audio_material],
                                  replace_crop: bool = False) -> "Script_file":
         """替换指定名称的素材, 并影响所有引用它的片段
