@@ -521,6 +521,7 @@ class Script_file:
         return ret[0]
 
     def import_track(self, source_file: "Script_file", track: EditableTrack, *,
+                     offset: Union[str, int] = 0,
                      new_name: Optional[str] = None, relative_index: Optional[int] = None) -> "Script_file":
         """将一个`Editable_track`导入到当前`Script_file`中, 如从模板草稿中导入特定的文本或视频轨道到当前正在编辑的草稿文件中
 
@@ -528,7 +529,8 @@ class Script_file:
 
         Args:
             source_file (`Script_file`): 源文件，包含要导入的轨道
-            track (`EditableTrack`): 要导入的轨道, 可通过`get_imported_track`方法获取
+            track (`EditableTrack`): 要导入的轨道, 可通过`get_imported_track`方法获取.
+            offset (`str | int`, optional): 轨道的时间偏移量(微秒), 可以是整数微秒值或时间字符串(如"1s"). 默认不添加偏移.
             new_name (`str`, optional): 新轨道名称, 默认使用源轨道名称.
             relative_index (`int`, optional): 相对索引，用于调整导入轨道的渲染层级. 默认保持原有层级.
         """
@@ -538,6 +540,12 @@ class Script_file:
             imported_track.render_index = track.track_type.value.render_index + relative_index
         if new_name is not None:
             imported_track.name = new_name
+
+        # 应用偏移量
+        offset_us = tim(offset)
+        if offset_us != 0:
+            for seg in imported_track.segments:
+                seg.target_timerange.start = max(0, seg.target_timerange.start + offset_us)
         self.imported_tracks.append(imported_track)
 
         # 收集所有需要复制的素材ID
