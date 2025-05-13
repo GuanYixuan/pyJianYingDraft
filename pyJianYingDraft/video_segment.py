@@ -6,7 +6,7 @@
 import uuid
 from copy import deepcopy
 
-from typing import Optional, Literal, Union
+from typing import Optional, Literal, Union, overload
 from typing import Dict, List, Tuple, Any
 
 from .time_util import tim, Timerange
@@ -243,6 +243,33 @@ class Transition:
             # 不导出path和request_id字段
         }
 
+class BackgroundFilling:
+    """背景填充对象"""
+
+    global_id: str
+    """背景填充全局id, 由程序自动生成"""
+    fill_type: Literal["canvas_blur", "canvas_color"]
+    """背景填充类型"""
+    blur: float
+    """模糊程度, 0-1"""
+    color: str
+    """背景颜色, 格式为'#RRGGBBAA'"""
+
+    def __init__(self, fill_type: Literal["canvas_blur", "canvas_color"], blur: float, color: str):
+        self.global_id = uuid.uuid4().hex
+        self.fill_type = fill_type
+        self.blur = blur
+        self.color = color
+
+    def export_json(self) -> Dict[str, Any]:
+        return {
+            "id": self.global_id,
+            "type": self.fill_type,
+            "blur": self.blur,
+            "color": self.color,
+            "source_platform": 0,
+        }
+
 class Video_segment(Visual_segment):
     """安放在轨道上的一个视频/图片片段"""
 
@@ -268,6 +295,11 @@ class Video_segment(Visual_segment):
     """
     transition: Optional[Transition]
     """转场实例, 可能为空
+
+    在放入轨道时自动添加到素材列表中
+    """
+    background_filling: Optional[BackgroundFilling]
+    """背景填充实例, 可能为空
 
     在放入轨道时自动添加到素材列表中
     """
@@ -308,6 +340,7 @@ class Video_segment(Visual_segment):
         self.filters = []
         self.transition = None
         self.mask = None
+        self.background_filling = None
 
     def add_animation(self, animation_type: Union[Intro_type, Outro_type, Group_animation_type],
                       duration: Optional[Union[int, str]] = None) -> "Video_segment":
@@ -426,6 +459,32 @@ class Video_segment(Visual_segment):
 
         self.transition = Transition(transition_type, duration)
         self.extra_material_refs.append(self.transition.global_id)
+        return self
+
+    def add_background_filling(self, fill_type: Literal["blur", "color"], blur: float = 0.0625, color: str = "#00000000") -> "Video_segment":
+        """为视频片段添加背景填充
+
+        注意: 背景填充仅对底层视频轨道上的片段生效
+
+        Args:
+            fill_type (`blur` or `color`): 填充类型, `blur`表示模糊, `color`表示颜色.
+            blur (`float`, optional): 模糊程度, 0.0-1.0. 仅在`fill_type`为`blur`时有效. 剪映中的四档数字分别为0.0625, 0.375, 0.75和1.0, 默认为0.0625.
+            color (`str`, optional): 填充颜色, 格式为'#RRGGBBAA'. 仅在`fill_type`为`color`时有效.
+
+        Raises:
+            `ValueError`: 当前片段已有背景填充效果或`fill_type`无效.
+        """
+        if self.background_filling is not None:
+            raise ValueError("当前片段已有背景填充效果")
+
+        if fill_type == "blur":
+            self.background_filling = BackgroundFilling("canvas_blur", blur, color)
+        elif fill_type == "color":
+            self.background_filling = BackgroundFilling("canvas_color", blur, color)
+        else:
+            raise ValueError(f"无效的背景填充类型 {fill_type}")
+
+        self.extra_material_refs.append(self.background_filling.global_id)
         return self
 
     def export_json(self) -> Dict[str, Any]:

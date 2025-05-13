@@ -13,7 +13,7 @@ from .time_util import Timerange, tim, srt_tstamp
 from .local_materials import Video_material, Audio_material
 from .segment import Base_segment, Speed, Clip_settings
 from .audio_segment import Audio_segment, Audio_fade, Audio_effect
-from .video_segment import Video_segment, Sticker_segment, Segment_animations, Video_effect, Transition, Filter
+from .video_segment import Video_segment, Sticker_segment, Segment_animations, Video_effect, Transition, Filter, BackgroundFilling
 from .effect_segment import Effect_segment, Filter_segment
 from .text_segment import Text_segment, Text_style, TextBubble
 from .track import Track_type, Base_track, Track
@@ -49,6 +49,8 @@ class Script_material:
     """转场效果列表"""
     filters: List[Union[Filter, TextBubble]]
     """滤镜/文本花字/文本气泡列表, 导出到`effects`中"""
+    canvases: List[BackgroundFilling]
+    """背景填充列表"""
 
     def __init__(self):
         self.audios = []
@@ -65,6 +67,7 @@ class Script_material:
         self.masks = []
         self.transitions = []
         self.filters = []
+        self.canvases = []
 
     @overload
     def __contains__(self, item: Union[Video_material, Audio_material]) -> bool: ...
@@ -102,7 +105,7 @@ class Script_material:
             "audio_track_indexes": [],
             "audios": [audio.export_json() for audio in self.audios],
             "beats": [],
-            "canvases": [],
+            "canvases": [canvas.export_json() for canvas in self.canvases],
             "chromas": [],
             "color_curves": [],
             "digital_humans": [],
@@ -318,6 +321,9 @@ class Script_file:
             # 转场
             if (segment.transition is not None) and (segment.transition not in self.materials):
                 self.materials.transitions.append(segment.transition)
+            # 背景填充
+            if segment.background_filling is not None:
+                self.materials.canvases.append(segment.background_filling)
 
             self.materials.speeds.append(segment.speed)
         elif isinstance(segment, Sticker_segment):
