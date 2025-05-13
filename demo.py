@@ -33,6 +33,7 @@ video_segment.add_animation(Intro_type.斜切)                               # �
 
 gif_segment = draft.Video_segment(gif_material,
                                   trange(video_segment.end, gif_material.duration))  # 紧跟上一片段，长度与gif一致
+gif_segment.add_background_filling("blur", 0.0625)  # 添加一个模糊背景填充效果, 模糊程度等同于剪映中第一档
 
 # 为二者添加一个转场
 video_segment.add_transition(Transition_type.信号故障)  # 注意转场添加在“前一个”视频片段上

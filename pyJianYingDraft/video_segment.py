@@ -468,7 +468,7 @@ class Video_segment(Visual_segment):
 
         Args:
             fill_type (`blur` or `color`): 填充类型, `blur`表示模糊, `color`表示颜色.
-            blur (`float`, optional): 模糊程度, 0.0-1.0. 仅在`fill_type`为`blur`时有效. 剪映中的四档数字分别为0.0625, 0.375, 0.75和1.0, 默认为0.0625.
+            blur (`float`, optional): 模糊程度, 0.0-1.0. 仅在`fill_type`为`blur`时有效. 剪映中的四档模糊数值分别为0.0625, 0.375, 0.75和1.0, 默认为0.0625.
             color (`str`, optional): 填充颜色, 格式为'#RRGGBBAA'. 仅在`fill_type`为`color`时有效.
 
         Raises:
