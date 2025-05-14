@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="pyJianYingDraft",
-    version="0.1.2",
+    version="0.1.3",
     author="gary318",
     description="轻量、灵活、易上手的Python剪映草稿生成及导出工具，构建全自动化视频剪辑/混剪流水线",
     long_description=open("pypi_readme.md", "r", encoding="utf-8").read(),
