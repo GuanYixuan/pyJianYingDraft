@@ -571,6 +571,8 @@ class Script_file:
         for material_type, material_list in source_file.imported_materials.items():
             for material in material_list:
                 if material.get("id") in material_ids:
+                    if material_type not in self.imported_materials:
+                        self.imported_materials[material_type] = []
                     self.imported_materials[material_type].append(deepcopy(material))
                     material_ids.remove(material.get("id"))
 
