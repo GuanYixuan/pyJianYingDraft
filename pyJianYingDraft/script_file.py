@@ -736,14 +736,17 @@ class Script_file:
                     if mat["id"] != sub_material_id:
                         continue
 
-                    if isinstance(mat["content"], str):
-                        mat["content"] = new_text
-                    else:
+                    try:
                         content = json.loads(mat["content"])
                         if recalc_style:
                             content["styles"] = __recalc_style_range(len(content["text"]), len(new_text), content["styles"])
                         content["text"] = new_text
                         mat["content"] = json.dumps(content, ensure_ascii=False)
+                    except json.JSONDecodeError:
+                        mat["content"] = new_text
+                    except TypeError:
+                        mat["content"] = new_text
+
                     break
             replaced = True
             break
