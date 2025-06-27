@@ -315,7 +315,10 @@ assert seg.target_timerange.start + 2*SEC == seg.target_timerange.start + tim("2
 截取和变速均在`Segment`创建时设置完成，具体是通过`target_timerange`、`source_timerange`和`speed`参数来共同实现的。
 > ℹ 目前暂不支持设置曲线变速
 
-以下以`Video_segment`为例，`Audio_segment`的用法相同：
+以下以`Video_segment`为例，`Audio_segment`的用法相同，此二者支持两种构造方式：
+1. **便捷构造**：直接传入素材路径字符串，自动构造素材实例
+2. **传统构造**：先创建素材实例，再传入片段构造函数。**若需要设置素材的图像裁剪属性请使用此方式**
+
 ```python
 import os
 import pyJianYingDraft as draft
@@ -326,24 +329,33 @@ script = draft.Script_file(1080, 1080)
 for i in range(3, 0, -1): # 倒序
     script.add_track(draft.Track_type.video, "%d" % i)
 
-# 读取视频素材
+# 以下部分讲解素材与片段的创建
+# 方式一：便捷构造（推荐）
 tutorial_asset_dir = os.path.join(os.path.dirname(__file__), 'readme_assets', 'tutorial')
-mat = draft.Video_material(os.path.join(tutorial_asset_dir, 'video.mp4'))
+video_path = os.path.join(tutorial_asset_dir, 'video.mp4')
+
+# 直接传入素材路径
+seg1 = draft.Video_segment(video_path, trange("0s", "4s"))  # 截取素材的前4秒
+
+# 方式二：传统构造
+mat = draft.Video_material(video_path)  # 先创建素材实例
+seg2 = draft.Video_segment(mat, trange("0s", "4s"))  # 再传入片段构造函数
 
 # 视频素材长度为 5s
 print("Video material length: %f s" % (mat.duration / SEC))
 
+# 以下部分讲解素材的时间截取与变速
 # 不指定source_timerange，则自动从头截取素材等长片段
-seg11 = draft.Video_segment(mat, trange("0s", "4s"))              # 自动截取素材的前4秒（4s表示持续时长）
-seg2  = draft.Video_segment(mat, trange("0s", "4s"), speed=1.25)  # 自动截取素材的前4*1.25=5秒
-seg4  = draft.Video_segment(mat, trange("0s", "3s"), speed=3.0)   # 截取前3*3.0=9秒，素材不够长故报错
+seg11 = draft.Video_segment(video_path, trange("0s", "4s"))              # 自动截取素材的前4秒（4s表示持续时长）
+seg2  = draft.Video_segment(video_path, trange("0s", "4s"), speed=1.25)  # 自动截取素材的前4*1.25=5秒
+seg4  = draft.Video_segment(video_path, trange("0s", "3s"), speed=3.0)   # 截取前3*3.0=9秒，素材不够长故报错
 
 # 指定source_timerange，则截取素材的指定片段，自动设置速度
-seg12 = draft.Video_segment(mat, trange("4s", "1s"),
+seg12 = draft.Video_segment(video_path, trange("4s", "1s"),
                             source_timerange=trange(0, "4s"))     # 将素材在1s内放完，速度自动设置为5.0
 
 # 同时指定source_timerange和speed，则截取素材的指定片段，并根据播放速度覆盖target_timerange的duration
-seg3  = draft.Video_segment(mat, trange("1s", "66666h"),
+seg3  = draft.Video_segment(video_path, trange("1s", "66666h"),
                             source_timerange=trange(0, "5s"),
                             speed=2.0) # 将长5s的素材按2倍速放完，target_timerange的duration自动设为2.5s
 

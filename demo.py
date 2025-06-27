@@ -16,21 +16,19 @@ script = draft.Script_file(1920, 1080)  # 1920x1080分辨率
 # 添加音频、视频和文本轨道
 script.add_track(draft.Track_type.audio).add_track(draft.Track_type.video).add_track(draft.Track_type.text)
 
-# 从本地读取音视频素材和一个gif表情包
-audio_material = draft.Audio_material(os.path.join(tutorial_asset_dir, 'audio.mp3'))
-video_material = draft.Video_material(os.path.join(tutorial_asset_dir, 'video.mp4'))
-gif_material = draft.Video_material(os.path.join(tutorial_asset_dir, 'sticker.gif'))
-
-# 创建音频片段
-audio_segment = draft.Audio_segment(audio_material,
+# 创建音频片段（使用便捷构造，直接传入素材路径）
+audio_segment = draft.Audio_segment(os.path.join(tutorial_asset_dir, 'audio.mp3'),
                                     trange("0s", "5s"),  # 片段将位于轨道上的0s-5s（注意5s表示持续时长而非结束时间）
                                     volume=0.6)          # 音量设置为60%(-4.4dB)
 audio_segment.add_fade("1s", "0s")                       # 增加一个1s的淡入
 
-# 创建视频片段
-video_segment = draft.Video_segment(video_material, trange("0s", "4.2s"))  # 片段将位于轨道上的0s-4.2s（取素材前4.2s内容，注意此处4.2s表示持续时长）
-video_segment.add_animation(Intro_type.斜切)                               # 添加一个入场动画“斜切”
+# 创建视频片段（使用便捷构造，直接传入素材路径）
+video_segment = draft.Video_segment(os.path.join(tutorial_asset_dir, 'video.mp4'), 
+                                    trange("0s", "4.2s"))  # 片段将位于轨道上的0s-4.2s（取素材前4.2s内容，注意此处4.2s表示持续时长）
+video_segment.add_animation(Intro_type.斜切)                               # 添加一个入场动画"斜切"
 
+# 创建贴纸片段，由于需要读取素材长度，先创建素材实例
+gif_material = draft.Video_material(os.path.join(tutorial_asset_dir, 'sticker.gif'))
 gif_segment = draft.Video_segment(gif_material,
                                   trange(video_segment.end, gif_material.duration))  # 紧跟上一片段，长度与gif一致
 gif_segment.add_background_filling("blur", 0.0625)  # 添加一个模糊背景填充效果, 模糊程度等同于剪映中第一档

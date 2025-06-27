@@ -304,14 +304,13 @@ class Video_segment(Visual_segment):
     在放入轨道时自动添加到素材列表中
     """
 
-    # TODO: material参数接受path进行便捷构造
-    def __init__(self, material: Video_material, target_timerange: Timerange, *,
+    def __init__(self, material: Union[Video_material, str], target_timerange: Timerange, *,
                  source_timerange: Optional[Timerange] = None, speed: Optional[float] = None, volume: float = 1.0,
                  clip_settings: Optional[Clip_settings] = None):
         """利用给定的视频/图片素材构建一个轨道片段, 并指定其时间信息及图像调节设置
 
         Args:
-            material (`Video_material`): 素材实例
+            material (`Video_material` or `str`): 素材实例或素材路径, 若为路径则自动构造素材实例(此时不能指定`crop_settings`参数)
             target_timerange (`Timerange`): 片段在轨道上的目标时间范围
             source_timerange (`Timerange`, optional): 截取的素材片段的时间范围, 默认从开头根据`speed`截取与`target_timerange`等长的一部分
             speed (`float`, optional): 播放速度, 默认为1.0. 此项与`source_timerange`同时指定时, 将覆盖`target_timerange`中的时长
@@ -321,6 +320,9 @@ class Video_segment(Visual_segment):
         Raises:
             `ValueError`: 指定的或计算出的`source_timerange`超出了素材的时长范围
         """
+        if isinstance(material, str):
+            material = Video_material(material)
+
         if source_timerange is not None and speed is not None:
             target_timerange = Timerange(target_timerange.start, round(source_timerange.duration / speed))
         elif source_timerange is not None and speed is None:

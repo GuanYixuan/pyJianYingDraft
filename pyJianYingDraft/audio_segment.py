@@ -56,6 +56,7 @@ class Audio_effect:
 
     category_id: Literal["sound_effect", "tone", "speech_to_song"]
     category_name: Literal["场景音", "音色", "声音成曲"]
+    category_index: Literal[1, 2, 3]
 
     audio_adjust_params: List[Effect_param_instance]
 
@@ -71,12 +72,15 @@ class Audio_effect:
         if isinstance(effect_meta, Audio_scene_effect_type):
             self.category_id = "sound_effect"
             self.category_name = "场景音"
+            self.category_index = 1
         elif isinstance(effect_meta, Tone_effect_type):
             self.category_id = "tone"
             self.category_name = "音色"
+            self.category_index = 2
         elif isinstance(effect_meta, Speech_to_song_type):
             self.category_id = "speech_to_song"
             self.category_name = "声音成曲"
+            self.category_index = 3
         else:
             raise TypeError("不支持的元数据类型 %s" % type(effect_meta))
 
@@ -93,7 +97,7 @@ class Audio_effect:
             "production_path": "",
             "resource_id": self.resource_id,
             "speaker_id": "",
-            "sub_type": 1,
+            "sub_type": self.category_index,
             "time_range": {"duration": 0, "start": 0},  # 似乎并未用到
             "type": "audio_effect"
             # 不导出path和constant_material_id
@@ -117,12 +121,12 @@ class Audio_segment(Media_segment):
     在放入轨道时自动添加到素材列表中
     """
 
-    def __init__(self, material: Audio_material, target_timerange: Timerange, *,
+    def __init__(self, material: Union[Audio_material, str], target_timerange: Timerange, *,
                  source_timerange: Optional[Timerange] = None, speed: Optional[float] = None, volume: float = 1.0):
         """利用给定的音频素材构建一个轨道片段, 并指定其时间信息及播放速度/音量
 
         Args:
-            material (`Audio_material`): 素材实例
+            material (`Audio_material` or `str`): 素材实例或素材路径, 若为路径则自动构造素材实例
             target_timerange (`Timerange`): 片段在轨道上的目标时间范围
             source_timerange (`Timerange`, optional): 截取的素材片段的时间范围, 默认从开头根据`speed`截取与`target_timerange`等长的一部分
             speed (`float`, optional): 播放速度, 默认为1.0. 此项与`source_timerange`同时指定时, 将覆盖`target_timerange`中的时长
@@ -131,6 +135,9 @@ class Audio_segment(Media_segment):
         Raises:
             `ValueError`: 指定的或计算出的`source_timerange`超出了素材的时长范围
         """
+        if isinstance(material, str):
+            material = Audio_material(material)
+
         if source_timerange is not None and speed is not None:
             target_timerange = Timerange(target_timerange.start, round(source_timerange.duration / speed))
         elif source_timerange is not None and speed is None:
