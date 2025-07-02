@@ -336,7 +336,7 @@ class Text_segment(Visual_segment):
                         "content": {
                             "render_type": "solid",
                             "solid": {
-                                "alpha": self.style.alpha,
+                                "alpha": 1.0,
                                 "color": list(self.style.color)
                             }
                         }
@@ -380,7 +380,7 @@ class Text_segment(Visual_segment):
             "type": "text",
 
             # 混合 (+4)
-            # "global_alpha": 1.0,
+            "global_alpha": self.style.alpha,
 
             # 发光 (+64)，属性由extra_material_refs记录
 
