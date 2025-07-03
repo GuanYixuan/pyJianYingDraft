@@ -414,7 +414,7 @@ class Script_file:
     def import_srt(self, srt_path: str, track_name: str, *,
                    time_offset: Union[str, float] = 0.0,
                    style_reference: Optional[Text_segment] = None,
-                   text_style: Text_style = Text_style(size=5, align=1),
+                   text_style: Text_style = Text_style(size=5, align=1, auto_wrapping=True),
                    clip_settings: Optional[Clip_settings] = Clip_settings(transform_y=-0.8)) -> "Script_file":
         """从SRT文件中导入字幕, 支持传入一个`Text_segment`作为样式参考
 

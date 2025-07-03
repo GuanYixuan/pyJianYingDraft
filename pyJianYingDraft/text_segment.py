@@ -42,10 +42,16 @@ class Text_style:
     line_spacing: int
     """行间距"""
 
+    auto_wrapping: bool
+    """是否自动换行"""
+    max_line_width: float
+    """最大行宽, 取值范围为[0, 1]"""
+
     def __init__(self, *, size: float = 8.0, bold: bool = False, italic: bool = False, underline: bool = False,
                  color: Tuple[float, float, float] = (1.0, 1.0, 1.0), alpha: float = 1.0,
                  align: Literal[0, 1, 2] = 0, vertical: bool = False,
-                 letter_spacing: int = 0, line_spacing: int = 0):
+                 letter_spacing: int = 0, line_spacing: int = 0,
+                 auto_wrapping: bool = False, max_line_width: float = 0.82):
         """
         Args:
             size (`float`, optional): 字体大小, 默认为8.0
@@ -58,6 +64,8 @@ class Text_style:
             vertical (`bool`, optional): 是否为竖排文本, 默认为否
             letter_spacing (`int`, optional): 字符间距, 定义与剪映中一致, 默认为0
             line_spacing (`int`, optional): 行间距, 定义与剪映中一致, 默认为0
+            auto_wrapping (`bool`, optional): 是否自动换行, 默认关闭
+            max_line_width (`float`, optional): 每行最大行宽占屏幕宽度比例, 取值范围为[0, 1], 默认为0.82
         """
         self.size = size
         self.bold = bold
@@ -72,6 +80,9 @@ class Text_style:
 
         self.letter_spacing = letter_spacing
         self.line_spacing = line_spacing
+
+        self.auto_wrapping = auto_wrapping
+        self.max_line_width = max_line_width
 
 class Text_border:
     """文本描边的参数"""
@@ -372,12 +383,12 @@ class Text_segment(Visual_segment):
             "line_spacing": 0.02 + self.style.line_spacing * 0.05,
 
             "line_feed": 1,
-            "line_max_width": 0.82,
+            "line_max_width": self.style.max_line_width,
             "force_apply_line_max_width": False,
 
             "check_flag": check_flag,
 
-            "type": "text",
+            "type": "subtitle" if self.style.auto_wrapping else "text",
 
             # 混合 (+4)
             "global_alpha": self.style.alpha,
