@@ -787,8 +787,7 @@ class Script_file:
                 self.content["materials"][material_type].extend(material_list)
 
         # 对轨道排序并导出
-        track_list: List[Base_track] = list(self.tracks.values())
-        track_list.extend(self.imported_tracks)
+        track_list: List[Base_track] = list(self.imported_tracks + list(self.tracks.values()))  # 新加入的轨道在列表末尾（上层）
         track_list.sort(key=lambda track: track.render_index)
         self.content["tracks"] = [track.export_json() for track in track_list]
 
