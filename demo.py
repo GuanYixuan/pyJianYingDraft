@@ -23,7 +23,7 @@ audio_segment = draft.Audio_segment(os.path.join(tutorial_asset_dir, 'audio.mp3'
 audio_segment.add_fade("1s", "0s")                       # 增加一个1s的淡入
 
 # 创建视频片段（使用便捷构造，直接传入素材路径）
-video_segment = draft.Video_segment(os.path.join(tutorial_asset_dir, 'video.mp4'), 
+video_segment = draft.Video_segment(os.path.join(tutorial_asset_dir, 'video.mp4'),
                                     trange("0s", "4.2s"))  # 片段将位于轨道上的0s-4.2s（取素材前4.2s内容，注意此处4.2s表示持续时长）
 video_segment.add_animation(Intro_type.斜切)                               # 添加一个入场动画"斜切"
 

@@ -59,6 +59,7 @@
 - ☑️ 文本的[关键帧](#关键帧)以及[动画](#添加片段动画)
 - ☑️ 文字描边和文字背景
 - ☑️ 文字气泡效果和花字效果[(示例代码)](demo.py)
+- ☑️ 文本[自动换行](#文本自动换行)功能，支持设置最大行宽
 - ☑️ [导入`.srt`文件](#导入字幕)生成字幕并批量设置格式
 
 # 安装
@@ -379,6 +380,8 @@ script.add_track(draft.Track_type.video,
                  relative_index=1)        # 由于1<2，所以前景轨道位于更上方
 ```
 
+> ℹ 对于相同index的轨道，默认**后创建的轨道位于上方**
+
 一旦创建了多个同类轨道，则在添加片段时必须指定目标轨道，例如：
 ```python
 script.add_segment(video_segment, "背景")
@@ -559,10 +562,24 @@ seg1 = draft.Text_segment("Subtitle", trange("0s", "10s"),
 
 更具体的参数说明可参见`Text_style`和`Clip_settings`的构造函数。
 
+#### 文本自动换行
+文本片段支持自动换行功能，可以通过`Text_style`的`auto_wrapping`和`max_line_width`参数来控制：
+
+```python
+# 启用自动换行，设置最大行宽为屏幕宽度的70%
+seg2 = draft.Text_segment("这是一段很长的文本内容，当超过设定的最大行宽时会自动换行显示", 
+                          trange("0s", "10s"),
+                          font=Font_type.文轩体,
+                          style=Text_style(size=5.0, 
+                                          auto_wrapping=True,      # 启用自动换行
+                                          max_line_width=0.7))     # 最大行宽占屏幕70%
+```
+
 #### 导入字幕
 > ℹ 目前只支持导入**SRT格式**的字幕文件
 
 导入字幕本质上是根据每条字幕的时间戳及内容创建一系列文本，并添加到轨道中。这一过程通过`Script_file.import_srt`来实现。
+导入的字幕默认启用自动换行功能。
 
 例如：
 ```python
