@@ -33,7 +33,7 @@ class Keyframe:
             "values": self.values
         }
 
-class Keyframe_property(Enum):
+class KeyframeProperty(Enum):
     """关键帧所控制的属性类型"""
 
     position_x = "KFTypePositionX"
@@ -51,28 +51,28 @@ class Keyframe_property(Enum):
     """同时控制X轴及Y轴缩放比例(1.0为不缩放), 与`scale_x`和`scale_y`互斥"""
 
     alpha = "KFTypeAlpha"
-    """不透明度, 1.0为完全不透明, 仅对`Video_segment`有效"""
+    """不透明度, 1.0为完全不透明, 仅对`VideoSegment`有效"""
     saturation = "KFTypeSaturation"
-    """饱和度, 0.0为原始饱和度, 范围为-1.0到1.0, 仅对`Video_segment`有效"""
+    """饱和度, 0.0为原始饱和度, 范围为-1.0到1.0, 仅对`VideoSegment`有效"""
     contrast = "KFTypeContrast"
-    """对比度, 0.0为原始对比度, 范围为-1.0到1.0, 仅对`Video_segment`有效"""
+    """对比度, 0.0为原始对比度, 范围为-1.0到1.0, 仅对`VideoSegment`有效"""
     brightness = "KFTypeBrightness"
-    """亮度, 0.0为原始亮度, 范围为-1.0到1.0, 仅对`Video_segment`有效"""
+    """亮度, 0.0为原始亮度, 范围为-1.0到1.0, 仅对`VideoSegment`有效"""
 
     volume = "KFTypeVolume"
-    """音量, 1.0为原始音量, 仅对`Audio_segment`和`Video_segment`有效"""
+    """音量, 1.0为原始音量, 仅对`AudioSegment`和`VideoSegment`有效"""
 
-class Keyframe_list:
+class KeyframeList:
     """关键帧列表, 记录与某个特定属性相关的一系列关键帧"""
 
     list_id: str
     """关键帧列表全局id, 自动生成"""
-    keyframe_property: Keyframe_property
+    keyframe_property: KeyframeProperty
     """关键帧对应的属性"""
     keyframes: List[Keyframe]
     """关键帧列表"""
 
-    def __init__(self, keyframe_property: Keyframe_property):
+    def __init__(self, keyframe_property: KeyframeProperty):
         """为给定的关键帧属性初始化关键帧列表"""
         self.list_id = uuid.uuid4().hex
 

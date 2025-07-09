@@ -5,9 +5,9 @@ import shutil
 
 from typing import List
 
-from .script_file import Script_file
+from .script_file import ScriptFile
 
-class Draft_folder:
+class DraftFolder:
     """管理一个文件夹及其内的一系列草稿"""
 
     folder_path: str
@@ -65,14 +65,14 @@ class Draft_folder:
         script_file = self.load_template(draft_name)
         script_file.inspect_material()
 
-    def load_template(self, draft_name: str) -> Script_file:
+    def load_template(self, draft_name: str) -> ScriptFile:
         """在文件夹中打开一个草稿作为模板, 并在其上进行编辑
 
         Args:
             draft_name (`str`): 草稿名称, 即相应文件夹名称
 
         Returns:
-            `Script_file`: 以模板模式打开的草稿对象
+            `ScriptFile`: 以模板模式打开的草稿对象
 
         Raises:
             `FileNotFoundError`: 对应的草稿不存在
@@ -81,9 +81,9 @@ class Draft_folder:
         if not os.path.exists(draft_path):
             raise FileNotFoundError(f"草稿文件夹 {draft_name} 不存在")
 
-        return Script_file.load_template(os.path.join(draft_path, "draft_content.json"))
+        return ScriptFile.load_template(os.path.join(draft_path, "draft_content.json"))
 
-    def duplicate_as_template(self, template_name: str, new_draft_name: str, allow_replace: bool = False) -> Script_file:
+    def duplicate_as_template(self, template_name: str, new_draft_name: str, allow_replace: bool = False) -> ScriptFile:
         """复制一份给定的草稿, 并在复制出的新草稿上进行编辑
 
         Args:
@@ -92,7 +92,7 @@ class Draft_folder:
             allow_replace (`bool`, optional): 是否允许覆盖与`new_draft_name`重名的草稿. 默认为否.
 
         Returns:
-            `Script_file`: 以模板模式打开的**复制后的**草稿对象
+            `ScriptFile`: 以模板模式打开的**复制后的**草稿对象
 
         Raises:
             `FileNotFoundError`: 原始草稿不存在

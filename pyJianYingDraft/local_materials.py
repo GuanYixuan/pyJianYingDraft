@@ -5,7 +5,7 @@ import pymediainfo
 from typing import Optional, Literal
 from typing import Dict, Any
 
-class Crop_settings:
+class CropSettings:
     """素材的裁剪设置, 各属性均在0-1之间, 注意素材的坐标原点在左上角"""
 
     upper_left_x: float
@@ -43,7 +43,7 @@ class Crop_settings:
             "lower_right_y": self.lower_right_y
         }
 
-class Video_material:
+class VideoMaterial:
     """本地视频素材（视频或图片）, 一份素材可以在多个片段中使用"""
 
     material_id: str
@@ -60,18 +60,18 @@ class Video_material:
     """素材高度"""
     width: int
     """素材宽度"""
-    crop_settings: Crop_settings
+    crop_settings: CropSettings
     """素材裁剪设置"""
     material_type: Literal["video", "photo"]
     """素材类型: 视频或图片"""
 
-    def __init__(self, path: str, material_name: Optional[str] = None, crop_settings: Crop_settings = Crop_settings()):
+    def __init__(self, path: str, material_name: Optional[str] = None, crop_settings: CropSettings = CropSettings()):
         """从指定位置加载视频（或图片）素材
 
         Args:
             path (`str`): 素材文件路径, 支持mp4, mov, avi等常见视频文件及jpg, jpeg, png等图片文件.
             material_name (`str`, optional): 素材名称, 如果不指定, 默认使用文件名作为素材名称.
-            crop_settings (`Crop_settings`, optional): 素材裁剪设置, 默认不裁剪.
+            crop_settings (`CropSettings`, optional): 素材裁剪设置, 默认不裁剪.
 
         Raises:
             `FileNotFoundError`: 素材文件不存在.
@@ -136,7 +136,7 @@ class Video_material:
         }
         return video_material_json
 
-class Audio_material:
+class AudioMaterial:
     """本地音频素材"""
 
     material_id: str

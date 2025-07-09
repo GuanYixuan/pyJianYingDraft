@@ -1,29 +1,253 @@
-from .local_materials import Crop_settings, Video_material, Audio_material
-from .keyframe import Keyframe_property
+import warnings
+
+from .local_materials import CropSettings, VideoMaterial, AudioMaterial
+from .keyframe import KeyframeProperty
 
 from .time_util import Timerange
-from .audio_segment import Audio_segment
-from .video_segment import Video_segment, Sticker_segment, Clip_settings
-from .effect_segment import Effect_segment, Filter_segment
-from .text_segment import Text_segment, Text_style, Text_border, Text_background
+from .audio_segment import AudioSegment
+from .video_segment import VideoSegment, StickerSegment, ClipSettings
+from .effect_segment import EffectSegment, FilterSegment
+from .text_segment import TextSegment, TextStyle, TextBorder, TextBackground
 
-from .metadata import Font_type
-from .metadata import Mask_type
-from .metadata import Transition_type, Filter_type
-from .metadata import Intro_type, Outro_type, Group_animation_type
-from .metadata import Text_intro, Text_outro, Text_loop_anim
-from .metadata import Audio_scene_effect_type, Tone_effect_type, Speech_to_song_type
-from .metadata import Video_scene_effect_type, Video_character_effect_type
+from .metadata import FontType
+from .metadata import MaskType
+from .metadata import TransitionType, FilterType
+from .metadata import IntroType, OutroType, GroupAnimationType
+from .metadata import TextIntro, TextOutro, TextLoopAnim
+from .metadata import AudioSceneEffectType
+from .metadata import VideoSceneEffectType, VideoCharacterEffectType
 
-from .track import Track_type
-from .template_mode import Shrink_mode, Extend_mode
-from .script_file import Script_file
-from .draft_folder import Draft_folder
-from .jianying_controller import Jianying_controller, Export_resolution, Export_framerate
+from .track import TrackType
+from .template_mode import ShrinkMode, ExtendMode
+from .script_file import ScriptFile
+from .draft_folder import DraftFolder
+from .jianying_controller import JianyingController, ExportResolution, ExportFramerate
 
 from .time_util import SEC, tim, trange
 
+
+def _deprecated_class_warning(old_name: str, new_name: str):
+    warnings.warn(
+        f"{old_name} is deprecated and will be removed in a future version. "
+        f"Use {new_name} instead.",
+        DeprecationWarning,
+        stacklevel=3
+    )
+
+# 创建带警告的枚举代理类
+class _DeprecatedEnum:
+    """带deprecation警告的枚举代理类"""
+    def __init__(self, original_enum, old_name, new_name):
+        self._enum = original_enum
+        self._old_name = old_name
+        self._new_name = new_name
+
+    def __getattr__(self, name):
+        # 当访问枚举成员时显示警告
+        _deprecated_class_warning(self._old_name, self._new_name)
+        return getattr(self._enum, name)
+
+    def __getitem__(self, name):
+        # 当通过索引访问时显示警告
+        _deprecated_class_warning(self._old_name, self._new_name)
+        return self._enum[name]
+
+    def __repr__(self):
+        return f"<Deprecated {self._old_name} (use {self._new_name} instead)>"
+
+# 保持向后兼容
+class Script_file:
+    """Deprecated: Use ScriptFile instead."""
+    def __new__(cls, *args, **kwargs):
+        _deprecated_class_warning("Script_file", "ScriptFile")
+        return ScriptFile(*args, **kwargs)
+
+class Draft_folder:
+    """Deprecated: Use DraftFolder instead."""
+    def __new__(cls, *args, **kwargs):
+        _deprecated_class_warning("Draft_folder", "DraftFolder")
+        return DraftFolder(*args, **kwargs)
+
+class Jianying_controller:
+    """Deprecated: Use JianyingController instead."""
+    def __new__(cls, *args, **kwargs):
+        _deprecated_class_warning("Jianying_controller", "JianyingController")
+        return JianyingController(*args, **kwargs)
+
+class Export_resolution:
+    """Deprecated: Use ExportResolution instead."""
+    def __new__(cls, *args, **kwargs):
+        _deprecated_class_warning("Export_resolution", "ExportResolution")
+        return ExportResolution(*args, **kwargs)
+
+class Export_framerate:
+    """Deprecated: Use ExportFramerate instead."""
+    def __new__(cls, *args, **kwargs):
+        _deprecated_class_warning("Export_framerate", "ExportFramerate")
+        return ExportFramerate(*args, **kwargs)
+
+class Shrink_mode:
+    """Deprecated: Use ShrinkMode instead."""
+    def __new__(cls, *args, **kwargs):
+        _deprecated_class_warning("Shrink_mode", "ShrinkMode")
+        return ShrinkMode(*args, **kwargs)
+
+class Extend_mode:
+    """Deprecated: Use ExtendMode instead."""
+    def __new__(cls, *args, **kwargs):
+        _deprecated_class_warning("Extend_mode", "ExtendMode")
+        return ExtendMode(*args, **kwargs)
+
+# 枚举类的向后兼容 - 使用代理类
+Track_type = _DeprecatedEnum(TrackType, "Track_type", "TrackType")
+Font_type = _DeprecatedEnum(FontType, "Font_type", "FontType")
+Mask_type = _DeprecatedEnum(MaskType, "Mask_type", "MaskType")
+Filter_type = _DeprecatedEnum(FilterType, "Filter_type", "FilterType")
+Transition_type = _DeprecatedEnum(TransitionType, "Transition_type", "TransitionType")
+Intro_type = _DeprecatedEnum(IntroType, "Intro_type", "IntroType")
+Outro_type = _DeprecatedEnum(OutroType, "Outro_type", "OutroType")
+Group_animation_type = _DeprecatedEnum(GroupAnimationType, "Group_animation_type", "GroupAnimationType")
+Text_intro = _DeprecatedEnum(TextIntro, "Text_intro", "TextIntro")
+Text_outro = _DeprecatedEnum(TextOutro, "Text_outro", "TextOutro")
+Text_loop_anim = _DeprecatedEnum(TextLoopAnim, "Text_loop_anim", "TextLoopAnim")
+Audio_scene_effect_type = _DeprecatedEnum(AudioSceneEffectType, "Audio_scene_effect_type", "AudioSceneEffectType")
+Video_scene_effect_type = _DeprecatedEnum(VideoSceneEffectType, "Video_scene_effect_type", "VideoSceneEffectType")
+Video_character_effect_type = _DeprecatedEnum(VideoCharacterEffectType, "Video_character_effect_type", "VideoCharacterEffectType")
+
+class Clip_settings:
+    """Deprecated: Use ClipSettings instead."""
+    def __new__(cls, *args, **kwargs):
+        _deprecated_class_warning("Clip_settings", "ClipSettings")
+        return ClipSettings(*args, **kwargs)
+
+class Text_style:
+    """Deprecated: Use TextStyle instead."""
+    def __new__(cls, *args, **kwargs):
+        _deprecated_class_warning("Text_style", "TextStyle")
+        return TextStyle(*args, **kwargs)
+
+class Text_border:
+    """Deprecated: Use TextBorder instead."""
+    def __new__(cls, *args, **kwargs):
+        _deprecated_class_warning("Text_border", "TextBorder")
+        return TextBorder(*args, **kwargs)
+
+class Text_background:
+    """Deprecated: Use TextBackground instead."""
+    def __new__(cls, *args, **kwargs):
+        _deprecated_class_warning("Text_background", "TextBackground")
+        return TextBackground(*args, **kwargs)
+
+class Text_segment:
+    """Deprecated: Use TextSegment instead."""
+    def __new__(cls, *args, **kwargs):
+        _deprecated_class_warning("Text_segment", "TextSegment")
+        return TextSegment(*args, **kwargs)
+
+class Audio_segment:
+    """Deprecated: Use AudioSegment instead."""
+    def __new__(cls, *args, **kwargs):
+        _deprecated_class_warning("Audio_segment", "AudioSegment")
+        return AudioSegment(*args, **kwargs)
+
+class Video_segment:
+    """Deprecated: Use VideoSegment instead."""
+    def __new__(cls, *args, **kwargs):
+        _deprecated_class_warning("Video_segment", "VideoSegment")
+        return VideoSegment(*args, **kwargs)
+
+class Sticker_segment:
+    """Deprecated: Use StickerSegment instead."""
+    def __new__(cls, *args, **kwargs):
+        _deprecated_class_warning("Sticker_segment", "StickerSegment")
+        return StickerSegment(*args, **kwargs)
+
+class Effect_segment:
+    """Deprecated: Use EffectSegment instead."""
+    def __new__(cls, *args, **kwargs):
+        _deprecated_class_warning("Effect_segment", "EffectSegment")
+        return EffectSegment(*args, **kwargs)
+
+class Filter_segment:
+    """Deprecated: Use FilterSegment instead."""
+    def __new__(cls, *args, **kwargs):
+        _deprecated_class_warning("Filter_segment", "FilterSegment")
+        return FilterSegment(*args, **kwargs)
+
+class Video_material:
+    """Deprecated: Use VideoMaterial instead."""
+    def __new__(cls, *args, **kwargs):
+        _deprecated_class_warning("Video_material", "VideoMaterial")
+        return VideoMaterial(*args, **kwargs)
+
+class Audio_material:
+    """Deprecated: Use AudioMaterial instead."""
+    def __new__(cls, *args, **kwargs):
+        _deprecated_class_warning("Audio_material", "AudioMaterial")
+        return AudioMaterial(*args, **kwargs)
+
+class Crop_settings:
+    """Deprecated: Use CropSettings instead."""
+    def __new__(cls, *args, **kwargs):
+        _deprecated_class_warning("Crop_settings", "CropSettings")
+        return CropSettings(*args, **kwargs)
+
+class Keyframe_property:
+    """Deprecated: Use KeyframeProperty instead."""
+    def __new__(cls, *args, **kwargs):
+        _deprecated_class_warning("Keyframe_property", "KeyframeProperty")
+        return KeyframeProperty(*args, **kwargs)
+
 __all__ = [
+    "FontType",
+    "MaskType",
+    "FilterType",
+    "TransitionType",
+    "IntroType",
+    "OutroType",
+    "GroupAnimationType",
+    "TextIntro",
+    "TextOutro",
+    "TextLoopAnim",
+    "AudioSceneEffectType",
+    "VideoSceneEffectType",
+    "VideoCharacterEffectType",
+    "CropSettings",
+    "VideoMaterial",
+    "AudioMaterial",
+    "KeyframeProperty",
+    "Timerange",
+    "AudioSegment",
+    "VideoSegment",
+    "StickerSegment",
+    "ClipSettings",
+    "EffectSegment",
+    "FilterSegment",
+    "TextSegment",
+    "TextStyle",
+    "TextBorder",
+    "TextBackground",
+    "TrackType",
+    "ShrinkMode",
+    "ExtendMode",
+    "ScriptFile",
+    "DraftFolder",
+    "JianyingController",
+    "ExportResolution",
+    "ExportFramerate",
+    "SEC",
+    "tim",
+    "trange",
+
+    # 向后兼容的snake_case类
+    "Script_file",
+    "Draft_folder",
+    "Jianying_controller",
+    "Export_resolution",
+    "Export_framerate",
+    "Shrink_mode",
+    "Extend_mode",
+    "Track_type",
     "Font_type",
     "Mask_type",
     "Filter_type",
@@ -35,34 +259,20 @@ __all__ = [
     "Text_outro",
     "Text_loop_anim",
     "Audio_scene_effect_type",
-    "Tone_effect_type",
-    "Speech_to_song_type",
     "Video_scene_effect_type",
     "Video_character_effect_type",
-    "Crop_settings",
-    "Video_material",
-    "Audio_material",
-    "Keyframe_property",
-    "Timerange",
-    "Audio_segment",
-    "Video_segment",
-    "Sticker_segment",
     "Clip_settings",
-    "Effect_segment",
-    "Filter_segment",
-    "Text_segment",
     "Text_style",
     "Text_border",
     "Text_background",
-    "Track_type",
-    "Shrink_mode",
-    "Extend_mode",
-    "Script_file",
-    "Draft_folder",
-    "Jianying_controller",
-    "Export_resolution",
-    "Export_framerate",
-    "SEC",
-    "tim",
-    "trange"
+    "Text_segment",
+    "Audio_segment",
+    "Video_segment",
+    "Sticker_segment",
+    "Effect_segment",
+    "Filter_segment",
+    "Video_material",
+    "Audio_material",
+    "Crop_settings",
+    "Keyframe_property",
 ]

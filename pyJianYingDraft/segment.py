@@ -3,11 +3,11 @@
 import uuid
 from typing import Optional, Dict, List, Any, Union
 
-from .animation import Segment_animations
+from .animation import SegmentAnimations
 from .time_util import Timerange, tim
-from .keyframe import Keyframe_list, Keyframe_property
+from .keyframe import KeyframeList, KeyframeProperty
 
-class Base_segment:
+class BaseSegment:
     """片段基类"""
 
     segment_id: str
@@ -17,7 +17,7 @@ class Base_segment:
     target_timerange: Timerange
     """片段在轨道上的时间范围"""
 
-    common_keyframes: List[Keyframe_list]
+    common_keyframes: List[KeyframeList]
     """各属性的关键帧列表"""
 
     def __init__(self, material_id: str, target_timerange: Timerange):
@@ -48,7 +48,7 @@ class Base_segment:
         """片段结束时间, 单位为微秒"""
         return self.target_timerange.end
 
-    def overlaps(self, other: "Base_segment") -> bool:
+    def overlaps(self, other: "BaseSegment") -> bool:
         """判断是否与另一个片段有重叠"""
         return self.target_timerange.overlaps(other.target_timerange)
 
@@ -97,7 +97,7 @@ class Speed:
             "type": "speed"
         }
 
-class Clip_settings:
+class ClipSettings:
     """素材片段的图像调节设置"""
 
     alpha: float
@@ -151,7 +151,7 @@ class Clip_settings:
         }
         return clip_settings_json
 
-class Media_segment(Base_segment):
+class MediaSegment(BaseSegment):
     """媒体片段基类"""
 
     source_timerange: Optional[Timerange]
@@ -184,23 +184,23 @@ class Media_segment(Base_segment):
         })
         return ret
 
-class Visual_segment(Media_segment):
+class VisualSegment(MediaSegment):
     """视觉片段基类，用于处理所有可见片段（视频、贴纸、文本）的共同属性和行为"""
 
-    clip_settings: Clip_settings
+    clip_settings: ClipSettings
     """图像调节设置, 其效果可被关键帧覆盖"""
 
     uniform_scale: bool
     """是否锁定XY轴缩放比例"""
 
-    animations_instance: Optional[Segment_animations]
+    animations_instance: Optional[SegmentAnimations]
     """动画实例, 可能为空
 
     在放入轨道时自动添加到素材列表中
     """
 
     def __init__(self, material_id: str, source_timerange: Optional[Timerange], target_timerange: Timerange,
-                 speed: float, volume: float, *, clip_settings: Optional[Clip_settings]):
+                 speed: float, volume: float, *, clip_settings: Optional[ClipSettings]):
         """初始化视觉片段基类
 
         Args:
@@ -209,31 +209,31 @@ class Visual_segment(Media_segment):
             target_timerange (`Timerange`): 片段在轨道上的目标时间范围
             speed (`float`): 播放速度
             volume (`float`): 音量
-            clip_settings (`Clip_settings`, optional): 图像调节设置, 默认不作任何变换
+            clip_settings (`ClipSettings`, optional): 图像调节设置, 默认不作任何变换
         """
         super().__init__(material_id, source_timerange, target_timerange, speed, volume)
 
-        self.clip_settings = clip_settings if clip_settings is not None else Clip_settings()
+        self.clip_settings = clip_settings if clip_settings is not None else ClipSettings()
         self.uniform_scale = True
         self.animations_instance = None
 
-    def add_keyframe(self, _property: Keyframe_property, time_offset: Union[int, str], value: float) -> "Visual_segment":
+    def add_keyframe(self, _property: KeyframeProperty, time_offset: Union[int, str], value: float) -> "VisualSegment":
         """为给定属性创建一个关键帧, 并自动加入到关键帧列表中
 
         Args:
-            _property (`Keyframe_property`): 要控制的属性
+            _property (`KeyframeProperty`): 要控制的属性
             time_offset (`int` or `str`): 关键帧的时间偏移量, 单位为微秒. 若传入字符串则会调用`tim()`函数进行解析.
             value (`float`): 属性在`time_offset`处的值
 
         Raises:
             `ValueError`: 试图同时设置`uniform_scale`以及`scale_x`或`scale_y`其中一者
         """
-        if (_property == Keyframe_property.scale_x or _property == Keyframe_property.scale_y) and self.uniform_scale:
+        if (_property == KeyframeProperty.scale_x or _property == KeyframeProperty.scale_y) and self.uniform_scale:
             self.uniform_scale = False
-        elif _property == Keyframe_property.uniform_scale:
+        elif _property == KeyframeProperty.uniform_scale:
             if not self.uniform_scale:
                 raise ValueError("已设置 scale_x 或 scale_y 时, 不能再设置 uniform_scale")
-            _property = Keyframe_property.scale_x
+            _property = KeyframeProperty.scale_x
 
         if isinstance(time_offset, str): time_offset = tim(time_offset)
 
@@ -241,7 +241,7 @@ class Visual_segment(Media_segment):
             if kf_list.keyframe_property == _property:
                 kf_list.add_keyframe(time_offset, value)
                 return self
-        kf_list = Keyframe_list(_property)
+        kf_list = KeyframeList(_property)
         kf_list.add_keyframe(time_offset, value)
         self.common_keyframes.append(kf_list)
         return self

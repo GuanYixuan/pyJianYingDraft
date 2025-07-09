@@ -6,13 +6,13 @@ from copy import deepcopy
 from . import util
 from . import exceptions
 from .time_util import Timerange
-from .segment import Base_segment
-from .track import Base_track, Track_type
-from .local_materials import Video_material, Audio_material
+from .segment import BaseSegment
+from .track import BaseTrack, TrackType
+from .local_materials import VideoMaterial, AudioMaterial
 
 from typing import List, Dict, Any
 
-class Shrink_mode(Enum):
+class ShrinkMode(Enum):
     """处理替换素材时素材变短情况的方法"""
 
     cut_head = "cut_head"
@@ -26,7 +26,7 @@ class Shrink_mode(Enum):
     shrink = "shrink"
     """保持中间点不变, 两端点向中间靠拢"""
 
-class Extend_mode(Enum):
+class ExtendMode(Enum):
     """处理替换素材时素材变长情况的方法"""
 
     cut_material_tail = "cut_material_tail"
@@ -40,7 +40,7 @@ class Extend_mode(Enum):
     push_tail = "push_tail"
     """延伸尾部, 若有必要则依次后移后续片段, 此方法总是成功"""
 
-class ImportedSegment(Base_segment):
+class ImportedSegment(BaseSegment):
     """导入的片段"""
 
     raw_data: Dict[str, Any]
@@ -75,14 +75,14 @@ class ImportedMediaSegment(ImportedSegment):
         return json_data
 
 
-class ImportedTrack(Base_track):
+class ImportedTrack(BaseTrack):
     """模板模式下导入的轨道"""
 
     raw_data: Dict[str, Any]
     """原始轨道数据"""
 
     def __init__(self, json_data: Dict[str, Any]):
-        self.track_type = Track_type.from_name(json_data["type"])
+        self.track_type = TrackType.from_name(json_data["type"])
         self.name = json_data["name"]
         self.track_id = json_data["id"]
         self.render_index = max([int(seg["render_index"]) for seg in json_data["segments"]], default=0)
@@ -148,14 +148,14 @@ class ImportedMediaTrack(EditableTrack):
 
     def check_material_type(self, material: object) -> bool:
         """检查素材类型是否与轨道类型匹配"""
-        if self.track_type == Track_type.video and isinstance(material, Video_material):
+        if self.track_type == TrackType.video and isinstance(material, VideoMaterial):
             return True
-        if self.track_type == Track_type.audio and isinstance(material, Audio_material):
+        if self.track_type == TrackType.audio and isinstance(material, AudioMaterial):
             return True
         return False
 
     def process_timerange(self, seg_index: int, src_timerange: Timerange,
-                          shrink: Shrink_mode, extend: List[Extend_mode]) -> None:
+                          shrink: ShrinkMode, extend: List[ExtendMode]) -> None:
         """处理素材替换的时间范围变更"""
         seg = self.segments[seg_index]
         new_duration = src_timerange.duration
@@ -163,15 +163,15 @@ class ImportedMediaTrack(EditableTrack):
         # 时长变短
         delta_duration = abs(new_duration - seg.duration)
         if new_duration < seg.duration:
-            if shrink == Shrink_mode.cut_head:
+            if shrink == ShrinkMode.cut_head:
                 seg.start += delta_duration
-            elif shrink == Shrink_mode.cut_tail:
+            elif shrink == ShrinkMode.cut_tail:
                 seg.duration -= delta_duration
-            elif shrink == Shrink_mode.cut_tail_align:
+            elif shrink == ShrinkMode.cut_tail_align:
                 seg.duration -= delta_duration
                 for i in range(seg_index+1, len(self.segments)):  # 后续片段也依次前移相应值（保持间隙）
                     self.segments[i].start -= delta_duration
-            elif shrink == Shrink_mode.shrink:
+            elif shrink == ShrinkMode.shrink:
                 seg.duration -= delta_duration
                 seg.start += delta_duration // 2
             else:
@@ -182,22 +182,22 @@ class ImportedMediaTrack(EditableTrack):
             prev_seg_end = int(0) if seg_index == 0 else self.segments[seg_index-1].target_timerange.end
             next_seg_start = int(1e15) if seg_index == len(self.segments)-1 else self.segments[seg_index+1].start
             for mode in extend:
-                if mode == Extend_mode.extend_head:
+                if mode == ExtendMode.extend_head:
                     if seg.start - delta_duration >= prev_seg_end:
                         seg.start -= delta_duration
                         success_flag = True
-                elif mode == Extend_mode.extend_tail:
+                elif mode == ExtendMode.extend_tail:
                     if seg.target_timerange.end + delta_duration <= next_seg_start:
                         seg.duration += delta_duration
                         success_flag = True
-                elif mode == Extend_mode.push_tail:
+                elif mode == ExtendMode.push_tail:
                     shift_duration = max(0, seg.target_timerange.end + delta_duration - next_seg_start)
                     seg.duration += delta_duration
                     if shift_duration > 0:  # 有必要时后移后续片段
                         for i in range(seg_index+1, len(self.segments)):
                             self.segments[i].start += shift_duration
                     success_flag = True
-                elif mode == Extend_mode.cut_material_tail:
+                elif mode == ExtendMode.cut_material_tail:
                     src_timerange.duration = seg.duration
                     success_flag = True
                 else:
@@ -213,9 +213,9 @@ class ImportedMediaTrack(EditableTrack):
 
 def import_track(json_data: Dict[str, Any]) -> ImportedTrack:
     """导入轨道"""
-    track_type = Track_type.from_name(json_data["type"])
+    track_type = TrackType.from_name(json_data["type"])
     if not track_type.value.allow_modify:
         return ImportedTrack(json_data)
-    if track_type == Track_type.text:
+    if track_type == TrackType.text:
         return ImportedTextTrack(json_data)
     return ImportedMediaTrack(json_data)

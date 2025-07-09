@@ -8,37 +8,37 @@ from typing import Type, Dict, List, Any
 
 from . import util
 from . import exceptions
-from .template_mode import ImportedTrack, EditableTrack, ImportedMediaTrack, ImportedTextTrack, Shrink_mode, Extend_mode, import_track
+from .template_mode import ImportedTrack, EditableTrack, ImportedMediaTrack, ImportedTextTrack, ShrinkMode, ExtendMode, import_track
 from .time_util import Timerange, tim, srt_tstamp
-from .local_materials import Video_material, Audio_material
-from .segment import Base_segment, Speed, Clip_settings
-from .audio_segment import Audio_segment, Audio_fade, Audio_effect
-from .video_segment import Video_segment, Sticker_segment, Segment_animations, Video_effect, Transition, Filter, BackgroundFilling
-from .effect_segment import Effect_segment, Filter_segment
-from .text_segment import Text_segment, Text_style, TextBubble
-from .track import Track_type, Base_track, Track
+from .local_materials import VideoMaterial, AudioMaterial
+from .segment import BaseSegment, Speed, ClipSettings
+from .audio_segment import AudioSegment, AudioFade, AudioEffect
+from .video_segment import VideoSegment, StickerSegment, SegmentAnimations, VideoEffect, Transition, Filter, BackgroundFilling
+from .effect_segment import EffectSegment, FilterSegment
+from .text_segment import TextSegment, TextStyle, TextBubble
+from .track import TrackType, BaseTrack, Track
 
-from .metadata import Video_scene_effect_type, Video_character_effect_type, Filter_type
+from .metadata import VideoSceneEffectType, VideoCharacterEffectType, FilterType
 
-class Script_material:
+class ScriptMaterial:
     """草稿文件中的素材信息部分"""
 
-    audios: List[Audio_material]
+    audios: List[AudioMaterial]
     """音频素材列表"""
-    videos: List[Video_material]
+    videos: List[VideoMaterial]
     """视频素材列表"""
     stickers: List[Dict[str, Any]]
     """贴纸素材列表"""
     texts: List[Dict[str, Any]]
     """文本素材列表"""
 
-    audio_effects: List[Audio_effect]
+    audio_effects: List[AudioEffect]
     """音频特效列表"""
-    audio_fades: List[Audio_fade]
+    audio_fades: List[AudioFade]
     """音频淡入淡出效果列表"""
-    animations: List[Segment_animations]
+    animations: List[SegmentAnimations]
     """动画素材列表"""
-    video_effects: List[Video_effect]
+    video_effects: List[VideoEffect]
     """视频特效列表"""
 
     speeds: List[Speed]
@@ -70,24 +70,24 @@ class Script_material:
         self.canvases = []
 
     @overload
-    def __contains__(self, item: Union[Video_material, Audio_material]) -> bool: ...
+    def __contains__(self, item: Union[VideoMaterial, AudioMaterial]) -> bool: ...
     @overload
-    def __contains__(self, item: Union[Audio_fade, Audio_effect]) -> bool: ...
+    def __contains__(self, item: Union[AudioFade, AudioEffect]) -> bool: ...
     @overload
-    def __contains__(self, item: Union[Segment_animations, Video_effect, Transition, Filter]) -> bool: ...
+    def __contains__(self, item: Union[SegmentAnimations, VideoEffect, Transition, Filter]) -> bool: ...
 
     def __contains__(self, item) -> bool:
-        if isinstance(item, Video_material):
+        if isinstance(item, VideoMaterial):
             return item.material_id in [video.material_id for video in self.videos]
-        elif isinstance(item, Audio_material):
+        elif isinstance(item, AudioMaterial):
             return item.material_id in [audio.material_id for audio in self.audios]
-        elif isinstance(item, Audio_fade):
+        elif isinstance(item, AudioFade):
             return item.fade_id in [fade.fade_id for fade in self.audio_fades]
-        elif isinstance(item, Audio_effect):
+        elif isinstance(item, AudioEffect):
             return item.effect_id in [effect.effect_id for effect in self.audio_effects]
-        elif isinstance(item, Segment_animations):
+        elif isinstance(item, SegmentAnimations):
             return item.animation_id in [ani.animation_id for ani in self.animations]
-        elif isinstance(item, Video_effect):
+        elif isinstance(item, VideoEffect):
             return item.global_id in [effect.global_id for effect in self.video_effects]
         elif isinstance(item, Transition):
             return item.global_id in [transition.global_id for transition in self.transitions]
@@ -145,7 +145,7 @@ class Script_material:
             "vocal_separations": []
         }
 
-class Script_file:
+class ScriptFile:
     """剪映草稿文件, 大部分接口定义在此"""
 
     save_path: Optional[str]
@@ -162,7 +162,7 @@ class Script_file:
     duration: int
     """视频的总时长, 单位为微秒"""
 
-    materials: Script_material
+    materials: ScriptMaterial
     """草稿文件中的素材信息部分"""
     tracks: Dict[str, Track]
     """轨道信息"""
@@ -189,7 +189,7 @@ class Script_file:
         self.fps = fps
         self.duration = 0
 
-        self.materials = Script_material()
+        self.materials = ScriptMaterial()
         self.tracks = {}
 
         self.imported_materials = {}
@@ -199,7 +199,7 @@ class Script_file:
             self.content = json.load(f)
 
     @staticmethod
-    def load_template(json_path: str) -> "Script_file":
+    def load_template(json_path: str) -> "ScriptFile":
         """从JSON文件加载草稿模板
 
         Args:
@@ -208,7 +208,7 @@ class Script_file:
         Raises:
             `FileNotFoundError`: JSON文件不存在
         """
-        obj = Script_file(**util.provide_ctor_defaults(Script_file))
+        obj = ScriptFile(**util.provide_ctor_defaults(ScriptFile))
         obj.save_path = json_path
         if not os.path.exists(json_path):
             raise FileNotFoundError("JSON文件 '%s' 不存在" % json_path)
@@ -223,21 +223,21 @@ class Script_file:
 
         return obj
 
-    def add_material(self, material: Union[Video_material, Audio_material]) -> "Script_file":
+    def add_material(self, material: Union[VideoMaterial, AudioMaterial]) -> "ScriptFile":
         """向草稿文件中添加一个素材"""
         if material in self.materials:  # 素材已存在
             return self
-        if isinstance(material, Video_material):
+        if isinstance(material, VideoMaterial):
             self.materials.videos.append(material)
-        elif isinstance(material, Audio_material):
+        elif isinstance(material, AudioMaterial):
             self.materials.audios.append(material)
         else:
             raise TypeError("错误的素材类型: '%s'" % type(material))
         return self
 
-    def add_track(self, track_type: Track_type, track_name: Optional[str] = None, *,
+    def add_track(self, track_type: TrackType, track_name: Optional[str] = None, *,
                   mute: bool = False,
-                  relative_index: int = 0, absolute_index: Optional[int] = None) -> "Script_file":
+                  relative_index: int = 0, absolute_index: Optional[int] = None) -> "ScriptFile":
         """向草稿文件中添加一个指定类型、指定名称的轨道, 可以自定义轨道层级
 
         注意: 主视频轨道(最底层的视频轨道)上的视频片段必须从0s开始, 否则会被剪映强制对齐至0s.
@@ -245,7 +245,7 @@ class Script_file:
         为避免混淆, 仅在创建第一个同类型轨道时允许不指定名称
 
         Args:
-            track_type (Track_type): 轨道类型
+            track_type (TrackType): 轨道类型
             track_name (str, optional): 轨道名称. 仅在创建第一个同类型轨道时允许不指定.
             mute (bool, optional): 轨道是否静音. 默认不静音.
             relative_index (int, optional): 相对(同类型轨道的)图层位置, 越高越接近前景. 默认为0.
@@ -270,7 +270,7 @@ class Script_file:
         self.tracks[track_name] = Track(track_type, track_name, render_index, mute)
         return self
 
-    def _get_track(self, segment_type: Type[Base_segment], track_name: Optional[str]) -> Track:
+    def _get_track(self, segment_type: Type[BaseSegment], track_name: Optional[str]) -> Track:
         # 指定轨道名称
         if track_name is not None:
             if track_name not in self.tracks:
@@ -283,12 +283,12 @@ class Script_file:
 
         return next(track for track in self.tracks.values() if track.accept_segment_type == segment_type)
 
-    def add_segment(self, segment: Union[Video_segment, Sticker_segment, Audio_segment, Text_segment],
-                    track_name: Optional[str] = None) -> "Script_file":
+    def add_segment(self, segment: Union[VideoSegment, StickerSegment, AudioSegment, TextSegment],
+                    track_name: Optional[str] = None) -> "ScriptFile":
         """向指定轨道中添加一个片段
 
         Args:
-            segment (`Video_segment`, `Sticker_segment`, `Audio_segment`, or `Text_segment`): 要添加的片段
+            segment (`VideoSegment`, `StickerSegment`, `AudioSegment`, or `TextSegment`): 要添加的片段
             track_name (`str`, optional): 添加到的轨道名称. 当此类型的轨道仅有一条时可省略.
 
         Raises:
@@ -303,7 +303,7 @@ class Script_file:
         self.duration = max(self.duration, segment.end)
 
         # 自动添加相关素材
-        if isinstance(segment, Video_segment):
+        if isinstance(segment, VideoSegment):
             # 出入场等动画
             if (segment.animations_instance is not None) and (segment.animations_instance not in self.materials):
                 self.materials.animations.append(segment.animations_instance)
@@ -326,9 +326,9 @@ class Script_file:
                 self.materials.canvases.append(segment.background_filling)
 
             self.materials.speeds.append(segment.speed)
-        elif isinstance(segment, Sticker_segment):
+        elif isinstance(segment, StickerSegment):
             self.materials.stickers.append(segment.export_material())
-        elif isinstance(segment, Audio_segment):
+        elif isinstance(segment, AudioSegment):
             # 淡入淡出
             if (segment.fade is not None) and (segment.fade not in self.materials):
                 self.materials.audio_fades.append(segment.fade)
@@ -337,7 +337,7 @@ class Script_file:
                 if effect not in self.materials:
                     self.materials.audio_effects.append(effect)
             self.materials.speeds.append(segment.speed)
-        elif isinstance(segment, Text_segment):
+        elif isinstance(segment, TextSegment):
             # 出入场等动画
             if (segment.animations_instance is not None) and (segment.animations_instance not in self.materials):
                 self.materials.animations.append(segment.animations_instance)
@@ -351,18 +351,18 @@ class Script_file:
             self.materials.texts.append(segment.export_material())
 
         # 添加片段素材
-        if isinstance(segment, (Video_segment, Audio_segment)):
+        if isinstance(segment, (VideoSegment, AudioSegment)):
             self.add_material(segment.material_instance)
 
         return self
 
-    def add_effect(self, effect: Union[Video_scene_effect_type, Video_character_effect_type],
+    def add_effect(self, effect: Union[VideoSceneEffectType, VideoCharacterEffectType],
                    t_range: Timerange, track_name: Optional[str] = None, *,
-                   params: Optional[List[Optional[float]]] = None) -> "Script_file":
+                   params: Optional[List[Optional[float]]] = None) -> "ScriptFile":
         """向指定的特效轨道中添加一个特效片段
 
         Args:
-            effect (`Video_scene_effect_type` or `Video_character_effect_type`): 特效类型
+            effect (`VideoSceneEffectType` or `VideoCharacterEffectType`): 特效类型
             t_range (`Timerange`): 特效片段的时间范围
             track_name (`str`, optional): 添加到的轨道名称. 当特效轨道仅有一条时可省略.
             params (`List[Optional[float]]`, optional): 特效参数列表, 参数列表中未提供或为None的项使用默认值.
@@ -373,10 +373,10 @@ class Script_file:
             `TypeError`: 指定的轨道不是特效轨道
             `ValueError`: 新片段与已有片段重叠、提供的参数数量超过了该特效类型的参数数量, 或参数值超出范围.
         """
-        target = self._get_track(Effect_segment, track_name)
+        target = self._get_track(EffectSegment, track_name)
 
         # 加入轨道并更新时长
-        segment = Effect_segment(effect, t_range, params)
+        segment = EffectSegment(effect, t_range, params)
         target.add_segment(segment)
         self.duration = max(self.duration, t_range.start + t_range.duration)
 
@@ -385,12 +385,12 @@ class Script_file:
             self.materials.video_effects.append(segment.effect_inst)
         return self
 
-    def add_filter(self, filter_meta: Filter_type, t_range: Timerange,
-                   track_name: Optional[str] = None, intensity: float = 100.0) -> "Script_file":
+    def add_filter(self, filter_meta: FilterType, t_range: Timerange,
+                   track_name: Optional[str] = None, intensity: float = 100.0) -> "ScriptFile":
         """向指定的滤镜轨道中添加一个滤镜片段
 
         Args:
-            filter_meta (`Filter_type`): 滤镜类型
+            filter_meta (`FilterType`): 滤镜类型
             t_range (`Timerange`): 滤镜片段的时间范围
             track_name (`str`, optional): 添加到的轨道名称. 当滤镜轨道仅有一条时可省略.
             intensity (`float`, optional): 滤镜强度(0-100). 仅当所选滤镜能够调节强度时有效. 默认为100.
@@ -400,10 +400,10 @@ class Script_file:
             `TypeError`: 指定的轨道不是滤镜轨道
             `ValueError`: 新片段与已有片段重叠
         """
-        target = self._get_track(Filter_segment, track_name)
+        target = self._get_track(FilterSegment, track_name)
 
         # 加入轨道并更新时长
-        segment = Filter_segment(filter_meta, t_range, intensity / 100.0)  # 转换为0-1范围
+        segment = FilterSegment(filter_meta, t_range, intensity / 100.0)  # 转换为0-1范围
         target.add_segment(segment)
         self.duration = max(self.duration, t_range.end)
 
@@ -413,20 +413,20 @@ class Script_file:
 
     def import_srt(self, srt_path: str, track_name: str, *,
                    time_offset: Union[str, float] = 0.0,
-                   style_reference: Optional[Text_segment] = None,
-                   text_style: Text_style = Text_style(size=5, align=1, auto_wrapping=True),
-                   clip_settings: Optional[Clip_settings] = Clip_settings(transform_y=-0.8)) -> "Script_file":
-        """从SRT文件中导入字幕, 支持传入一个`Text_segment`作为样式参考
+                   style_reference: Optional[TextSegment] = None,
+                   text_style: TextStyle = TextStyle(size=5, align=1, auto_wrapping=True),
+                   clip_settings: Optional[ClipSettings] = ClipSettings(transform_y=-0.8)) -> "ScriptFile":
+        """从SRT文件中导入字幕, 支持传入一个`TextSegment`作为样式参考
 
         注意: 默认不会使用参考片段的`clip_settings`属性, 若需要请显式为此函数传入`clip_settings=None`
 
         Args:
             srt_path (`str`): SRT文件路径
             track_name (`str`): 导入到的文本轨道名称, 若不存在则自动创建
-            style_reference (`Text_segment`, optional): 作为样式参考的文本片段, 若提供则使用其样式.
+            style_reference (`TextSegment`, optional): 作为样式参考的文本片段, 若提供则使用其样式.
             time_offset (`Union[str, float]`, optional): 字幕整体时间偏移, 单位为微秒, 默认为0.
-            text_style (`Text_style`, optional): 字幕样式, 默认模仿剪映导入字幕时的样式, 会被`style_reference`覆盖.
-            clip_settings (`Clip_settings`, optional): 图像调节设置, 默认模仿剪映导入字幕时的设置, 会覆盖`style_reference`的设置除非指定为`None`.
+            text_style (`TextStyle`, optional): 字幕样式, 默认模仿剪映导入字幕时的样式, 会被`style_reference`覆盖.
+            clip_settings (`ClipSettings`, optional): 图像调节设置, 默认模仿剪映导入字幕时的设置, 会覆盖`style_reference`的设置除非指定为`None`.
 
         Raises:
             `NameError`: 已存在同名轨道
@@ -437,18 +437,18 @@ class Script_file:
 
         time_offset = tim(time_offset)
         if track_name not in self.tracks:
-            self.add_track(Track_type.text, track_name, relative_index=999)  # 在所有文本轨道的最上层
+            self.add_track(TrackType.text, track_name, relative_index=999)  # 在所有文本轨道的最上层
 
         with open(srt_path, "r", encoding="utf-8-sig") as srt_file:
             lines = srt_file.readlines()
 
         def __add_text_segment(text: str, t_range: Timerange) -> None:
             if style_reference:
-                seg = Text_segment.create_from_template(text, t_range, style_reference)
+                seg = TextSegment.create_from_template(text, t_range, style_reference)
                 if clip_settings is not None:
                     seg.clip_settings = deepcopy(clip_settings)
             else:
-                seg = Text_segment(text, t_range, style=text_style, clip_settings=clip_settings)
+                seg = TextSegment(text, t_range, style=text_style, clip_settings=clip_settings)
             self.add_segment(seg, track_name)
 
         index = 0
@@ -490,14 +490,14 @@ class Script_file:
 
         return self
 
-    def get_imported_track(self, track_type: Literal[Track_type.video, Track_type.audio, Track_type.text],
+    def get_imported_track(self, track_type: Literal[TrackType.video, TrackType.audio, TrackType.text],
                            name: Optional[str] = None, index: Optional[int] = None) -> EditableTrack:
         """获取指定类型的导入轨道, 以便在其上进行替换
 
         推荐使用轨道名称进行筛选（若已知轨道名称）
 
         Args:
-            track_type (`Track_type.video`, `Track_type.audio` or `Track_type.text`): 轨道类型, 目前只支持音视频和文本轨道
+            track_type (`TrackType.video`, `TrackType.audio` or `TrackType.text`): 轨道类型, 目前只支持音视频和文本轨道
             name (`str`, optional): 轨道名称, 不指定则不根据名称筛选.
             index (`int`, optional): 轨道在**同类型的导入轨道**中的下标, 以0为最下层轨道. 不指定则不根据下标筛选.
 
@@ -526,15 +526,15 @@ class Script_file:
 
         return ret[0]
 
-    def import_track(self, source_file: "Script_file", track: EditableTrack, *,
+    def import_track(self, source_file: "ScriptFile", track: EditableTrack, *,
                      offset: Union[str, int] = 0,
-                     new_name: Optional[str] = None, relative_index: Optional[int] = None) -> "Script_file":
-        """将一个`Editable_track`导入到当前`Script_file`中, 如从模板草稿中导入特定的文本或视频轨道到当前正在编辑的草稿文件中
+                     new_name: Optional[str] = None, relative_index: Optional[int] = None) -> "ScriptFile":
+        """将一个`EditableTrack`导入到当前`ScriptFile`中, 如从模板草稿中导入特定的文本或视频轨道到当前正在编辑的草稿文件中
 
         注意: 本方法会保留各片段及其素材的id, 因而不支持向同一草稿多次导入同一轨道
 
         Args:
-            source_file (`Script_file`): 源文件，包含要导入的轨道
+            source_file (`ScriptFile`): 源文件，包含要导入的轨道
             track (`EditableTrack`): 要导入的轨道, 可通过`get_imported_track`方法获取.
             offset (`str | int`, optional): 轨道的时间偏移量(微秒), 可以是整数微秒值或时间字符串(如"1s"). 默认不添加偏移.
             new_name (`str`, optional): 新轨道名称, 默认使用源轨道名称.
@@ -583,22 +583,22 @@ class Script_file:
 
         return self
 
-    def replace_material_by_name(self, material_name: str, material: Union[Video_material, Audio_material],
-                                 replace_crop: bool = False) -> "Script_file":
+    def replace_material_by_name(self, material_name: str, material: Union[VideoMaterial, AudioMaterial],
+                                 replace_crop: bool = False) -> "ScriptFile":
         """替换指定名称的素材, 并影响所有引用它的片段
 
         这种方法不会改变相应片段的时长和引用范围(`source_timerange`), 尤其适合于图片素材
 
         Args:
             material_name (`str`): 要替换的素材名称
-            material (`Video_material` or `Audio_material`): 新素材, 目前只支持视频和音频
+            material (`VideoMaterial` or `AudioMaterial`): 新素材, 目前只支持视频和音频
             replace_crop (`bool`, optional): 是否替换原素材的裁剪设置, 默认为否. 仅对视频素材有效.
 
         Raises:
             `MaterialNotFound`: 根据指定名称未找到与新素材同类的素材
             `AmbiguousMaterial`: 根据指定名称找到多个与新素材同类的素材
         """
-        video_mode = isinstance(material, Video_material)
+        video_mode = isinstance(material, VideoMaterial)
         # 查找素材
         target_json_obj: Optional[Dict[str, Any]] = None
         target_material_list = self.imported_materials["videos" if video_mode else "audios"]
@@ -621,16 +621,16 @@ class Script_file:
 
         return self
 
-    def replace_material_by_seg(self, track: EditableTrack, segment_index: int, material: Union[Video_material, Audio_material],
+    def replace_material_by_seg(self, track: EditableTrack, segment_index: int, material: Union[VideoMaterial, AudioMaterial],
                                 source_timerange: Optional[Timerange] = None, *,
-                                handle_shrink: Shrink_mode = Shrink_mode.cut_tail,
-                                handle_extend: Union[Extend_mode, List[Extend_mode]] = Extend_mode.cut_material_tail) -> "Script_file":
+                                handle_shrink: ShrinkMode = ShrinkMode.cut_tail,
+                                handle_extend: Union[ExtendMode, List[ExtendMode]] = ExtendMode.cut_material_tail) -> "ScriptFile":
         """替换指定音视频轨道上指定片段的素材, 暂不支持变速片段的素材替换
 
         Args:
-            track (`Editable_track`): 要替换素材的轨道, 由`get_imported_track`获取
+            track (`EditableTrack`): 要替换素材的轨道, 由`get_imported_track`获取
             segment_index (`int`): 要替换素材的片段下标, 从0开始
-            material (`Video_material` or `Audio_material`): 新素材, 必须与原素材类型一致
+            material (`VideoMaterial` or `AudioMaterial`): 新素材, 必须与原素材类型一致
             source_timerange (`Timerange`, optional): 从原素材中截取的时间范围, 默认为全时段, 若是图片素材则默认与原片段等长.
             handle_shrink (`Shrink_mode`, optional): 新素材比原素材短时的处理方式, 默认为裁剪尾部, 使片段长度与素材一致.
             handle_extend (`Extend_mode` or `List[Extend_mode]`, optional): 新素材比原素材长时的处理方式, 将按顺序逐个尝试直至成功或抛出异常.
@@ -649,10 +649,10 @@ class Script_file:
             raise TypeError("指定的素材类型 %s 不匹配轨道类型 %s", (type(material), track.track_type))
         seg = track.segments[segment_index]
 
-        if isinstance(handle_extend, Extend_mode):
+        if isinstance(handle_extend, ExtendMode):
             handle_extend = [handle_extend]
         if source_timerange is None:
-            if isinstance(material, Video_material) and (material.material_type == "photo"):
+            if isinstance(material, VideoMaterial) and (material.material_type == "photo"):
                 source_timerange = Timerange(0, seg.duration)
             else:
                 source_timerange = Timerange(0, material.duration)
@@ -668,11 +668,11 @@ class Script_file:
         return self
 
     def replace_text(self, track: EditableTrack, segment_index: int, text: Union[str, List[str]],
-                     recalc_style: bool = True) -> "Script_file":
+                     recalc_style: bool = True) -> "ScriptFile":
         """替换指定文本轨道上指定片段的文字内容, 支持普通文本片段或文本模板片段
 
         Args:
-            track (`Editable_track`): 要替换文字的文本轨道, 由`get_imported_track`获取
+            track (`EditableTrack`): 要替换文字的文本轨道, 由`get_imported_track`获取
             segment_index (`int`): 要替换文字的片段下标, 从0开始
             text (`str` or `List[str]`): 新的文字内容, 对于文本模板而言应传入一个字符串列表.
             recalc_style (`bool`): 是否重新计算字体样式分布, 即调整各字体样式应用范围以尽量维持原有占比不变, 默认开启.
@@ -787,7 +787,7 @@ class Script_file:
                 self.content["materials"][material_type].extend(material_list)
 
         # 对轨道排序并导出
-        track_list: List[Base_track] = list(self.imported_tracks + list(self.tracks.values()))  # 新加入的轨道在列表末尾（上层）
+        track_list: List[BaseTrack] = list(self.imported_tracks + list(self.tracks.values()))  # 新加入的轨道在列表末尾（上层）
         track_list.sort(key=lambda track: track.render_index)
         self.content["tracks"] = [track.export_json() for track in track_list]
 

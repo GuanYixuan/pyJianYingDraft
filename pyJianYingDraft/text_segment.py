@@ -8,13 +8,13 @@ from typing import Dict, Tuple, Any
 from typing import Union, Optional, Literal
 
 from .time_util import Timerange, tim
-from .segment import Clip_settings, Visual_segment
-from .animation import Segment_animations, Text_animation
+from .segment import ClipSettings, VisualSegment
+from .animation import SegmentAnimations, Text_animation
 
-from .metadata import Font_type, Effect_meta
-from .metadata import Text_intro, Text_outro, Text_loop_anim
+from .metadata import FontType, EffectMeta
+from .metadata import TextIntro, TextOutro, TextLoopAnim
 
-class Text_style:
+class TextStyle:
     """字体样式类"""
 
     size: float
@@ -84,7 +84,7 @@ class Text_style:
         self.auto_wrapping = auto_wrapping
         self.max_line_width = max_line_width
 
-class Text_border:
+class TextBorder:
     """文本描边的参数"""
 
     alpha: float
@@ -117,7 +117,7 @@ class Text_border:
             "width": self.width
         }
 
-class Text_background:
+class TextBackground:
     """文本背景参数"""
 
     style: Literal[0, 2]
@@ -163,7 +163,7 @@ class Text_background:
         self.vertical_offset = vertical_offset * 2 - 1
 
     def export_json(self) -> Dict[str, Any]:
-        """生成子JSON数据, 在Text_segment导出时合并到其中"""
+        """生成子JSON数据, 在TextSegment导出时合并到其中"""
         return {
             "background_style": self.style,
             "background_color": self.color,
@@ -209,19 +209,19 @@ class TextEffect(TextBubble):
         ret["source_platform"] = 1
         return ret
 
-class Text_segment(Visual_segment):
+class TextSegment(VisualSegment):
     """文本片段类, 目前仅支持设置基本的字体样式"""
 
     text: str
     """文本内容"""
-    font: Optional[Effect_meta]
+    font: Optional[EffectMeta]
     """字体类型"""
-    style: Text_style
+    style: TextStyle
     """字体样式"""
 
-    border: Optional[Text_border]
+    border: Optional[TextBorder]
     """文本描边参数, None表示无描边"""
-    background: Optional[Text_background]
+    background: Optional[TextBackground]
     """文本背景参数, None表示无背景"""
 
     bubble: Optional[TextBubble]
@@ -230,27 +230,27 @@ class Text_segment(Visual_segment):
     """文本花字效果, 在放入轨道时加入素材列表中, 目前仅支持一部分花字效果"""
 
     def __init__(self, text: str, timerange: Timerange, *,
-                 font: Optional[Font_type] = None,
-                 style: Optional[Text_style] = None, clip_settings: Optional[Clip_settings] = None,
-                 border: Optional[Text_border] = None, background: Optional[Text_background] = None):
+                 font: Optional[FontType] = None,
+                 style: Optional[TextStyle] = None, clip_settings: Optional[ClipSettings] = None,
+                 border: Optional[TextBorder] = None, background: Optional[TextBackground] = None):
         """创建文本片段, 并指定其时间信息、字体样式及图像调节设置
 
-        片段创建完成后, 可通过`Script_file.add_segment`方法将其添加到轨道中
+        片段创建完成后, 可通过`ScriptFile.add_segment`方法将其添加到轨道中
 
         Args:
             text (`str`): 文本内容
             timerange (`Timerange`): 片段在轨道上的时间范围
             font (`Font_type`, optional): 字体类型, 默认为系统字体
-            style (`Text_style`, optional): 字体样式, 包含大小/颜色/对齐/透明度等.
-            clip_settings (`Clip_settings`, optional): 图像调节设置, 默认不做任何变换
-            border (`Text_border`, optional): 文本描边参数, 默认无描边
-            background (`Text_background`, optional): 文本背景参数, 默认无背景
+            style (`TextStyle`, optional): 字体样式, 包含大小/颜色/对齐/透明度等.
+            clip_settings (`ClipSettings`, optional): 图像调节设置, 默认不做任何变换
+            border (`TextBorder`, optional): 文本描边参数, 默认无描边
+            background (`TextBackground`, optional): 文本背景参数, 默认无背景
         """
         super().__init__(uuid.uuid4().hex, None, timerange, 1.0, 1.0, clip_settings=clip_settings)
 
         self.text = text
         self.font = font.value if font else None
-        self.style = style or Text_style()
+        self.style = style or TextStyle()
         self.border = border
         self.background = background
 
@@ -258,7 +258,7 @@ class Text_segment(Visual_segment):
         self.effect = None
 
     @classmethod
-    def create_from_template(cls, text: str, timerange: Timerange, template: "Text_segment") -> "Text_segment":
+    def create_from_template(cls, text: str, timerange: Timerange, template: "TextSegment") -> "TextSegment":
         """根据模板创建新的文本片段, 并指定其文本内容"""
         new_segment = cls(text, timerange, style=deepcopy(template.style), clip_settings=deepcopy(template.clip_settings),
                           border=deepcopy(template.border), background=deepcopy(template.background))
@@ -276,24 +276,24 @@ class Text_segment(Visual_segment):
 
         return new_segment
 
-    def add_animation(self, animation_type: Union[Text_intro, Text_outro, Text_loop_anim],
-                      duration: Union[str, float] = 500000) -> "Text_segment":
+    def add_animation(self, animation_type: Union[TextIntro, TextOutro, TextLoopAnim],
+                      duration: Union[str, float] = 500000) -> "TextSegment":
         """将给定的入场/出场/循环动画添加到此片段的动画列表中, 出入场动画的持续时间可以自行设置, 循环动画则会自动填满其余无动画部分
 
         注意: 若希望同时使用循环动画和入出场动画, 请**先添加出入场动画再添加循环动画**
 
         Args:
-            animation_type (`Text_intro`, `Text_outro` or `Text_loop_anim`): 文本动画类型.
+            animation_type (`TextIntro`, `TextOutro` or `TextLoopAnim`): 文本动画类型.
             duration (`str` or `float`, optional): 动画持续时间, 单位为微秒, 仅对入场/出场动画有效.
                 若传入字符串则会调用`tim()`函数进行解析. 默认为0.5秒
         """
         duration = min(tim(duration), self.target_timerange.duration)
 
-        if isinstance(animation_type, Text_intro):
+        if isinstance(animation_type, TextIntro):
             start = 0
-        elif isinstance(animation_type, Text_outro):
+        elif isinstance(animation_type, TextOutro):
             start = self.target_timerange.duration - duration
-        elif isinstance(animation_type, Text_loop_anim):
+        elif isinstance(animation_type, TextLoopAnim):
             intro_trange = self.animations_instance and self.animations_instance.get_animation_trange("in")
             outro_trange = self.animations_instance and self.animations_instance.get_animation_trange("out")
             start = intro_trange.start if intro_trange else 0
@@ -302,15 +302,15 @@ class Text_segment(Visual_segment):
             raise TypeError("Invalid animation type %s" % type(animation_type))
 
         if self.animations_instance is None:
-            self.animations_instance = Segment_animations()
+            self.animations_instance = SegmentAnimations()
             self.extra_material_refs.append(self.animations_instance.animation_id)
 
         self.animations_instance.add_animation(Text_animation(animation_type, start, duration))
 
         return self
 
-    def add_bubble(self, effect_id: str, resource_id: str) -> "Text_segment":
-        """根据素材信息添加气泡效果, 相应素材信息可通过`Script_file.inspect_material`从模板中获取
+    def add_bubble(self, effect_id: str, resource_id: str) -> "TextSegment":
+        """根据素材信息添加气泡效果, 相应素材信息可通过`ScriptFile.inspect_material`从模板中获取
 
         Args:
             effect_id (`str`): 气泡效果的effect_id
@@ -320,8 +320,8 @@ class Text_segment(Visual_segment):
         self.extra_material_refs.append(self.bubble.global_id)
         return self
 
-    def add_effect(self, effect_id: str) -> "Text_segment":
-        """根据素材信息添加花字效果, 相应素材信息可通过`Script_file.inspect_material`从模板中获取
+    def add_effect(self, effect_id: str) -> "TextSegment":
+        """根据素材信息添加花字效果, 相应素材信息可通过`ScriptFile.inspect_material`从模板中获取
 
         Args:
             effect_id (`str`): 花字效果的effect_id, 也同时是其resource_id
