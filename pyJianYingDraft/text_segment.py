@@ -120,7 +120,7 @@ class Text_border:
 class Text_background:
     """文本背景参数"""
 
-    style: Literal[0, 2]
+    style: Literal[1, 2]
     """背景样式"""
 
     alpha: float
@@ -152,7 +152,7 @@ class Text_background:
             horizontal_offset (`float`, optional): 背景水平偏移, 与剪映中一致, 取值范围为[0, 1], 默认为0.5
             vertical_offset (`float`, optional): 背景竖直偏移, 与剪映中一致, 取值范围为[0, 1], 默认为0.5
         """
-        self.style = (0, 2)[style - 1]
+        self.style = style
 
         self.alpha = alpha
         self.color = color
