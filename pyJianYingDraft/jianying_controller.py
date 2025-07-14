@@ -10,7 +10,7 @@ from typing import Optional, Literal, Callable
 from . import exceptions
 from .exceptions import AutomationError
 
-class Export_resolution(Enum):
+class ExportResolution(Enum):
     """导出分辨率"""
     RES_8K = "8K"
     RES_4K = "4K"
@@ -19,7 +19,7 @@ class Export_resolution(Enum):
     RES_720P = "720P"
     RES_480P = "480P"
 
-class Export_framerate(Enum):
+class ExportFramerate(Enum):
     """导出帧率"""
     FR_24 = "24fps"
     FR_25 = "25fps"
@@ -52,7 +52,7 @@ class ControlFinder:
             return (class_name == curr_class_name) if exact else (class_name in curr_class_name)
         return matcher
 
-class Jianying_controller:
+class JianyingController:
     """剪映控制器"""
 
     app: uia.WindowControl
@@ -64,8 +64,8 @@ class Jianying_controller:
         self.get_window()
 
     def export_draft(self, draft_name: str, output_path: Optional[str] = None, *,
-                     resolution: Optional[Export_resolution] = None,
-                     framerate: Optional[Export_framerate] = None,
+                     resolution: Optional[ExportResolution] = None,
+                     framerate: Optional[ExportFramerate] = None,
                      timeout: float = 1200) -> None:
         """导出指定的剪映草稿, **目前仅支持剪映6及以下版本**
 

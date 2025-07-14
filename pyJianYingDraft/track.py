@@ -9,54 +9,54 @@ from dataclasses import dataclass
 from abc import ABC, abstractmethod
 
 from .exceptions import SegmentOverlap
-from .segment import Base_segment
-from .video_segment import Video_segment, Sticker_segment
-from .audio_segment import Audio_segment
-from .text_segment import Text_segment
-from .effect_segment import Effect_segment, Filter_segment
+from .segment import BaseSegment
+from .video_segment import VideoSegment, StickerSegment
+from .audio_segment import AudioSegment
+from .text_segment import TextSegment
+from .effect_segment import EffectSegment, FilterSegment
 
 @dataclass
 class Track_meta:
     """与轨道类型关联的轨道元数据"""
 
-    segment_type: Union[Type[Video_segment], Type[Audio_segment],
-                        Type[Effect_segment], Type[Filter_segment],
-                        Type[Text_segment], Type[Sticker_segment], None]
+    segment_type: Union[Type[VideoSegment], Type[AudioSegment],
+                        Type[EffectSegment], Type[FilterSegment],
+                        Type[TextSegment], Type[StickerSegment], None]
     """与轨道关联的片段类型"""
     render_index: int
     """默认渲染顺序, 值越大越接近前景"""
     allow_modify: bool
     """当被导入时, 是否允许修改"""
 
-class Track_type(Enum):
+class TrackType(Enum):
     """轨道类型枚举
 
     变量名对应type属性, 值表示相应的轨道元数据
     """
 
-    video = Track_meta(Video_segment, 0, True)
-    audio = Track_meta(Audio_segment, 0, True)
-    effect = Track_meta(Effect_segment, 10000, False)
-    filter = Track_meta(Filter_segment, 11000, False)
-    sticker = Track_meta(Sticker_segment, 14000, False)
-    text = Track_meta(Text_segment, 15000, True)  # 原本是14000, 避免与sticker冲突改为15000
+    video = Track_meta(VideoSegment, 0, True)
+    audio = Track_meta(AudioSegment, 0, True)
+    effect = Track_meta(EffectSegment, 10000, False)
+    filter = Track_meta(FilterSegment, 11000, False)
+    sticker = Track_meta(StickerSegment, 14000, False)
+    text = Track_meta(TextSegment, 15000, True)  # 原本是14000, 避免与sticker冲突改为15000
 
     adjust = Track_meta(None, 0, False)
     """仅供导入时使用, 不要尝试新建此类型的轨道"""
 
     @staticmethod
-    def from_name(name: str) -> "Track_type":
+    def from_name(name: str) -> "TrackType":
         """根据名称获取轨道类型枚举"""
-        for t in Track_type:
+        for t in TrackType:
             if t.name == name:
                 return t
         raise ValueError("Invalid track type: %s" % name)
 
 
-class Base_track(ABC):
+class BaseTrack(ABC):
     """轨道基类"""
 
-    track_type: Track_type
+    track_type: TrackType
     """轨道类型"""
     name: str
     """轨道名称"""
@@ -68,8 +68,8 @@ class Base_track(ABC):
     @abstractmethod
     def export_json(self) -> Dict[str, Any]: ...
 
-Seg_type = TypeVar("Seg_type", bound=Base_segment)
-class Track(Base_track, Generic[Seg_type]):
+Seg_type = TypeVar("Seg_type", bound=BaseSegment)
+class Track(BaseTrack, Generic[Seg_type]):
     """非模板模式下的轨道"""
 
     mute: bool
@@ -78,7 +78,7 @@ class Track(Base_track, Generic[Seg_type]):
     segments: List[Seg_type]
     """该轨道包含的片段列表"""
 
-    def __init__(self, track_type: Track_type, name: str, render_index: int, mute: bool):
+    def __init__(self, track_type: TrackType, name: str, render_index: int, mute: bool):
         self.track_type = track_type
         self.name = name
         self.track_id = uuid.uuid4().hex

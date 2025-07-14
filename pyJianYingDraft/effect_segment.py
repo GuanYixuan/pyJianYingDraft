@@ -3,26 +3,26 @@
 from typing import Union, Optional, List
 
 from .time_util import Timerange
-from .segment import Base_segment
-from .video_segment import Video_effect, Filter
+from .segment import BaseSegment
+from .video_segment import VideoEffect, Filter
 
-from .metadata import Video_scene_effect_type, Video_character_effect_type, Filter_type
+from .metadata import VideoSceneEffectType, VideoCharacterEffectType, FilterType
 
-class Effect_segment(Base_segment):
+class EffectSegment(BaseSegment):
     """放置在独立特效轨道上的特效片段"""
 
-    effect_inst: Video_effect
+    effect_inst: VideoEffect
     """相应的特效素材
 
     在放入轨道时自动添加到素材列表中
     """
 
-    def __init__(self, effect_type: Union[Video_scene_effect_type, Video_character_effect_type],
+    def __init__(self, effect_type: Union[VideoSceneEffectType, VideoCharacterEffectType],
                  target_timerange: Timerange, params: Optional[List[Optional[float]]] = None):
-        self.effect_inst = Video_effect(effect_type, params, apply_target_type=2)  # 作用域为全局
+        self.effect_inst = VideoEffect(effect_type, params, apply_target_type=2)  # 作用域为全局
         super().__init__(self.effect_inst.global_id, target_timerange)
 
-class Filter_segment(Base_segment):
+class FilterSegment(BaseSegment):
     """放置在独立滤镜轨道上的滤镜片段"""
 
     material: Filter
@@ -31,6 +31,6 @@ class Filter_segment(Base_segment):
     在放入轨道时自动添加到素材列表中
     """
 
-    def __init__(self, meta: Filter_type, target_timerange: Timerange, intensity: float):
+    def __init__(self, meta: FilterType, target_timerange: Timerange, intensity: float):
         self.material = Filter(meta.value, intensity)
         super().__init__(self.material.global_id, target_timerange)

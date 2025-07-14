@@ -3,7 +3,7 @@ from enum import Enum
 from typing import List, Dict, Any
 from typing import TypeVar, Optional
 
-class Effect_param:
+class EffectParam:
     """特效参数信息"""
 
     name: str
@@ -21,7 +21,7 @@ class Effect_param:
         self.min_value = min_value
         self.max_value = max_value
 
-class Effect_param_instance(Effect_param):
+class EffectParamInstance(EffectParam):
     """特效参数实例"""
 
     index: int
@@ -29,7 +29,7 @@ class Effect_param_instance(Effect_param):
     value: float
     """当前值"""
 
-    def __init__(self, meta: Effect_param, index: int, value: float):
+    def __init__(self, meta: EffectParam, index: int, value: float):
         super().__init__(meta.name, meta.default_value, meta.min_value, meta.max_value)
         self.index = index
         self.value = value
@@ -45,7 +45,7 @@ class Effect_param_instance(Effect_param):
             "value": self.value
         }
 
-class Effect_meta:
+class EffectMeta:
     """特效元数据"""
 
     name: str
@@ -59,10 +59,10 @@ class Effect_meta:
     """效果ID"""
     md5: str
 
-    params: List[Effect_param]
+    params: List[EffectParam]
     """效果的参数信息"""
 
-    def __init__(self, name: str, is_vip: bool, resource_id: str, effect_id: str, md5: str, params: List[Effect_param] = []):
+    def __init__(self, name: str, is_vip: bool, resource_id: str, effect_id: str, md5: str, params: List[EffectParam] = []):
         self.name = name
         self.is_vip = is_vip
         self.resource_id = resource_id
@@ -70,9 +70,9 @@ class Effect_meta:
         self.md5 = md5
         self.params = params
 
-    def parse_params(self, params: Optional[List[Optional[float]]]) -> List[Effect_param_instance]:
+    def parse_params(self, params: Optional[List[Optional[float]]]) -> List[EffectParamInstance]:
         """解析参数列表(范围0~100), 返回参数实例列表"""
-        ret: List[Effect_param_instance] = []
+        ret: List[EffectParamInstance] = []
 
         if params is None: params = []
         for i, param in enumerate(self.params):
@@ -83,17 +83,17 @@ class Effect_meta:
                     if input_v < 0 or input_v > 100:
                         raise ValueError("Invalid parameter value %f within %s" % (input_v, str(param)))
                     val = param.min_value + (param.max_value - param.min_value) * input_v / 100.0  # 从0~100映射到实际值
-            ret.append(Effect_param_instance(param, i, val))
+            ret.append(EffectParamInstance(param, i, val))
         return ret
 
 
-Effect_enum_subclass = TypeVar("Effect_enum_subclass", bound="Effect_enum")
+EffectEnumSubclass = TypeVar("EffectEnumSubclass", bound="EffectEnum")
 
-class Effect_enum(Enum):
+class EffectEnum(Enum):
     """特效枚举基类, 提供一个`from_name`方法用于根据名称获取特效元数据"""
 
     @classmethod
-    def from_name(cls: "type[Effect_enum_subclass]", name: str) -> Effect_enum_subclass:
+    def from_name(cls: "type[EffectEnumSubclass]", name: str) -> EffectEnumSubclass:
         """根据名称获取特效元数据, 忽略大小写、空格和下划线
 
         Args:
