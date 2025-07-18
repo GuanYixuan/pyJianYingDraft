@@ -113,6 +113,7 @@ Text_loop_anim = _DeprecatedEnum(TextLoopAnim, "Text_loop_anim", "TextLoopAnim")
 Audio_scene_effect_type = _DeprecatedEnum(AudioSceneEffectType, "Audio_scene_effect_type", "AudioSceneEffectType")
 Video_scene_effect_type = _DeprecatedEnum(VideoSceneEffectType, "Video_scene_effect_type", "VideoSceneEffectType")
 Video_character_effect_type = _DeprecatedEnum(VideoCharacterEffectType, "Video_character_effect_type", "VideoCharacterEffectType")
+Keyframe_property = _DeprecatedEnum(KeyframeProperty, "Keyframe_property", "KeyframeProperty")
 
 class Clip_settings:
     """Deprecated: Use ClipSettings instead."""
@@ -191,12 +192,6 @@ class Crop_settings:
     def __new__(cls, *args, **kwargs):
         _deprecated_class_warning("Crop_settings", "CropSettings")
         return CropSettings(*args, **kwargs)
-
-class Keyframe_property:
-    """Deprecated: Use KeyframeProperty instead."""
-    def __new__(cls, *args, **kwargs):
-        _deprecated_class_warning("Keyframe_property", "KeyframeProperty")
-        return KeyframeProperty(*args, **kwargs)
 
 __all__ = [
     "FontType",
