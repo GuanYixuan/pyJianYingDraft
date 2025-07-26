@@ -7,6 +7,7 @@ from typing import Optional, Literal, Union, overload
 from typing import Type, Dict, List, Any
 
 from . import util
+from . import assets
 from . import exceptions
 from .template_mode import ImportedTrack, EditableTrack, ImportedMediaTrack, ImportedTextTrack, ShrinkMode, ExtendMode, import_track
 from .time_util import Timerange, tim, srt_tstamp
@@ -172,8 +173,6 @@ class ScriptFile:
     imported_tracks: List[ImportedTrack]
     """导入的轨道信息"""
 
-    TEMPLATE_FILE = "draft_content_template.json"
-
     def __init__(self, width: int, height: int, fps: int = 30):
         """创建一个剪映草稿
 
@@ -195,7 +194,7 @@ class ScriptFile:
         self.imported_materials = {}
         self.imported_tracks = []
 
-        with open(os.path.join(os.path.dirname(__file__), self.TEMPLATE_FILE), "r", encoding="utf-8") as f:
+        with open(assets.get_asset_path('DRAFT_CONTENT_TEMPLATE'), "r", encoding="utf-8") as f:
             self.content = json.load(f)
 
     @staticmethod
