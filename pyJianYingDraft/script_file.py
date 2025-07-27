@@ -174,7 +174,7 @@ class ScriptFile:
     """导入的轨道信息"""
 
     def __init__(self, width: int, height: int, fps: int = 30):
-        """创建一个剪映草稿
+        """**创建剪映草稿推荐使用`DraftFolder.create_draft()`而非此方法**
 
         Args:
             width (int): 视频宽度, 单位为像素
@@ -798,10 +798,10 @@ class ScriptFile:
             f.write(self.dumps())
 
     def save(self) -> None:
-        """保存草稿文件至打开时的路径, 仅在模板模式下可用
+        """保存草稿文件至打开时的路径
 
         Raises:
-            `ValueError`: 不在模板模式下
+            `ValueError`: 没有设置保存路径
         """
         if self.save_path is None:
             raise ValueError("没有设置保存路径, 可能不在模板模式下")

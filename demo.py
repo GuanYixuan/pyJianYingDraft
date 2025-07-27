@@ -3,15 +3,14 @@ import os
 import pyJianYingDraft as draft
 from pyJianYingDraft import IntroType, TransitionType, trange, tim
 
-# 保存路径
-DUMP_PATH = r"<你的草稿文件夹>/draft_content.json"
-assert os.path.exists(DUMP_PATH), f"未找到草稿文件{os.path.abspath(DUMP_PATH)}"
+# 设置草稿文件夹
+draft_folder = draft.DraftFolder(r"<你的草稿文件夹>")
 
 tutorial_asset_dir = os.path.join(os.path.dirname(__file__), 'readme_assets', 'tutorial')
 assert os.path.exists(tutorial_asset_dir), f"未找到例程素材文件夹{os.path.abspath(tutorial_asset_dir)}"
 
 # 创建剪映草稿
-script = draft.ScriptFile(1920, 1080)  # 1920x1080分辨率
+script = draft_folder.create_draft("demo", 1920, 1080)  # 1920x1080分辨率
 
 # 添加音频、视频和文本轨道
 script.add_track(draft.TrackType.audio).add_track(draft.TrackType.video).add_track(draft.TrackType.text)
@@ -51,5 +50,5 @@ text_segment.add_bubble("361595", "6742029398926430728")                  # 添�
 text_segment.add_effect("7296357486490144036")                            # 添加花字效果, 相应素材元数据的获取参见readme中"提取素材元数据"部分
 script.add_segment(text_segment)
 
-# 保存草稿（覆盖掉原有的draft_content.json）
-script.dump(DUMP_PATH)
+# 保存草稿
+script.save()

@@ -73,10 +73,9 @@ pip install pyJianYingDraft
 例程`demo.py`将创建包含音视频素材和一行文本的剪映草稿文件，并且添加了音频淡入、视频入场动画、转场效果和文本气泡/花字。
 
 这个例程的操作方法如下：
-1. 在剪映里**创建一个空草稿**，找到它对应的**文件夹路径**（类似`.../JianyingPro Drafts/9月5日`）
-2. **返回剪映首页**或退出剪映
-3. 将代码中`DUMP_PATH`变量的值改为**草稿文件夹下的`draft_content.json`路径**，随后运行`demo.py`
-4. 现在在剪映中**重新打开这个草稿**，你应该看到类似如下的时间轴：
+1. 找到剪映的**草稿文件夹路径**（类似`.../JianyingPro Drafts`），用其替换代码中的`<你的草稿文件夹>`
+2. 运行`demo.py`
+3. 在剪映中**找到并打开新创建的`demo`草稿**（可能需要进入再退出某个已有草稿，或重启剪映以刷新草稿列表），你应该看到类似如下的时间轴：
 
 ![快速上手](readme_assets/快速上手.png)
 
@@ -224,11 +223,11 @@ script.replace_text(
 
 例如
 ```python
-source_script = draft_folder.load_template("<模板>")  # 加载模板草稿
-target_script = draft.ScriptFile(1920, 1080)      # 创建新草稿
+source_script = draft_folder.load_template("<模板草稿名称>")     # 加载模板草稿
+target_script = draft_folder.create_draft("新草稿", 1920, 1080)  # 创建新草稿
 
 # 选取模板中的一个文本轨道
-text_track = script.get_imported_track(
+text_track = source_script.get_imported_track(
     draft.TrackType.text,                # 选取导入的文本轨道
     #name="text",                        # 假如轨道有名称，最好利用名称来定位
     index=0                              # 也可用下标定位, 0表示最底层的同类型轨道
@@ -324,8 +323,7 @@ import os
 import pyJianYingDraft as draft
 from pyJianYingDraft import trange, SEC
 
-# 创建草稿文件及三个轨道
-script = draft.ScriptFile(1080, 1080)
+# 假定已有草稿文件script（参见“快速上手”），创建三个轨道
 for i in range(3, 0, -1): # 倒序
     script.add_track(draft.TrackType.video, "%d" % i)
 
@@ -412,8 +410,7 @@ import os
 import pyJianYingDraft as draft
 from pyJianYingDraft import KeyframeProperty, SEC
 
-# 创建草稿及视频轨道
-script = draft.ScriptFile(1080, 1080)
+# 假定已有草稿文件script（参见“快速上手”），创建视频轨道
 script.add_track(draft.TrackType.video)
 tutorial_asset_dir = os.path.join(os.path.dirname(__file__), 'readme_assets', 'tutorial')
 
@@ -584,7 +581,7 @@ seg2 = draft.TextSegment("这是一段很长的文本内容，当超过设定的
 ```python
 import pyJianYingDraft as draft
 
-script = draft.ScriptFile(1080, 1080)
+# 假定已有草稿文件script（参见“快速上手”）
 
 # 将字幕导入到名为"subtitle"的轨道中，若轨道不存在将自动创建
 # 不指定style和clip_settings，则默认模拟剪映导入字幕时的样式

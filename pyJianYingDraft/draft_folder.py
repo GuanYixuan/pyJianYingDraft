@@ -35,6 +35,16 @@ class DraftFolder:
         """
         return [f for f in os.listdir(self.folder_path) if os.path.isdir(os.path.join(self.folder_path, f))]
 
+    def has_draft(self, draft_name: str) -> bool:
+        """检查文件夹中是否存在指定名称的草稿
+
+        注意: 本函数只检查文件夹是否存在, 并不检查草稿是否符合剪映的格式
+
+        Args:
+            draft_name (`str`): 草稿名称, 即相应文件夹名称
+        """
+        return draft_name in self.list_drafts()
+
     def remove(self, draft_name: str) -> None:
         """删除指定名称的草稿
 
