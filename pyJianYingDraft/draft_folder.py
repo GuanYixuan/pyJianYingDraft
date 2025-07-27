@@ -5,6 +5,7 @@ import shutil
 
 from typing import List
 
+from . import assets
 from .script_file import ScriptFile
 
 class DraftFolder:
@@ -48,6 +49,36 @@ class DraftFolder:
             raise FileNotFoundError(f"草稿文件夹 {draft_name} 不存在")
 
         shutil.rmtree(draft_path)
+
+    def create_draft(self, draft_name: str, width: int, height: int, fps: int = 30, *,
+                     allow_replace: bool = False) -> ScriptFile:
+        """创建一个新草稿并开始编辑, 编辑完成后使用`ScriptFile.save()`保存即可
+
+        Args:
+            draft_name (`str`): 草稿名称, 即相应文件夹名称
+            width (`int`): 视频宽度, 单位为像素
+            height (`int`): 视频高度, 单位为像素
+            fps (`int`, optional): 视频帧率. 默认为30.
+            allow_replace (`bool`, optional): 是否允许覆盖与`draft_name`重名的草稿. 默认为否.
+
+        Raises:
+            `FileExistsError`: 已存在与`draft_name`重名的草稿, 但不允许覆盖.
+        """
+        draft_path = os.path.join(self.folder_path, draft_name)
+        if os.path.exists(draft_path):
+            if not allow_replace:
+                raise FileExistsError(f"草稿文件夹 {draft_name} 已存在且不允许覆盖")
+            shutil.rmtree(draft_path)
+
+        # 创建草稿文件夹
+        os.makedirs(draft_path)
+        shutil.copy(assets.get_asset_path("DRAFT_META_TEMPLATE"), os.path.join(draft_path, "draft_meta_info.json"))
+
+        # 创建草稿文件
+        script_file = ScriptFile(width, height, fps)
+        script_file.save_path = os.path.join(draft_path, "draft_content.json")
+
+        return script_file
 
     def inspect_material(self, draft_name: str) -> None:
         """输出指定名称草稿中的贴纸素材元数据

@@ -1,0 +1,67 @@
+{
+	"cloud_package_completed_time": "",
+	"draft_cloud_capcut_purchase_info": "",
+	"draft_cloud_last_action_download": false,
+	"draft_cloud_materials": [],
+	"draft_cloud_purchase_info": "",
+	"draft_cloud_template_id": "",
+	"draft_cloud_tutorial_info": "",
+	"draft_cloud_videocut_purchase_info": "",
+	"draft_cover": "",
+	"draft_deeplink_url": "",
+	"draft_enterprise_info": {
+		"draft_enterprise_extra": "",
+		"draft_enterprise_id": "",
+		"draft_enterprise_name": "",
+		"enterprise_material": []
+	},
+	"draft_fold_path": "",
+	"draft_id": "BC69C7CD-7C5E-4185-B284-AF3E1047A664",
+	"draft_is_ai_packaging_used": false,
+	"draft_is_ai_shorts": false,
+	"draft_is_ai_translate": false,
+	"draft_is_article_video_draft": false,
+	"draft_is_from_deeplink": "false",
+	"draft_is_invisible": false,
+	"draft_materials": [
+		{
+			"type": 0,
+			"value": []
+		},
+		{
+			"type": 1,
+			"value": []
+		},
+		{
+			"type": 2,
+			"value": []
+		},
+		{
+			"type": 3,
+			"value": []
+		},
+		{
+			"type": 6,
+			"value": []
+		},
+		{
+			"type": 7,
+			"value": []
+		},
+		{
+			"type": 8,
+			"value": []
+		}
+	],
+	"draft_materials_copied_info": [],
+	"draft_name": "",
+	"draft_new_version": "",
+	"draft_removable_storage_device": "",
+	"draft_root_path": "",
+	"draft_segment_extra_info": [],
+	"draft_type": "",
+	"tm_draft_cloud_completed": "",
+	"tm_draft_cloud_modified": 0,
+	"tm_draft_removed": 0,
+	"tm_duration": 0
+}

@@ -11,6 +11,7 @@ ASSETS_DIR = Path(__file__).parent
 ASSET_FILES = {
     # 模板文件
     'DRAFT_CONTENT_TEMPLATE': 'draft_content_template.json',
+    'DRAFT_META_TEMPLATE': 'draft_meta_info.json',
 }
 
 def get_asset_path(asset_name: str) -> Path:
