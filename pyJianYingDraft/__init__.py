@@ -1,4 +1,5 @@
 import warnings
+import sys
 
 from .local_materials import CropSettings, VideoMaterial, AudioMaterial
 from .keyframe import KeyframeProperty
@@ -21,7 +22,11 @@ from .track import TrackType
 from .template_mode import ShrinkMode, ExtendMode
 from .script_file import ScriptFile
 from .draft_folder import DraftFolder
-from .jianying_controller import JianyingController, ExportResolution, ExportFramerate
+
+# 仅在Windows系统下导入jianying_controller
+ISWIN = (sys.platform == 'win32')
+if ISWIN:
+    from .jianying_controller import JianyingController, ExportResolution, ExportFramerate
 
 from .time_util import SEC, tim, trange
 
@@ -33,27 +38,6 @@ def _deprecated_class_warning(old_name: str, new_name: str):
         DeprecationWarning,
         stacklevel=3
     )
-
-# 创建带警告的枚举代理类
-class _DeprecatedEnum:
-    """带deprecation警告的枚举代理类"""
-    def __init__(self, original_enum, old_name, new_name):
-        self._enum = original_enum
-        self._old_name = old_name
-        self._new_name = new_name
-
-    def __getattr__(self, name):
-        # 当访问枚举成员时显示警告
-        _deprecated_class_warning(self._old_name, self._new_name)
-        return getattr(self._enum, name)
-
-    def __getitem__(self, name):
-        # 当通过索引访问时显示警告
-        _deprecated_class_warning(self._old_name, self._new_name)
-        return self._enum[name]
-
-    def __repr__(self):
-        return f"<Deprecated {self._old_name} (use {self._new_name} instead)>"
 
 # 保持向后兼容
 class Script_file:
@@ -68,24 +52,6 @@ class Draft_folder:
         _deprecated_class_warning("Draft_folder", "DraftFolder")
         return DraftFolder(*args, **kwargs)
 
-class Jianying_controller:
-    """Deprecated: Use JianyingController instead."""
-    def __new__(cls, *args, **kwargs):
-        _deprecated_class_warning("Jianying_controller", "JianyingController")
-        return JianyingController(*args, **kwargs)
-
-class Export_resolution:
-    """Deprecated: Use ExportResolution instead."""
-    def __new__(cls, *args, **kwargs):
-        _deprecated_class_warning("Export_resolution", "ExportResolution")
-        return ExportResolution(*args, **kwargs)
-
-class Export_framerate:
-    """Deprecated: Use ExportFramerate instead."""
-    def __new__(cls, *args, **kwargs):
-        _deprecated_class_warning("Export_framerate", "ExportFramerate")
-        return ExportFramerate(*args, **kwargs)
-
 class Shrink_mode:
     """Deprecated: Use ShrinkMode instead."""
     def __new__(cls, *args, **kwargs):
@@ -97,23 +63,6 @@ class Extend_mode:
     def __new__(cls, *args, **kwargs):
         _deprecated_class_warning("Extend_mode", "ExtendMode")
         return ExtendMode(*args, **kwargs)
-
-# 枚举类的向后兼容 - 使用代理类
-Track_type = _DeprecatedEnum(TrackType, "Track_type", "TrackType")
-Font_type = _DeprecatedEnum(FontType, "Font_type", "FontType")
-Mask_type = _DeprecatedEnum(MaskType, "Mask_type", "MaskType")
-Filter_type = _DeprecatedEnum(FilterType, "Filter_type", "FilterType")
-Transition_type = _DeprecatedEnum(TransitionType, "Transition_type", "TransitionType")
-Intro_type = _DeprecatedEnum(IntroType, "Intro_type", "IntroType")
-Outro_type = _DeprecatedEnum(OutroType, "Outro_type", "OutroType")
-Group_animation_type = _DeprecatedEnum(GroupAnimationType, "Group_animation_type", "GroupAnimationType")
-Text_intro = _DeprecatedEnum(TextIntro, "Text_intro", "TextIntro")
-Text_outro = _DeprecatedEnum(TextOutro, "Text_outro", "TextOutro")
-Text_loop_anim = _DeprecatedEnum(TextLoopAnim, "Text_loop_anim", "TextLoopAnim")
-Audio_scene_effect_type = _DeprecatedEnum(AudioSceneEffectType, "Audio_scene_effect_type", "AudioSceneEffectType")
-Video_scene_effect_type = _DeprecatedEnum(VideoSceneEffectType, "Video_scene_effect_type", "VideoSceneEffectType")
-Video_character_effect_type = _DeprecatedEnum(VideoCharacterEffectType, "Video_character_effect_type", "VideoCharacterEffectType")
-Keyframe_property = _DeprecatedEnum(KeyframeProperty, "Keyframe_property", "KeyframeProperty")
 
 class Clip_settings:
     """Deprecated: Use ClipSettings instead."""
@@ -193,6 +142,55 @@ class Crop_settings:
         _deprecated_class_warning("Crop_settings", "CropSettings")
         return CropSettings(*args, **kwargs)
 
+# 枚举类的向后兼容 - 使用代理类
+class _DeprecatedEnum:
+    """带deprecation警告的枚举代理类"""
+    def __init__(self, original_enum, old_name, new_name):
+        self._enum = original_enum
+        self._old_name = old_name
+        self._new_name = new_name
+
+    def __getattr__(self, name):
+        # 当访问枚举成员时显示警告
+        _deprecated_class_warning(self._old_name, self._new_name)
+        return getattr(self._enum, name)
+
+    def __getitem__(self, name):
+        # 当通过索引访问时显示警告
+        _deprecated_class_warning(self._old_name, self._new_name)
+        return self._enum[name]
+
+    def __repr__(self):
+        return f"<Deprecated {self._old_name} (use {self._new_name} instead)>"
+
+Track_type = _DeprecatedEnum(TrackType, "Track_type", "TrackType")
+Font_type = _DeprecatedEnum(FontType, "Font_type", "FontType")
+Mask_type = _DeprecatedEnum(MaskType, "Mask_type", "MaskType")
+Filter_type = _DeprecatedEnum(FilterType, "Filter_type", "FilterType")
+Transition_type = _DeprecatedEnum(TransitionType, "Transition_type", "TransitionType")
+Intro_type = _DeprecatedEnum(IntroType, "Intro_type", "IntroType")
+Outro_type = _DeprecatedEnum(OutroType, "Outro_type", "OutroType")
+Group_animation_type = _DeprecatedEnum(GroupAnimationType, "Group_animation_type", "GroupAnimationType")
+Text_intro = _DeprecatedEnum(TextIntro, "Text_intro", "TextIntro")
+Text_outro = _DeprecatedEnum(TextOutro, "Text_outro", "TextOutro")
+Text_loop_anim = _DeprecatedEnum(TextLoopAnim, "Text_loop_anim", "TextLoopAnim")
+Audio_scene_effect_type = _DeprecatedEnum(AudioSceneEffectType, "Audio_scene_effect_type", "AudioSceneEffectType")
+Video_scene_effect_type = _DeprecatedEnum(VideoSceneEffectType, "Video_scene_effect_type", "VideoSceneEffectType")
+Video_character_effect_type = _DeprecatedEnum(VideoCharacterEffectType, "Video_character_effect_type", "VideoCharacterEffectType")
+Keyframe_property = _DeprecatedEnum(KeyframeProperty, "Keyframe_property", "KeyframeProperty")
+
+# 仅在Windows系统下定义jianying_controller相关的向后兼容类
+if ISWIN:
+    class Jianying_controller:
+        """Deprecated: Use JianyingController instead."""
+        def __new__(cls, *args, **kwargs):
+            _deprecated_class_warning("Jianying_controller", "JianyingController")
+            return JianyingController(*args, **kwargs)
+
+    Export_resolution = _DeprecatedEnum(ExportResolution, "Export_resolution", "ExportResolution")
+    Export_framerate = _DeprecatedEnum(ExportFramerate, "Export_framerate", "ExportFramerate")
+
+# 基础__all__列表（所有平台通用）
 __all__ = [
     "FontType",
     "MaskType",
@@ -227,9 +225,6 @@ __all__ = [
     "ExtendMode",
     "ScriptFile",
     "DraftFolder",
-    "JianyingController",
-    "ExportResolution",
-    "ExportFramerate",
     "SEC",
     "tim",
     "trange",
@@ -237,9 +232,6 @@ __all__ = [
     # 向后兼容的snake_case类
     "Script_file",
     "Draft_folder",
-    "Jianying_controller",
-    "Export_resolution",
-    "Export_framerate",
     "Shrink_mode",
     "Extend_mode",
     "Track_type",
@@ -271,3 +263,14 @@ __all__ = [
     "Crop_settings",
     "Keyframe_property",
 ]
+
+# 仅在Windows系统下添加jianying_controller相关的导出
+if ISWIN:
+    __all__.extend([
+        "JianyingController",
+        "ExportResolution",
+        "ExportFramerate",
+        "Jianying_controller",
+        "Export_resolution",
+        "Export_framerate",
+    ])
