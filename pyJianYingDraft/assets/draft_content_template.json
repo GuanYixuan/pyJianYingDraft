@@ -56,6 +56,12 @@
         "app_version": "5.9.0",
         "os": "windows"
     },
+    "platform": {
+        "app_id": 3704,
+        "app_source": "lv",
+        "app_version": "5.9.0",
+        "os": "windows"
+    },
     "materials": {
         "ai_translates": [],
         "audio_balances": [],
