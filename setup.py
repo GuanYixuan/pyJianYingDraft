@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="pyJianYingDraft",
-    version="0.2.1",
+    version="0.2.2",
     author="gary318",
     description="轻量、灵活、易上手的Python剪映草稿生成及导出工具，构建全自动化视频剪辑/混剪流水线",
     long_description=open("pypi_readme.md", "r", encoding="utf-8").read(),
@@ -15,13 +15,12 @@ setup(
     classifiers=[
         "Programming Language :: Python :: 3",
         "Development Status :: 4 - Beta",
-        "Operating System :: Microsoft :: Windows",
         "Topic :: Multimedia :: Video"
     ],
     python_requires='>=3.8',
     install_requires=[
         "pymediainfo",
         "imageio",
-        "uiautomation>=2"
+        "uiautomation>=2; sys_platform == 'win32'"
     ],
 )
