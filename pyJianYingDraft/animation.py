@@ -7,7 +7,7 @@ from typing import Literal, Dict, List, Any
 
 from .time_util import Timerange
 
-from .metadata.animation_meta import AnimationMeta
+from .metadata import AnimationMeta
 from .metadata import IntroType, OutroType, GroupAnimationType
 from .metadata import TextIntro, TextOutro, TextLoopAnim
 

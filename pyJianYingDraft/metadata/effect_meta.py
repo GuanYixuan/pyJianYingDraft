@@ -1,3 +1,5 @@
+"""元数据类型定义"""
+
 from enum import Enum
 
 from typing import List, Dict, Any
@@ -45,8 +47,9 @@ class EffectParamInstance(EffectParam):
             "value": self.value
         }
 
+# 基础特效元数据, 直接用于滤镜/文字/视频特效
 class EffectMeta:
-    """特效元数据"""
+    """特效元数据, 直接用于滤镜/文字/视频特效"""
 
     name: str
     """效果名称"""
@@ -107,3 +110,82 @@ class EffectEnum(Enum):
             if effect.name.lower().replace(" ", "").replace("_", "") == name:
                 return effect
         raise ValueError(f"Effect named '{name}' not found")
+
+# 动画元数据
+class AnimationMeta:
+    """动画元数据, 用于视频/文字片段的入场/出场/组合动画"""
+
+    title: str
+    is_vip: bool
+    duration: int
+    """效果默认时长, 单位为微秒"""
+
+    resource_id: str
+    effect_id: str
+    md5: str
+
+    def __init__(self, title: str, is_vip: bool, duration: float, resource_id: str, effect_id: str, md5: str):
+        self.title = title
+        self.is_vip = is_vip
+        self.duration = int(round(duration * 1e6))
+        self.resource_id = resource_id
+        self.effect_id = effect_id
+        self.md5 = md5
+
+# 蒙版元数据
+class MaskMeta:
+    """蒙版元数据"""
+
+    name: str
+    """转场名称"""
+
+    resource_type: str
+    """资源类型, 与蒙版形状相关"""
+
+    resource_id: str
+    """资源ID"""
+    effect_id: str
+    """效果ID"""
+    md5: str
+
+    default_aspect_ratio: float
+    """默认宽高比(宽高都是相对素材的比例)"""
+
+    def __init__(self, name: str, resource_type: str, resource_id: str, effect_id: str, md5: str, default_aspect_ratio: float):
+        self.name = name
+        self.resource_type = resource_type
+        self.resource_id = resource_id
+        self.effect_id = effect_id
+        self.md5 = md5
+
+        self.default_aspect_ratio = default_aspect_ratio
+
+# 转场元数据
+class TransitionMeta:
+    """转场元数据"""
+
+    name: str
+    """转场名称"""
+    is_vip: bool
+    """是否为VIP特权"""
+
+    resource_id: str
+    """资源ID"""
+    effect_id: str
+    """效果ID"""
+    md5: str
+
+    default_duration: int
+    """默认持续时间, 单位为微秒"""
+    is_overlap: bool
+    """是否允许重叠(?)"""
+
+    def __init__(self, name: str, is_vip: bool, resource_id: str, effect_id: str, md5: str, default_duration: float, is_overlap: bool):
+        self.name = name
+        self.is_vip = is_vip
+        self.resource_id = resource_id
+        self.effect_id = effect_id
+        self.md5 = md5
+
+        self.default_duration = int(round(default_duration * 1e6))
+        self.is_overlap = is_overlap
