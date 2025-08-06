@@ -246,7 +246,7 @@ class TextSegment(VisualSegment):
             border (`TextBorder`, optional): 文本描边参数, 默认无描边
             background (`TextBackground`, optional): 文本背景参数, 默认无背景
         """
-        super().__init__(uuid.uuid4().hex, None, timerange, 1.0, 1.0, clip_settings=clip_settings)
+        super().__init__(uuid.uuid4().hex, None, timerange, 1.0, 1.0, False, clip_settings=clip_settings)
 
         self.text = text
         self.font = font.value if font else None

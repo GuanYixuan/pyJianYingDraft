@@ -122,7 +122,8 @@ class AudioSegment(MediaSegment):
     """
 
     def __init__(self, material: Union[AudioMaterial, str], target_timerange: Timerange, *,
-                 source_timerange: Optional[Timerange] = None, speed: Optional[float] = None, volume: float = 1.0):
+                 source_timerange: Optional[Timerange] = None, speed: Optional[float] = None, volume: float = 1.0,
+                 change_pitch: bool = False):
         """利用给定的音频素材构建一个轨道片段, 并指定其时间信息及播放速度/音量
 
         Args:
@@ -131,6 +132,7 @@ class AudioSegment(MediaSegment):
             source_timerange (`Timerange`, optional): 截取的素材片段的时间范围, 默认从开头根据`speed`截取与`target_timerange`等长的一部分
             speed (`float`, optional): 播放速度, 默认为1.0. 此项与`source_timerange`同时指定时, 将覆盖`target_timerange`中的时长
             volume (`float`, optional): 音量, 默认为1.0
+            change_pitch (`bool`, optional): 是否跟随变速改变音调, 默认为否
 
         Raises:
             `ValueError`: 指定的或计算出的`source_timerange`超出了素材的时长范围
@@ -149,7 +151,7 @@ class AudioSegment(MediaSegment):
         if source_timerange.end > material.duration:
             raise ValueError(f"截取的素材时间范围 {source_timerange} 超出了素材时长({material.duration})")
 
-        super().__init__(material.material_id, source_timerange, target_timerange, speed, volume)
+        super().__init__(material.material_id, source_timerange, target_timerange, speed, volume, change_pitch)
 
         self.material_instance = deepcopy(material)
         self.fade = None

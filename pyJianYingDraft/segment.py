@@ -160,16 +160,19 @@ class MediaSegment(BaseSegment):
     """播放速度设置"""
     volume: float
     """音量"""
+    change_pitch: bool
+    """是否跟随变速改变音调"""
 
     extra_material_refs: List[str]
     """附加的素材id列表, 用于链接动画/特效等"""
 
-    def __init__(self, material_id: str, source_timerange: Optional[Timerange], target_timerange: Timerange, speed: float, volume: float):
+    def __init__(self, material_id: str, source_timerange: Optional[Timerange], target_timerange: Timerange, speed: float, volume: float, change_pitch: bool):
         super().__init__(material_id, target_timerange)
 
         self.source_timerange = source_timerange
         self.speed = Speed(speed)
         self.volume = volume
+        self.change_pitch = change_pitch
 
         self.extra_material_refs = [self.speed.global_id]
 
@@ -181,6 +184,7 @@ class MediaSegment(BaseSegment):
             "speed": self.speed.speed,
             "volume": self.volume,
             "extra_material_refs": self.extra_material_refs,
+            "is_tone_modify": self.change_pitch,
         })
         return ret
 
@@ -200,7 +204,7 @@ class VisualSegment(MediaSegment):
     """
 
     def __init__(self, material_id: str, source_timerange: Optional[Timerange], target_timerange: Timerange,
-                 speed: float, volume: float, *, clip_settings: Optional[ClipSettings]):
+                 speed: float, volume: float, change_pitch: bool, *, clip_settings: Optional[ClipSettings]):
         """初始化视觉片段基类
 
         Args:
@@ -209,9 +213,10 @@ class VisualSegment(MediaSegment):
             target_timerange (`Timerange`): 片段在轨道上的目标时间范围
             speed (`float`): 播放速度
             volume (`float`): 音量
+            change_pitch (`bool`): 是否跟随变速改变音调
             clip_settings (`ClipSettings`, optional): 图像调节设置, 默认不作任何变换
         """
-        super().__init__(material_id, source_timerange, target_timerange, speed, volume)
+        super().__init__(material_id, source_timerange, target_timerange, speed, volume, change_pitch)
 
         self.clip_settings = clip_settings if clip_settings is not None else ClipSettings()
         self.uniform_scale = True
