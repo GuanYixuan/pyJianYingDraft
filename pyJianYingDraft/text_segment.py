@@ -277,7 +277,7 @@ class TextSegment(VisualSegment):
         return new_segment
 
     def add_animation(self, animation_type: Union[TextIntro, TextOutro, TextLoopAnim],
-                      duration: Union[str, float] = 500000) -> "TextSegment":
+                      duration: Union[str, float, None] = None) -> "TextSegment":
         """将给定的入场/出场/循环动画添加到此片段的动画列表中, 出入场动画的持续时间可以自行设置, 循环动画则会自动填满其余无动画部分
 
         注意: 若希望同时使用循环动画和入出场动画, 请**先添加出入场动画再添加循环动画**
@@ -285,8 +285,10 @@ class TextSegment(VisualSegment):
         Args:
             animation_type (`TextIntro`, `TextOutro` or `TextLoopAnim`): 文本动画类型.
             duration (`str` or `float`, optional): 动画持续时间, 单位为微秒, 仅对入场/出场动画有效.
-                若传入字符串则会调用`tim()`函数进行解析. 默认为0.5秒
+                若传入字符串则会调用`tim()`函数进行解析. 默认使用动画的时长
         """
+        if duration is None:
+            duration = animation_type.value.duration
         duration = min(tim(duration), self.target_timerange.duration)
 
         if isinstance(animation_type, TextIntro):
