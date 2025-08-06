@@ -1,4 +1,8 @@
-"""记录各种特效/音效/滤镜等的元数据"""
+"""记录各种特效/音效/滤镜等的元数据
+
+音频相关元数据更新时间：2024
+其余元数据更新时间：2025-08
+"""
 
 from .effect_meta import EffectMeta, EffectParamInstance
 from .effect_meta import AnimationMeta
