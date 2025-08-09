@@ -83,7 +83,7 @@ class VideoMaterial:
             raise FileNotFoundError(f"找不到 {path}")
 
         self.material_name = material_name if material_name else os.path.basename(path)
-        self.material_id = uuid.uuid3(uuid.NAMESPACE_DNS, self.material_name).hex
+        self.material_id = uuid.uuid4().hex
         self.path = path
         self.crop_settings = crop_settings
         self.local_material_id = ""
@@ -165,7 +165,7 @@ class AudioMaterial:
             raise FileNotFoundError(f"找不到 {path}")
 
         self.material_name = material_name if material_name else os.path.basename(path)
-        self.material_id = uuid.uuid3(uuid.NAMESPACE_DNS, self.material_name).hex
+        self.material_id = uuid.uuid4().hex
         self.path = path
 
         if not pymediainfo.MediaInfo.can_parse():
