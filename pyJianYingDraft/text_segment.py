@@ -209,6 +209,49 @@ class TextEffect(TextBubble):
         ret["source_platform"] = 1
         return ret
 
+class TextShadow:
+    """文本阴影参数"""
+
+    alpha: float
+    """阴影不透明度, 取值范围为[0, 1]"""
+    color: Tuple[float, float, float]
+    """阴影颜色, RGB三元组, 取值范围为[0, 1]"""
+    diffuse: float
+    """阴影扩散程度, 此处定义与剪映中一致, 取值范围为[0, 100]"""
+    distance: float
+    """阴影距离, 取值范围为[0, 100]"""
+    angle: float
+    """阴影角度, 取值范围为[-180, 180]"""
+
+    def __init__(self, *, alpha: float = 1.0, color: Tuple[float, float, float] = (0.0, 0.0, 0.0),
+                 diffuse: float = 15.0, distance: float = 5.0, angle: float = -45.0):
+        """
+        Args:
+            alpha (`float`, optional): 阴影不透明度, 取值范围为[0, 1], 默认为1.0
+            color (`Tuple[float, float, float]`, optional): 阴影颜色, RGB三元组, 取值范围为[0, 1], 默认为黑色
+            diffuse (`float`, optional): 阴影扩散程度, 此处定义与剪映中一致, 取值范围为[0, 100], 默认为15.0
+            distance (`float`, optional): 阴影距离, 取值范围为[0, 100], 默认为5.0
+            angle (`float`, optional): 阴影角度, 取值范围为[-180, 180], 默认为-45.0
+        """
+        self.alpha = alpha
+        self.color = color
+        self.diffuse = diffuse
+        self.distance = distance
+        self.angle = angle
+
+    def export_json(self) -> Dict[str, Any]:
+        return {
+            "diffuse": self.diffuse / 100.0 / 6,  # /6是剪映自带的映射
+            "alpha": self.alpha,
+            "distance": self.distance,
+            "content": {
+                "solid": {
+                    "color": list(self.color),
+                }
+            },
+            "angle": self.angle
+        }
+
 class TextSegment(VisualSegment):
     """文本片段类, 目前仅支持设置基本的字体样式"""
 
@@ -223,6 +266,8 @@ class TextSegment(VisualSegment):
     """文本描边参数, None表示无描边"""
     background: Optional[TextBackground]
     """文本背景参数, None表示无背景"""
+    shadow: Optional[TextShadow]
+    """文本阴影参数, None表示无阴影"""
 
     bubble: Optional[TextBubble]
     """文本气泡效果, 在放入轨道时加入素材列表中"""
@@ -232,7 +277,8 @@ class TextSegment(VisualSegment):
     def __init__(self, text: str, timerange: Timerange, *,
                  font: Optional[FontType] = None,
                  style: Optional[TextStyle] = None, clip_settings: Optional[ClipSettings] = None,
-                 border: Optional[TextBorder] = None, background: Optional[TextBackground] = None):
+                 border: Optional[TextBorder] = None, background: Optional[TextBackground] = None,
+                 shadow: Optional[TextShadow] = None):
         """创建文本片段, 并指定其时间信息、字体样式及图像调节设置
 
         片段创建完成后, 可通过`ScriptFile.add_segment`方法将其添加到轨道中
@@ -245,6 +291,7 @@ class TextSegment(VisualSegment):
             clip_settings (`ClipSettings`, optional): 图像调节设置, 默认不做任何变换
             border (`TextBorder`, optional): 文本描边参数, 默认无描边
             background (`TextBackground`, optional): 文本背景参数, 默认无背景
+            shadow (`TextShadow`, optional): 文本阴影参数, 默认无阴影
         """
         super().__init__(uuid.uuid4().hex, None, timerange, 1.0, 1.0, False, clip_settings=clip_settings)
 
@@ -253,6 +300,7 @@ class TextSegment(VisualSegment):
         self.style = style or TextStyle()
         self.border = border
         self.background = background
+        self.shadow = shadow
 
         self.bubble = None
         self.effect = None
@@ -261,7 +309,8 @@ class TextSegment(VisualSegment):
     def create_from_template(cls, text: str, timerange: Timerange, template: "TextSegment") -> "TextSegment":
         """根据模板创建新的文本片段, 并指定其文本内容"""
         new_segment = cls(text, timerange, style=deepcopy(template.style), clip_settings=deepcopy(template.clip_settings),
-                          border=deepcopy(template.border), background=deepcopy(template.background))
+                          border=deepcopy(template.border), background=deepcopy(template.background),
+                          shadow=deepcopy(template.shadow))
         new_segment.font = deepcopy(template.font)
 
         # 处理动画等
@@ -340,6 +389,8 @@ class TextSegment(VisualSegment):
             check_flag |= 8
         if self.background:
             check_flag |= 16
+        if self.shadow:
+            check_flag |= 32
 
         content_json = {
             "styles": [
@@ -374,6 +425,8 @@ class TextSegment(VisualSegment):
                 "id": self.effect.effect_id,
                 "path": "C:"  # 并不会真正在此处放置素材文件
             }
+        if self.shadow:
+            content_json["styles"][0]["shadows"] = [self.shadow.export_json()]
 
         ret = {
             "id": self.material_id,
@@ -396,40 +449,6 @@ class TextSegment(VisualSegment):
             "global_alpha": self.style.alpha,
 
             # 发光 (+64)，属性由extra_material_refs记录
-
-            # 阴影 (+32)
-            # "has_shadow": False,
-            # "shadow_alpha": 0.9,
-            # "shadow_angle": -45.0,
-            # "shadow_color": "",
-            # "shadow_distance": 5.0,
-            # "shadow_point": {
-            #     "x": 0.6363961030678928,
-            #     "y": -0.6363961030678928
-            # },
-            # "shadow_smoothing": 0.45,
-
-            # 整体字体设置, 似乎会被content覆盖
-            # "font_category_id": "",
-            # "font_category_name": "",
-            # "font_id": "",
-            # "font_name": "",
-            # "font_path": "",
-            # "font_resource_id": "",
-            # "font_size": 15.0,
-            # "font_source_platform": 0,
-            # "font_team_id": "",
-            # "font_title": "none",
-            # "font_url": "",
-            # "fonts": [],
-
-            # 似乎会被content覆盖
-            # "text_alpha": 1.0,
-            # "text_color": "#FFFFFF",
-            # "text_curve": None,
-            # "text_preset_resource_id": "",
-            # "text_size": 30,
-            # "underline": False,
         }
 
         if self.background:
