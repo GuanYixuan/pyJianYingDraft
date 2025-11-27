@@ -310,14 +310,14 @@ class VideoSegment(VisualSegment):
     在放入轨道时自动添加到素材列表中
     """
 
-    def __init__(self, material: Union[VideoMaterial, str], target_timerange: Timerange, *,
+    def __init__(self, material: Union[VideoMaterial, str], target_timerange: Optional[Timerange] = None, *,
                  source_timerange: Optional[Timerange] = None, speed: Optional[float] = None, volume: float = 1.0,
                  change_pitch: bool = False, clip_settings: Optional[ClipSettings] = None):
         """利用给定的视频/图片素材构建一个轨道片段, 并指定其时间信息及图像调节设置
 
         Args:
             material (`VideoMaterial` or `str`): 素材实例或素材路径, 若为路径则自动构造素材实例(此时不能指定`cropSettings`参数)
-            target_timerange (`Timerange`): 片段在轨道上的目标时间范围
+            target_timerange (`Timerange`): 片段在轨道上的目标时间范围, 默认使用素材完整时长
             source_timerange (`Timerange`, optional): 截取的素材片段的时间范围, 默认从开头根据`speed`截取与`target_timerange`等长的一部分
             speed (`float`, optional): 播放速度, 默认为1.0. 此项与`source_timerange`同时指定时, 将覆盖`target_timerange`中的时长
             volume (`float`, optional): 音量, 默认为1.0
@@ -331,12 +331,21 @@ class VideoSegment(VisualSegment):
             material = VideoMaterial(material)
 
         if source_timerange is not None and speed is not None:
-            target_timerange = Timerange(target_timerange.start, round(source_timerange.duration / speed))
+            start = target_timerange.start if target_timerange else 0
+            target_timerange = Timerange(start, round(source_timerange.duration / speed))
         elif source_timerange is not None and speed is None:
-            speed = source_timerange.duration / target_timerange.duration
-        else:  # source_timerange is None
+            if target_timerange is None:
+                speed = 1.0
+                target_timerange = Timerange(0, source_timerange.duration)
+            else:
+                speed = source_timerange.duration / target_timerange.duration
+        else:
             speed = speed if speed is not None else 1.0
-            source_timerange = Timerange(0, round(target_timerange.duration * speed))
+            if target_timerange is None:   # target_timerange and source_timerange is None
+                source_timerange = Timerange(0, material.duration)
+                target_timerange = Timerange(0, round(source_timerange.duration / speed))
+            else:  # source_timerange is None
+                source_timerange = Timerange(0, round(target_timerange.duration * speed))
 
         if source_timerange.end > material.duration:
             raise ValueError(f"截取的素材时间范围 {source_timerange} 超出了素材时长({material.duration})")
