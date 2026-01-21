@@ -59,10 +59,14 @@ class Mask:
 
     def export_json(self) -> Dict[str, Any]:
         return {
+            "category": "video",
+            "category_id": "jichu",
+            "category_name": "基础",
             "config": {
                 "aspectRatio": self.aspect_ratio,
                 "centerX": self.center_x,
                 "centerY": self.center_y,
+                "expansion": 0,
                 "feather": self.feather,
                 "height": self.height,
                 "invert": self.invert,
@@ -71,11 +75,29 @@ class Mask:
                 "width": self.width
             },
             "id": self.global_id,
+            "is_old_version": False,
+            "loader_work_space": "",
             "name": self.mask_meta.name,
+            "panel": "",
             "platform": "all",
             "position_info": "",
-            "resource_type": self.mask_meta.resource_type,
             "resource_id": self.mask_meta.resource_id,
+            "resource_type": self.mask_meta.resource_type,
+            "source_platform": 0,
+            "text_config": {
+                "align_type": 15,
+                "bold_width": 0,
+                "char_spacing": 0,
+                "content": "",
+                "font_name": "",
+                "font_resource_id": "",
+                "font_size": 15,
+                "has_underline": False,
+                "italic_degree": 0,
+                "line_gap": 0,
+                "scale": 1
+            },
+            "track_segment": "",
             "type": "mask"
             # 不导出path字段
         }
@@ -533,6 +555,8 @@ class VideoSegment(VisualSegment):
         json_dict.update({
             "hdr_settings": {"intensity": 1.0, "mode": 1, "nits": 1000},
         })
+        json_dict["enable_adjust_mask"] = True
+        json_dict["enable_video_mask"] = True
         return json_dict
 
 class StickerSegment(VisualSegment):

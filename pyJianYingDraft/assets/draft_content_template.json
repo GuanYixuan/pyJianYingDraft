@@ -2,9 +2,10 @@
     "canvas_config": {
         "height": 1080,
         "ratio": "original",
-        "width": 1920
+        "width": 1920,
+        "background": null
     },
-    "color_space": 0,
+    "color_space": -1,
     "config": {
         "adjust_max_index": 1,
         "attachment_info": [],
@@ -29,7 +30,8 @@
         "subtitle_taskinfo": [],
         "system_font_list": [],
         "video_mute": false,
-        "zoom_info_params": null
+        "zoom_info_params": null,
+        "use_float_render": false
     },
     "cover": null,
     "create_time": 0,
@@ -53,14 +55,22 @@
     "last_modified_platform": {
         "app_id": 3704,
         "app_source": "lv",
-        "app_version": "5.9.0",
-        "os": "windows"
+        "app_version": "9.0.1",
+        "device_id": "",
+        "hard_disk_id": "",
+        "mac_address": "",
+        "os": "windows",
+        "os_version": ""
     },
     "platform": {
-        "app_id": 3704,
-        "app_source": "lv",
-        "app_version": "5.9.0",
-        "os": "windows"
+        "app_id": 0,
+        "app_source": "",
+        "app_version": "",
+        "device_id": "",
+        "hard_disk_id": "",
+        "mac_address": "",
+        "os": "",
+        "os_version": ""
     },
     "materials": {
         "ai_translates": [],
@@ -84,7 +94,6 @@
         "log_color_wheels": [],
         "loudnesses": [],
         "manual_deformations": [],
-        "masks": [],
         "material_animations": [],
         "material_colors": [],
         "multi_language_refs": [],
@@ -107,19 +116,39 @@
         "video_trackings": [],
         "videos": [],
         "vocal_beautifys": [],
-        "vocal_separations": []
+        "vocal_separations": [],
+        "audio_pannings": [],
+        "common_mask": [],
+        "digital_human_model_dressing": [],
+        "hsl_curves": [],
+        "manual_beautys": [],
+        "placeholder_infos": []
     },
     "mutable_config": null,
     "name": "",
-    "new_version": "110.0.0",
+    "new_version": "143.0.0",
     "relationships": [],
     "render_index_track_mode_on": false,
     "retouch_cover": null,
     "source": "default",
     "static_cover_image_path": "",
     "time_marks": null,
-    "tracks": [
-    ],
+    "tracks": [],
     "update_time": 0,
-    "version": 360000
+    "version": 360000,
+    "draft_type": "video",
+    "is_drop_frame_timecode": false,
+    "lyrics_effects": [],
+    "path": "",
+    "smart_ads_info": {
+        "draft_url": "",
+        "page_from": "",
+        "routine": ""
+    },
+    "uneven_animation_template_info": {
+        "composition": "",
+        "content": "",
+        "order": "",
+        "sub_template_info_list": []
+    }
 }

@@ -44,8 +44,8 @@ class ScriptMaterial:
 
     speeds: List[Speed]
     """变速列表"""
-    masks: List[Dict[str, Any]]
-    """蒙版列表"""
+    common_masks: List[Dict[str, Any]]
+    """通用蒙版列表"""
     transitions: List[Transition]
     """转场效果列表"""
     filters: List[Union[Filter, TextBubble]]
@@ -65,7 +65,7 @@ class ScriptMaterial:
         self.video_effects = []
 
         self.speeds = []
-        self.masks = []
+        self.common_masks = []
         self.transitions = []
         self.filters = []
         self.canvases = []
@@ -103,12 +103,15 @@ class ScriptMaterial:
             "audio_balances": [],
             "audio_effects": [effect.export_json() for effect in self.audio_effects],
             "audio_fades": [fade.export_json() for fade in self.audio_fades],
+            "audio_pannings": [],
             "audio_track_indexes": [],
             "audios": [audio.export_json() for audio in self.audios],
             "beats": [],
             "canvases": [canvas.export_json() for canvas in self.canvases],
             "chromas": [],
             "color_curves": [],
+            "common_mask": self.common_masks,
+            "digital_human_model_dressing": [],
             "digital_humans": [],
             "drafts": [],
             "effects": [_filter.export_json() for _filter in self.filters],
@@ -116,14 +119,16 @@ class ScriptMaterial:
             "green_screens": [],
             "handwrites": [],
             "hsl": [],
+            "hsl_curves": [],
             "images": [],
             "log_color_wheels": [],
             "loudnesses": [],
+            "manual_beautys": [],
             "manual_deformations": [],
-            "masks": self.masks,
             "material_animations": [ani.export_json() for ani in self.animations],
             "material_colors": [],
             "multi_language_refs": [],
+            "placeholder_infos": [],
             "placeholders": [],
             "plugin_effects": [],
             "primary_color_wheels": [],
@@ -325,7 +330,7 @@ class ScriptFile:
                     self.materials.filters.append(filter_)
             # 蒙版
             if segment.mask is not None:
-                self.materials.masks.append(segment.mask.export_json())
+                self.materials.common_masks.append(segment.mask.export_json())
             # 转场
             if (segment.transition is not None) and (segment.transition not in self.materials):
                 self.materials.transitions.append(segment.transition)
@@ -785,7 +790,15 @@ class ScriptFile:
         self.content["fps"] = self.fps
         self.content["duration"] = self.duration
         self.content["config"]["maintrack_adsorb"] = self.maintrack_adsorb
-        self.content["canvas_config"] = {"width": self.width, "height": self.height, "ratio": "original"}
+        background = None
+        if isinstance(self.content.get("canvas_config"), dict):
+            background = self.content["canvas_config"].get("background")
+        self.content["canvas_config"] = {
+            "width": self.width,
+            "height": self.height,
+            "ratio": "original",
+            "background": background
+        }
         self.content["materials"] = self.materials.export_json()
 
         # 合并导入的素材
