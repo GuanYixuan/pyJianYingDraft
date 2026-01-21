@@ -37,14 +37,19 @@ class Mask:
 
     rotation: float
     invert: bool
+    expansion: float
     feather: float
     """羽化程度, 0-1"""
     round_corner: float
     """矩形蒙版的圆角, 0-1"""
+    text_config_override: Optional[Dict[str, Any]]
+    """文字蒙版文本配置覆盖"""
 
     def __init__(self, mask_meta: MaskMeta,
                  cx: float, cy: float, w: float, h: float,
-                 ratio: float, rot: float, inv: bool, feather: float, round_corner: float):
+                 ratio: float, rot: float, inv: bool, feather: float, round_corner: float,
+                 expansion: float = 0.0,
+                 text_config_override: Optional[Dict[str, Any]] = None):
         self.mask_meta = mask_meta
         self.global_id = uuid.uuid4().hex
 
@@ -54,10 +59,28 @@ class Mask:
 
         self.rotation = rot
         self.invert = inv
+        self.expansion = expansion
         self.feather = feather
         self.round_corner = round_corner
+        self.text_config_override = text_config_override
 
     def export_json(self) -> Dict[str, Any]:
+        text_config = {
+            "align_type": 15,
+            "bold_width": 0.0,
+            "char_spacing": 0.0,
+            "content": "",
+            "font_name": "",
+            "font_path": "",
+            "font_resource_id": "",
+            "font_size": 15.0,
+            "has_underline": False,
+            "italic_degree": 0,
+            "line_gap": 0.0,
+            "scale": 1.0
+        }
+        if self.text_config_override:
+            text_config.update(self.text_config_override)
         return {
             "category": "video",
             "category_id": "jichu",
@@ -66,7 +89,7 @@ class Mask:
                 "aspectRatio": self.aspect_ratio,
                 "centerX": self.center_x,
                 "centerY": self.center_y,
-                "expansion": 0,
+                "expansion": self.expansion,
                 "feather": self.feather,
                 "height": self.height,
                 "invert": self.invert,
@@ -84,19 +107,7 @@ class Mask:
             "resource_id": self.mask_meta.resource_id,
             "resource_type": self.mask_meta.resource_type,
             "source_platform": 0,
-            "text_config": {
-                "align_type": 15,
-                "bold_width": 0,
-                "char_spacing": 0,
-                "content": "",
-                "font_name": "",
-                "font_resource_id": "",
-                "font_size": 15,
-                "has_underline": False,
-                "italic_degree": 0,
-                "line_gap": 0,
-                "scale": 1
-            },
+            "text_config": text_config,
             "track_segment": "",
             "type": "mask"
             # 不导出path字段
@@ -192,7 +203,6 @@ class Filter:
     def export_json(self) -> Dict[str, Any]:
         return {
             "adjust_params": [],
-            "algorithm_artifact_path": "",
             "apply_target_type": self.apply_target_type,
             "bloom_params": None,
             "category_id": "",  # 一律设为空
@@ -471,7 +481,12 @@ class VideoSegment(VisualSegment):
         return self
 
     def add_mask(self, mask_type: MaskType, *, center_x: float = 0.0, center_y: float = 0.0, size: float = 0.5,
-                 rotation: float = 0.0, feather: float = 0.0, invert: bool = False,
+                 rotation: float = 0.0, feather: float = 0.0, invert: bool = False, expansion: float = 0.0,
+                 text_content: Optional[str] = None, text_font_name: str = "系统",
+                 text_font_path: str = "", text_font_size: float = 40.0, text_scale: float = 74.45620779038588,
+                 text_align_type: int = 1, text_bold_width: float = 1.0, text_char_spacing: float = 0.0,
+                 text_italic_degree: int = 0, text_line_gap: float = 0.0, text_has_underline: bool = False,
+                 text_font_resource_id: str = "",
                  rect_width: Optional[float] = None, round_corner: Optional[float] = None) -> "VideoSegment":
         """为视频片段添加蒙版
 
@@ -483,6 +498,19 @@ class VideoSegment(VisualSegment):
             rotation (`float`, optional): 蒙版顺时针旋转的**角度**, 默认不旋转
             feather (`float`, optional): 蒙版的羽化参数, 取值范围0~100, 默认无羽化
             invert (`bool`, optional): 是否反转蒙版, 默认不反转
+            expansion (`float`, optional): 蒙版扩展参数, 取值范围0~100, 默认不扩展
+            text_content (`str`, optional): 文字蒙版内容, 仅在蒙版类型为文字时生效, 默认为"默认文本"
+            text_font_name (`str`, optional): 文字蒙版字体名称, 仅在蒙版类型为文字时生效
+            text_font_path (`str`, optional): 文字蒙版字体路径(可为空), 仅在蒙版类型为文字时生效
+            text_font_size (`float`, optional): 文字蒙版字体大小, 仅在蒙版类型为文字时生效
+            text_scale (`float`, optional): 文字蒙版缩放, 仅在蒙版类型为文字时生效
+            text_align_type (`int`, optional): 文字蒙版对齐方式, 仅在蒙版类型为文字时生效
+            text_bold_width (`float`, optional): 文字蒙版加粗宽度, 仅在蒙版类型为文字时生效
+            text_char_spacing (`float`, optional): 文字蒙版字间距, 仅在蒙版类型为文字时生效
+            text_italic_degree (`int`, optional): 文字蒙版倾斜度, 仅在蒙版类型为文字时生效
+            text_line_gap (`float`, optional): 文字蒙版行间距, 仅在蒙版类型为文字时生效
+            text_has_underline (`bool`, optional): 文字蒙版下划线, 仅在蒙版类型为文字时生效
+            text_font_resource_id (`str`, optional): 文字蒙版字体资源ID, 仅在蒙版类型为文字时生效
             rect_width (`float`, optional): 矩形蒙版的宽度, 仅在蒙版类型为矩形时允许设置, 以占素材宽度的比例表示, 默认与`size`相同
             round_corner (`float`, optional): 矩形蒙版的圆角参数, 仅在蒙版类型为矩形时允许设置, 取值范围0~100, 默认为0
 
@@ -498,11 +526,31 @@ class VideoSegment(VisualSegment):
             rect_width = size
         if round_corner is None:
             round_corner = 0
+        text_config_override = None
+        if mask_type == MaskType.文字:
+            if text_content is None:
+                text_content = "默认文本"
+            text_config_override = {
+                "align_type": text_align_type,
+                "bold_width": text_bold_width,
+                "char_spacing": text_char_spacing,
+                "content": text_content,
+                "font_name": text_font_name,
+                "font_path": text_font_path,
+                "font_resource_id": text_font_resource_id,
+                "font_size": text_font_size,
+                "has_underline": text_has_underline,
+                "italic_degree": text_italic_degree,
+                "line_gap": text_line_gap,
+                "scale": text_scale
+            }
 
         width = rect_width or size * self.material_size[1] * mask_type.value.default_aspect_ratio / self.material_size[0]
         self.mask = Mask(mask_type.value, center_x / (self.material_size[0] / 2), center_y / (self.material_size[1] / 2),
                          w=width, h=size, ratio=mask_type.value.default_aspect_ratio,
-                         rot=rotation, inv=invert, feather=feather/100, round_corner=round_corner/100)
+                         rot=rotation, inv=invert, feather=feather/100, round_corner=round_corner/100,
+                         expansion=expansion/100,
+                         text_config_override=text_config_override)
         self.extra_material_refs.append(self.mask.global_id)
         return self
 

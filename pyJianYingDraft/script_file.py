@@ -46,6 +46,8 @@ class ScriptMaterial:
     """变速列表"""
     common_masks: List[Dict[str, Any]]
     """通用蒙版列表"""
+    masks: List[Dict[str, Any]]
+    """蒙版列表(兼容旧版本字段)"""
     transitions: List[Transition]
     """转场效果列表"""
     filters: List[Union[Filter, TextBubble]]
@@ -66,6 +68,7 @@ class ScriptMaterial:
 
         self.speeds = []
         self.common_masks = []
+        self.masks = []
         self.transitions = []
         self.filters = []
         self.canvases = []
@@ -111,6 +114,7 @@ class ScriptMaterial:
             "chromas": [],
             "color_curves": [],
             "common_mask": self.common_masks,
+            "masks": self.masks,
             "digital_human_model_dressing": [],
             "digital_humans": [],
             "drafts": [],
@@ -330,7 +334,12 @@ class ScriptFile:
                     self.materials.filters.append(filter_)
             # 蒙版
             if segment.mask is not None:
-                self.materials.common_masks.append(segment.mask.export_json())
+                mask_json = segment.mask.export_json()
+                mask_id = mask_json.get("id")
+                if not any(m.get("id") == mask_id for m in self.materials.common_masks):
+                    self.materials.common_masks.append(mask_json)
+                if not any(m.get("id") == mask_id for m in self.materials.masks):
+                    self.materials.masks.append(mask_json)
             # 转场
             if (segment.transition is not None) and (segment.transition not in self.materials):
                 self.materials.transitions.append(segment.transition)

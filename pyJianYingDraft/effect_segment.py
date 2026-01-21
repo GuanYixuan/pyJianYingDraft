@@ -1,6 +1,6 @@
 """定义特效/滤镜片段类"""
 
-from typing import Union, Optional, List
+from typing import Union, Optional, List, Dict, Any
 
 from .time_util import Timerange
 from .segment import BaseSegment
@@ -22,6 +22,11 @@ class EffectSegment(BaseSegment):
         self.effect_inst = VideoEffect(effect_type, params, apply_target_type=2)  # 作用域为全局
         super().__init__(self.effect_inst.global_id, target_timerange)
 
+    def export_json(self) -> Dict[str, Any]:
+        data = super().export_json()
+        data["extra_material_refs"] = []
+        return data
+
 class FilterSegment(BaseSegment):
     """放置在独立滤镜轨道上的滤镜片段"""
 
@@ -32,5 +37,10 @@ class FilterSegment(BaseSegment):
     """
 
     def __init__(self, meta: FilterType, target_timerange: Timerange, intensity: float):
-        self.material = Filter(meta.value, intensity)
+        self.material = Filter(meta.value, intensity, apply_target_type=2)
         super().__init__(self.material.global_id, target_timerange)
+
+    def export_json(self) -> Dict[str, Any]:
+        data = super().export_json()
+        data["extra_material_refs"] = []
+        return data
