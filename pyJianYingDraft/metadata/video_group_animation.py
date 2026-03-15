@@ -130,4 +130,4 @@ class GroupAnimationType(EffectEnum):
     红酒摇晃             = AnimationMeta("红酒摇晃", True, 0.800, "6903771548436402702", "1417022", "95d79896a437524c4f94dc2902bb3b6c")
     跳跳糖               = AnimationMeta("跳跳糖", True, 0.700, "7199944821098680890", "9432783", "fc4e0cc6a2f2c775659fa9493cff9fe8")
     闪光放大             = AnimationMeta("闪光放大", True, 0.500, "7166437469909422623", "6210029", "d73e12e5f219c298b59fcca7f34fadac")
-    闪光放大_II          = AnimationMeta("闪光放大 II", True, 0.500, "7166437532568130055", "6210033", "a1a110060307fb02ef62d33d5e571789")
+    闪光放大_II          = AnimationMeta("闪光放大 II", True, 0.500, "7166437532568130055", "6210033", "0abf6172e49e9aab880f6a2283ffe5e2")

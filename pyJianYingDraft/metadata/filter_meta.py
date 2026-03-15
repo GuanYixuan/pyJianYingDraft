@@ -37,7 +37,6 @@ class FilterType(EffectEnum):
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
-    入夏                 = EffectMeta("入夏", False, "7101096733958065421", "7101096733958065421", "b5aa7c782bad8122e80cfd9f7c4dc72c", [])
     冬日烧烤             = EffectMeta("冬日烧烤", False, "7449704838763466035", "7449704838763466035", "bcd542f8af28c382cdacb39b588c4bbe", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
@@ -119,7 +118,6 @@ class FilterType(EffectEnum):
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
-    夏日泡泡             = EffectMeta("夏日泡泡", False, "7208548640279760140", "7208548640279760140", "19043b812fb18f38fab47b5bcf6080e0", [])
     夏日清凉             = EffectMeta("夏日清凉", False, "7505632228659973416", "7505632228659973416", "90897cbdc876de7beba905db2d6b3c40", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
@@ -129,10 +127,6 @@ class FilterType(EffectEnum):
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
     夏日风吟             = EffectMeta("夏日风吟", False, "7127684611802418445", "7127684611802418445", "3120cfc3dd0f1fe2090749012d60a20b", [])
-    夏荷青瓷             = EffectMeta("夏荷青瓷", False, "7244817652424641830", "7244817652424641830", "dac62447c29293f5f9ef519632fdb436", [
-                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
-    """参数:
-    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     大唐盛世             = EffectMeta("大唐盛世", False, "7493423027670109449", "7493423027670109449", "0dfa10fafe76d2947b7cf1e3e50a5003", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
@@ -222,10 +216,6 @@ class FilterType(EffectEnum):
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
     星云                 = EffectMeta("星云", False, "7127672042069036319", "7127672042069036319", "b73b7e9c33f8e387cbb579a5c11f01b9", [])
-    春日暖阳             = EffectMeta("春日暖阳", False, "7459274314634775827", "7459274314634775827", "56c9eb74589523ba37467165a9f73f76", [
-                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
-    """参数:
-    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     春日绿妍             = EffectMeta("春日绿妍", False, "7463345622440037658", "7463345622440037658", "0fa37f0c990e27a8029d65d07f84be23", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
@@ -246,6 +236,7 @@ class FilterType(EffectEnum):
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    晴颜                 = EffectMeta("晴颜", False, "7297968738131873035", "7297968738131873035", "97b54d7d49c75162656379068221e3a1", [])
     暖食                 = EffectMeta("暖食", False, "7127653100269210916", "7127653100269210916", "47b7c1b9f560b85b528c24f7cbbb6cd4", [])
     暗夜                 = EffectMeta("暗夜", False, "7127823728070659358", "7127823728070659358", "788c476ccf299db46035bd930d90c342", [])
     暗调氛围             = EffectMeta("暗调氛围", False, "7463118934061993242", "7463118934061993242", "b5be681b2126319c4f831d4e0f8cfe31", [
@@ -268,7 +259,6 @@ class FilterType(EffectEnum):
     松果棕               = EffectMeta("松果棕", False, "7127669342325443854", "7127669342325443854", "d68bcfc1e312f0e3e52f164a59cff686", [])
     林间                 = EffectMeta("林间", False, "7127663793827564808", "7127663793827564808", "c1ff0cd2a3eea239334b9604d31b4947", [])
     柠檬青               = EffectMeta("柠檬青", False, "7127676358766923016", "7127676358766923016", "0437481ce079dd3f1160351c1038d628", [])
-    梨花白               = EffectMeta("梨花白", False, "7345493751416016166", "7345493751416016166", "fa20a675c5b9caa46f42809746ed3ff5", [])
     梵时                 = EffectMeta("梵时", False, "7341767383259942155", "7341767383259942155", "a8908ae23533d029ea98fd6c5d052143", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
@@ -333,10 +323,6 @@ class FilterType(EffectEnum):
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
-    清新夏颜             = EffectMeta("清新夏颜", False, "7503936728286252323", "7503936728286252323", "b7a00d6e17947ce127f43aa7361478b5", [
-                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
-    """参数:
-    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     清新漫和             = EffectMeta("清新漫和", False, "7480517561486953779", "7480517561486953779", "5c4f109e0688d3d80d827172811a0a2a", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
@@ -391,17 +377,17 @@ class FilterType(EffectEnum):
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
     烟霞                 = EffectMeta("烟霞", False, "7143533042978524424", "7143533042978524424", "e33d66d89891ebab00dabb91a4b4caee", [])
-    热烈                 = EffectMeta("热烈", False, "7471880541189492007", "7471880541189492007", "bb9e824b308077331a1f0f2da36ae7da", [
-                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
-    """参数:
-    effects_adjust_filter: 默认100%, 0% ~ 100%"""
-    煦日                 = EffectMeta("煦日", False, "7297144048903556388", "7297144048903556388", "0ccb49dc9361df2d3262786b6c43d8ee", [])
     熔金                 = EffectMeta("熔金", False, "7143575737881120037", "7143575737881120037", "870a7dad3d5f5aae975be2b353d2ed06", [])
     燃力                 = EffectMeta("燃力", False, "7248571956860079395", "7248571956860079395", "f8deda9b7cb4ff2f4e6382795c7265a7", [])
     牛皮纸               = EffectMeta("牛皮纸", False, "7127822013074263310", "7127822013074263310", "351a03b45cb0cd2e13911113e7b06ca5", [])
     珠光蓝               = EffectMeta("珠光蓝", False, "7127657509501914399", "7127657509501914399", "2b91f0f9a4a9cac90b3cd1be50637f58", [])
     珠落                 = EffectMeta("珠落", False, "7213575938615872823", "7213575938615872823", "9ced1b064be8feb4c3c3b2989b61e286", [])
+    疼痛文学             = EffectMeta("疼痛文学", False, "7453868314482298122", "7453868314482298122", "71c97b14ca65445c60c7ffd033acd31b", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     病娇                 = EffectMeta("病娇", False, "7291179909718740259", "7291179909718740259", "5e1e1d48442e9e2fa3bab8e724bce4ad", [])
+    白皙                 = EffectMeta("白皙", False, "7127668617147141413", "7127668617147141413", "d029402b10782b63f67967b4d1bc1c03", [])
     盐岚                 = EffectMeta("盐岚", False, "7359223280714239268", "7359223280714239268", "e517e2dd0dc2601874ce0ca63c9cc75d", [])
     矿野                 = EffectMeta("矿野", False, "7281162649314889015", "7281162649314889015", "7e645e33c8e3d019669e9cb5d03d6886", [])
     砂红                 = EffectMeta("砂红", False, "7300758676732677427", "7300758676732677427", "2f33ad8925eb2079b23900241fcf83a4", [])
@@ -483,7 +469,6 @@ class FilterType(EffectEnum):
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
     迈阿密               = EffectMeta("迈阿密", False, "7127684611450178823", "7127684611450178823", "f9f32708f0029a5b043736e64133324f", [])
     酷白                 = EffectMeta("酷白", False, "7127676762514885919", "7127676762514885919", "e62e07d9ed430226e6afaa96dba3844a", [])
-    野餐                 = EffectMeta("野餐", False, "7246617998516063527", "7246617998516063527", "a16b2e6c9faaafff19e3c3276e4eca65", [])
     金属                 = EffectMeta("金属", False, "7127654151688949000", "7127654151688949000", "7aaae4aad5195f4df6929d9cb2f77fc9", [])
     闪光灯               = EffectMeta("闪光灯", False, "7364705637931994405", "7364705637931994405", "5b6fd1621826d837d88c71de0ced5f76", [])
     闪胶回忆             = EffectMeta("闪胶回忆", False, "7452726092126833959", "7452726092126833959", "4a1de85787a2fa27ddbe569a73e787e4", [
@@ -581,20 +566,8 @@ class FilterType(EffectEnum):
     GR绿                 = EffectMeta("GR绿", True, "7168121440141708576", "7168121440141708576", "5ad1db915106f04413a025928b28cdf5", [])
     GR蓝                 = EffectMeta("GR蓝", True, "7168097661160131879", "7168097661160131879", "c7f40f1f2b5c655d6ca5f45f8d86b52d", [])
     IG白                 = EffectMeta("IG白", True, "7221479156318489893", "7221479156318489893", "02a7a3a08ed9756bb1ae7b924213c33d", [])
-    INS亮肤              = EffectMeta("INS亮肤", True, "7438279481191599411", "7438279481191599411", "15a084174af323240d88f2911613bb7a", [
-                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
-    """参数:
-    effects_adjust_filter: 默认100%, 0% ~ 100%"""
-    INS晴肤              = EffectMeta("INS晴肤", True, "7438279661588581669", "7438279661588581669", "77a245b9cc31d17d4fffc621d1a16d83", [
-                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
-    """参数:
-    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     INS暗                = EffectMeta("INS暗", True, "7223645151820877093", "7223645151820877093", "29c393013eddca0fdd0ee0087100915e", [])
     INS暗调              = EffectMeta("INS暗调", True, "7473409650746985779", "7473409650746985779", "d15a78d524285235d2aedf03a27a6037", [
-                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
-    """参数:
-    effects_adjust_filter: 默认100%, 0% ~ 100%"""
-    INS柔肤              = EffectMeta("INS柔肤", True, "7438646040036789542", "7438646040036789542", "096d6ca77da11bdfa15f055c82ccc187", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
@@ -606,19 +579,19 @@ class FilterType(EffectEnum):
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
-    doll感透白           = EffectMeta("doll感透白", True, "7493542918276320539", "7493542918276320539", "64e3b6888a7afe415aedec81dfce032d", [
-                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
-    """参数:
-    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     iPhone6s             = EffectMeta("iPhone6s", True, "7393943544089627930", "7393943544089627930", "a83a14437d060aa093acf5f2441d6dc1", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
-    万圣                 = EffectMeta("万圣", True, "7426749131344841995", "7426749131344841995", "9d8d5689c13ca9e44441527c505fb693", [
+    ins古早味            = EffectMeta("ins古早味", True, "7547377459126209827", "7547377459126209827", "2dc9da09febc490da3787d530df72eb7", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
-    下雨天               = EffectMeta("下雨天", True, "7503602197586791743", "7503602197586791743", "4b7923d0d2db9788bf52de6e1558692f", [
+    miu系II              = EffectMeta("miu系II", True, "7395097767388990756", "7395097767388990756", "cc8ae49411140f244bfc3d3e1bcc9afd", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    万圣                 = EffectMeta("万圣", True, "7426749131344841995", "7426749131344841995", "9d8d5689c13ca9e44441527c505fb693", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
@@ -629,13 +602,12 @@ class FilterType(EffectEnum):
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
     中性                 = EffectMeta("中性", True, "7127621445806525704", "7127621445806525704", "8168144d29c35cf186eccb03ec9f3d93", [])
     中性II               = EffectMeta("中性II", True, "7312646907908607244", "7312646907908607244", "ad71ff12ac0afd02cb6c583d0ee69d8a", [])
-    丹枫                 = EffectMeta("丹枫", True, "7297138825359281423", "7297138825359281423", "a97673c2524eba984b75396530501fa8", [])
-    乐游                 = EffectMeta("乐游", True, "7193982146363673856", "7193982146363673856", "2a215f5fe9ff6c1a8effea9135bbe3bb", [])
-    云暖                 = EffectMeta("云暖", True, "7314883649999015231", "7314883649999015231", "7819364ae09bf6c6771fce646cde6ec9", [])
-    亚裔II               = EffectMeta("亚裔II", True, "7393338906369903910", "7393338906369903910", "95a3122514319889de739d782e1ad02b", [
+    中性奶杏             = EffectMeta("中性奶杏", True, "7385203623703137575", "7385203623703137575", "f64b492a7627b07f8f6d01e1c3574311", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    乐游                 = EffectMeta("乐游", True, "7193982146363673856", "7193982146363673856", "2a215f5fe9ff6c1a8effea9135bbe3bb", [])
+    云暖                 = EffectMeta("云暖", True, "7314883649999015231", "7314883649999015231", "7819364ae09bf6c6771fce646cde6ec9", [])
     京都                 = EffectMeta("京都", True, "7127679758581697822", "7127679758581697822", "63e749e3d425d0912123b4d7e53fc446", [])
     亭竹                 = EffectMeta("亭竹", True, "7302325291634920755", "7302325291634920755", "4bddb2bc6d4ca571e5f45a3dbe3f84dc", [])
     亮丽                 = EffectMeta("亮丽", True, "7413406043608272154", "7413406043608272154", "46ac28247c5fd004e08d5d970152eb49", [
@@ -643,7 +615,6 @@ class FilterType(EffectEnum):
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
     人生之事             = EffectMeta("人生之事", True, "7148844086869396743", "7148844086869396743", "352419343c715ea1be613980e91f5aa8", [])
-    仲夏                 = EffectMeta("仲夏", True, "7127575884780817672", "7127575884780817672", "70d9d3e21083edc6d3b52dc2bbc8d054", [])
     仲夏夜               = EffectMeta("仲夏夜", True, "7281166048273943867", "7281166048273943867", "0773453b9c513222ed0b2a629b141b38", [])
     仿撕拉片             = EffectMeta("仿撕拉片", True, "7503844955467648283", "7503844955467648283", "184bb2a8f80b693ada67bd80ac38ab1e", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
@@ -662,6 +633,10 @@ class FilterType(EffectEnum):
     佳能G12              = EffectMeta("佳能G12", True, "7485292050917657906", "7485292050917657906", "23ecefd04019e949de483cf913e08771", [])
     佳能G7X_II           = EffectMeta("佳能G7X II", True, "7291597100389862707", "7291597100389862707", "e9aef9a32a0ed9ebf39c9f23340fd408", [])
     佳能G7X_III          = EffectMeta("佳能G7X III", True, "7291595038688136474", "7291595038688136474", "3c89208f4754d78ad97df171a1cc1ffc", [])
+    佳能清透感           = EffectMeta("佳能清透感", True, "7605630861400083763", "7605630861400083763", "07ec403321666b08005246a1a8e36e80", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     俏皮萌宠             = EffectMeta("俏皮萌宠", True, "7394713676789353737", "7394713676789353737", "bba8efffe5600316da5ac027b95fa231", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
@@ -679,12 +654,28 @@ class FilterType(EffectEnum):
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
-    健身II               = EffectMeta("健身II", True, "7500860668199914790", "7500860668199914790", "e1f58996a63c9575f90a33d24e4bfccd", [
+    偏振镜               = EffectMeta("偏振镜", True, "7551730483399314751", "7551730483399314751", "0dc90e97114f4e8c7a0a86604739bc6c", [
+                              EffectParam("effects_adjust_speed", 1.000, 0.000, 1.000),
+                              EffectParam("effects_adjust_filter", 0.500, 0.000, 1.000),
+                              EffectParam("effects_adjust_noise", 1.000, 0.000, 1.000),
+                              EffectParam("effects_adjust_sharpen", 0.700, 0.000, 1.000),
+                              EffectParam("effects_adjust_soft", 0.900, 0.000, 1.000)])
+    """参数:
+    effects_adjust_speed: 默认100%, 0% ~ 100%
+    effects_adjust_filter: 默认50%, 0% ~ 100%
+    effects_adjust_noise: 默认100%, 0% ~ 100%
+    effects_adjust_sharpen: 默认70%, 0% ~ 100%
+    effects_adjust_soft: 默认90%, 0% ~ 100%"""
+    傍晚                 = EffectMeta("傍晚", True, "7226990270053649725", "7226990270053649725", "a1aa29d3a6ea4ca73cb38dac5f5f5d6a", [])
+    元宵祈福             = EffectMeta("元宵祈福", True, "7467923122545544499", "7467923122545544499", "4567a0899a90932be92a68098082eb1d", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
-    傍晚                 = EffectMeta("傍晚", True, "7226990270053649725", "7226990270053649725", "a1aa29d3a6ea4ca73cb38dac5f5f5d6a", [])
-    元宵祈福             = EffectMeta("元宵祈福", True, "7467923122545544499", "7467923122545544499", "4567a0899a90932be92a68098082eb1d", [
+    元气春颜             = EffectMeta("元气春颜", True, "7480473626207145254", "7480473626207145254", "b0436359d8d0e84263eba33e8542f82c", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    元气焕肤             = EffectMeta("元气焕肤", True, "7475923492119006473", "7475923492119006473", "e3e3177e21009a34a270cffab88bc97e", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
@@ -696,22 +687,46 @@ class FilterType(EffectEnum):
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    冬日亮肤             = EffectMeta("冬日亮肤", True, "7446310234596904246", "7446310234596904246", "be77bea4244b6539d794ed24d06b2927", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    冬日清寒             = EffectMeta("冬日清寒", True, "7594740512435801380", "7594740512435801380", "af960eaa4c5e1f6f4d07d197ca822d07", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     冬日物语             = EffectMeta("冬日物语", True, "7444960658178821414", "7444960658178821414", "e04c7e0b73dda7a63c5fd938ac9946cb", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
-    冬日电影II           = EffectMeta("冬日电影II", True, "7446453265190948132", "7446453265190948132", "61852bede7a3b918009bbf7e2f0b0481", [
+    冬日胶卷             = EffectMeta("冬日胶卷", True, "7447359984167406863", "7447359984167406863", "09979175ea6f74eb9e1e852a9b4f59df", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
     冬禧                 = EffectMeta("冬禧", True, "7190250133672578316", "7190250133672578316", "6423fd745c7ba83613feea71977763fb", [])
+    冬绪电影             = EffectMeta("冬绪电影", True, "7570270935157148968", "7570270935157148968", "7c2bb9a971e2c88008344c6e101e2d31", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    冬雪电影感           = EffectMeta("冬雪电影感", True, "7566134950601297167", "7566134950601297167", "93a53ca3240d4f576a505807f8ff0042", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     冰夏                 = EffectMeta("冰夏", True, "7258221827485486393", "7258221827485486393", "d6a3a5ee2c52a32842ba9c269e4c7fde", [])
+    冰清玉洁             = EffectMeta("冰清玉洁", True, "7433451697764158747", "7433451697764158747", "2e90ce70a5ee54d918c7fd1e86fab6b8", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     冰清蓝               = EffectMeta("冰清蓝", True, "7494313060480388389", "7494313060480388389", "b7e789f7e334a6b4f75dc3037f50fdee", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
     冰瀑                 = EffectMeta("冰瀑", True, "7196927862056701240", "7196927862056701240", "9691bde0838975e3573faad0791d3cdf", [])
     冰茶                 = EffectMeta("冰茶", True, "7131399016771800357", "7131399016771800357", "ab44066c23ab6639ca6ff5eb2b850582", [])
+    冰蓝印染             = EffectMeta("冰蓝印染", True, "7585168530518134067", "7585168530518134067", "a754e171fe1866494c6ac890d0e5f018", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     冰雪白               = EffectMeta("冰雪白", True, "7462637393783360809", "7462637393783360809", "7dd656b0f9320d3130691567c6ee1645", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
@@ -719,14 +734,20 @@ class FilterType(EffectEnum):
     冷叙                 = EffectMeta("冷叙", True, "7159132840179895590", "7159132840179895590", "c60635dea7f7a6df2ba9b1e08fee006e", [])
     冷墨                 = EffectMeta("冷墨", True, "7300751893813366053", "7300751893813366053", "e6d9891ef7f02898055a16f11a8750bc", [])
     冷月夜               = EffectMeta("冷月夜", True, "7281165355353951543", "7281165355353951543", "0a9aaba6174a6b1a46d78365bd7fa0c4", [])
-    冷白圣诞             = EffectMeta("冷白圣诞", True, "7446290191557397814", "7446290191557397814", "c81c0f2ea8bf243a05d972a0659c8af5", [
+    冷萃                 = EffectMeta("冷萃", True, "7177729481300364548", "7177729481300364548", "a7500c67b168c4ff886e0329b3662399", [])
+    冷调CCD              = EffectMeta("冷调CCD", True, "7434467628422270220", "7434467628422270220", "4b508c7a838560659d4acca26a7ffea0", [])
+    冷调微曝             = EffectMeta("冷调微曝", True, "7528075579602554150", "7528075579602554150", "a60ffcd1574d6f04db2f914e66d74764", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
-    冷萃                 = EffectMeta("冷萃", True, "7177729481300364548", "7177729481300364548", "a7500c67b168c4ff886e0329b3662399", [])
-    冷调CCD              = EffectMeta("冷调CCD", True, "7434467628422270220", "7434467628422270220", "4b508c7a838560659d4acca26a7ffea0", [])
+    冷透                 = EffectMeta("冷透", True, "7127824802819116302", "7127824802819116302", "06655076bb1cf6ce7c6e3b23d027496f", [])
     净白                 = EffectMeta("净白", True, "7127667352782572807", "7127667352782572807", "c13995808d8fbfdf9ed2b9f2873dfea7", [])
-    凉夏                 = EffectMeta("凉夏", True, "7377370212749839667", "7377370212749839667", "2857a91d80b1821a71a5d640bb2d33f3", [
+    净透                 = EffectMeta("净透", True, "7127666004477414687", "7127666004477414687", "bc8357fb00d1824e2ceaed463bc611b6", [])
+    凛冬电影感           = EffectMeta("凛冬电影感", True, "7569645361694870818", "7569645361694870818", "d075ebbc8e964539adb965190f6d675d", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    初雪电影感           = EffectMeta("初雪电影感", True, "7564852301807078694", "7564852301807078694", "21db6f90b7786c09f34c29e92287deda", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
@@ -734,28 +755,48 @@ class FilterType(EffectEnum):
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    动漫小镇             = EffectMeta("动漫小镇", True, "7604510820105522468", "7604510820105522468", "f04e4d343f385abbce3b7ac0540e67c6", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     劲闯                 = EffectMeta("劲闯", True, "7248568097660013864", "7248568097660013864", "9822ae48045e256dfb2ca2369c368d47", [])
+    北海道II             = EffectMeta("北海道II", True, "7563691938076003622", "7563691938076003622", "89c08f8f084f991cbc00ce4fe90b503b", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     千禧潮酷             = EffectMeta("千禧潮酷", True, "7513608221735554330", "7513608221735554330", "61e92e952bc3a99617ffabe355fed07e", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
     半衫                 = EffectMeta("半衫", True, "7145391402661334280", "7145391402661334280", "a4d67ea33ac459b1e0c2ab4677ebb3b1", [])
+    南法午后             = EffectMeta("南法午后", True, "7436724426416131347", "7436724426416131347", "c6a4a88a9d830d19f666b708a231dbdf", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    原生肤               = EffectMeta("原生肤", True, "7366582938638503187", "7366582938638503187", "8dc66d930e2420c9c035182ddbd3d627", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     原生自然             = EffectMeta("原生自然", True, "7473037215426153728", "7473037215426153728", "7db0af0929986a1d6a72425f03c97ec7", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
     原野                 = EffectMeta("原野", True, "7271281225115897140", "7271281225115897140", "fd213d120b3cb62c0128c73f24cba6a9", [])
-    去灰                 = EffectMeta("去灰", True, "7127559231062002951", "7127559231062002951", "21c377ab968576732daa1643051b735c", [])
-    去灰II               = EffectMeta("去灰II", True, "7226991425160858937", "7226991425160858937", "e58c1b8d3539cb1e89c37dc56b934369", [])
-    去灰明晰             = EffectMeta("去灰明晰", True, "7436399689764834623", "7436399689764834623", "bf4984955b7c9d8682b34784abe07948", [
+    去灰                 = EffectMeta("去灰", True, "7453118140151647538", "7453118140151647538", "52bb13eca2bc17f32a5250a130420e94", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    去灰II               = EffectMeta("去灰II", True, "7226991425160858937", "7226991425160858937", "e58c1b8d3539cb1e89c37dc56b934369", [])
     去灰高清             = EffectMeta("去灰高清", True, "7436400247540141348", "7436400247540141348", "8fa6afa7dcdaed7d26d2829aece5dca0", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
-    去雾                 = EffectMeta("去雾", True, "7473437502787816740", "7473437502787816740", "cc9d8a8be29f7ea8f8807d5d5ca3a61d", [
+    去雾                 = EffectMeta("去雾", True, "7564322465548274968", "7564322465548274968", "40ad834a70769697cfa489d615456329", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    去黄                 = EffectMeta("去黄", True, "7302338306849656127", "7302338306849656127", "f4fcb8afc69acb229dec8764320e42a3", [])
+    去黄韩系             = EffectMeta("去黄韩系", True, "7598448281483529510", "7598448281483529510", "eadb59ee11ac606b058f4573daf3604e", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
@@ -763,11 +804,11 @@ class FilterType(EffectEnum):
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
-    发光CCD              = EffectMeta("发光CCD", True, "7434468515576319295", "7434468515576319295", "56442b377a1b22860018e387ca1d9ea2", [
+    反差色               = EffectMeta("反差色", True, "7542896143949106472", "7542896143949106472", "3e8d3b4af537ad3b0dffcc96afde969c", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
-    发光肤               = EffectMeta("发光肤", True, "7477960070073027850", "7477960070073027850", "16027cb1b7cd27ac1ac02baad1d2e553", [
+    发光CCD              = EffectMeta("发光CCD", True, "7434468515576319295", "7434468515576319295", "56442b377a1b22860018e387ca1d9ea2", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
@@ -780,17 +821,49 @@ class FilterType(EffectEnum):
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    古早回忆录           = EffectMeta("古早回忆录", True, "7594878732377099556", "7594878732377099556", "e22b4ea46238ff1ac9fa7779c5e53d33", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     古早复古             = EffectMeta("古早复古", True, "7457910812439596339", "7457910812439596339", "b2884dc7ce5cc92bab1179ca2e31db35", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    古早宝丽来           = EffectMeta("古早宝丽来", True, "7586692127833328896", "7586692127833328896", "4492ecb382f769abb5dbc47e66dbbfc0", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    古早感胶片           = EffectMeta("古早感胶片", True, "7576707005788867875", "7576707005788867875", "4a644380b4e7f7f395abbd77162f855f", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    古早时光             = EffectMeta("古早时光", True, "7560702007405792552", "7560702007405792552", "0d0cf3147b5f99874e0f0d6fa838a191", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    古早画质             = EffectMeta("古早画质", True, "7557963448068361510", "7557963448068361510", "5e728e8ab18877bb79014a43b28e805e", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     古早记忆             = EffectMeta("古早记忆", True, "7366562482812456255", "7366562482812456255", "3a6086410283e0166d65d7935faa3809", [])
-    古早韩式             = EffectMeta("古早韩式", True, "7469697255663078694", "7469697255663078694", "5a5e95024f4ced3da0fd167a4931cd1b", [
+    古早高曝             = EffectMeta("古早高曝", True, "7596354290730552622", "7596354290730552622", "6b64e499637b252f3c34d42dc07b02f3", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    古罗马电影           = EffectMeta("古罗马电影", True, "7596692097164479807", "7596692097164479807", "ccf1e60405598efb12146a11207a51e7", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
     古都                 = EffectMeta("古都", True, "7127615616525126949", "7127615616525126949", "ce6f674fe7eebb2be94a3784496d2d4f", [])
+    史诗电影             = EffectMeta("史诗电影", True, "7591041766158109952", "7591041766158109952", "b8c7fb31ac7bc75cbb4634295a5a0531", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     吉宵                 = EffectMeta("吉宵", True, "7190241639070174503", "7190241639070174503", "14910132a5caef71f9fa0a1076098026", [])
+    向晚                 = EffectMeta("向晚", True, "7226254370084490554", "7226254370084490554", "f16c7f86eb94ede08374f3485d9de7f6", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     味蕾                 = EffectMeta("味蕾", True, "7281166220794055997", "7281166220794055997", "04205b3010d2adedb961380ceb679a6b", [])
     和歌山               = EffectMeta("和歌山", True, "7210651068324285754", "7210651068324285754", "50e01f465c3dc235b925e5a43ed901eb", [])
     哈苏I                = EffectMeta("哈苏I", True, "7291596720956329266", "7291596720956329266", "df3882769e455938b11f5596ac569e49", [])
@@ -800,15 +873,15 @@ class FilterType(EffectEnum):
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
     哥谭                 = EffectMeta("哥谭", True, "7337928347118275890", "7337928347118275890", "25575caefd72dfcac744d7aa717d4c1f", [])
-    唤晴II               = EffectMeta("唤晴II", True, "7485986828164599067", "7485986828164599067", "a7fc072d2ec64e29e9568d580edd6e7c", [
+    喜气新春             = EffectMeta("喜气新春", True, "7593257815104359706", "7593257815104359706", "b71e1450a077e3a15964e7713a090b4e", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    围炉暖食             = EffectMeta("围炉暖食", True, "7586719222160543017", "7586719222160543017", "dcd16de43df57da7072ca377ae7c1f49", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
     国民旧照             = EffectMeta("国民旧照", True, "7511971221785922826", "7511971221785922826", "b188101c8e03b870871faac571033dd9", [
-                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
-    """参数:
-    effects_adjust_filter: 默认100%, 0% ~ 100%"""
-    国风影视             = EffectMeta("国风影视", True, "7507263202682572044", "7507263202682572044", "780c9df564ba881242a3a3fd205c584c", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
@@ -829,7 +902,11 @@ class FilterType(EffectEnum):
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
-    圣诞闪胶             = EffectMeta("圣诞闪胶", True, "7446329652706168100", "7446329652706168100", "b8284b725f840f880ae21208fc87fa75", [
+    圣诞胶片             = EffectMeta("圣诞胶片", True, "7446290147697528076", "7446290147697528076", "3ac6eccb0ca00d99893cfbb531277c19", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    圣诞萌宠             = EffectMeta("圣诞萌宠", True, "7582150382516718894", "7582150382516718894", "92c39ebbc96838de2b1969efc2355822", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
@@ -837,10 +914,15 @@ class FilterType(EffectEnum):
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    圣诞闪胶III          = EffectMeta("圣诞闪胶III", True, "7446329549283020068", "7446329549283020068", "57a64e2f7d3aef1cc73b9724a37093c3", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     城市赏月II           = EffectMeta("城市赏月II", True, "7405206230550973731", "7405206230550973731", "86ea7d3bdd6f5605d8d0d7e2e5a92200", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    增色                 = EffectMeta("增色", True, "7283013745788357925", "7283013745788357925", "c1dffcebde80cca62c000f8f023065c8", [])
     增色II               = EffectMeta("增色II", True, "7411476796526300452", "7411476796526300452", "8794bb983e61ab36704bbc7b6c964237", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
@@ -849,7 +931,15 @@ class FilterType(EffectEnum):
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    增质去雾             = EffectMeta("增质去雾", True, "7565956901322706226", "7565956901322706226", "87a0c1800f94528adee80264a2053079", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     墨林                 = EffectMeta("墨林", True, "7271284653816843554", "7271284653816843554", "a311fa20eacf38b912c183627e008ff5", [])
+    墨色胶卷             = EffectMeta("墨色胶卷", True, "7580008561884040473", "7580008561884040473", "7ada28b6fbb803b70e15ba8f56ae31bc", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     复古电影感           = EffectMeta("复古电影感", True, "7479800436778732863", "7479800436778732863", "ac5a841a4e7a08b12c69e43da470768f", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
@@ -858,22 +948,9 @@ class FilterType(EffectEnum):
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
-    夏天岛               = EffectMeta("夏天岛", True, "7258222828581915959", "7258222828581915959", "84743746b64ea59c89eb7d404c0be696", [])
     夏威夷               = EffectMeta("夏威夷", True, "7159140854601469223", "7159140854601469223", "616966578de6ebccae6b5eaa5b914d82", [])
-    夏日度假             = EffectMeta("夏日度假", True, "7497479023556070693", "7497479023556070693", "3243469a2db642375b9c7edb372eb835", [
-                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
-    """参数:
-    effects_adjust_filter: 默认100%, 0% ~ 100%"""
-    夏日物语             = EffectMeta("夏日物语", True, "7503950769758948620", "7503950769758948620", "f0c9d57e7fabbe8116ea7b6e2b4438c0", [
-                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
-    """参数:
-    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     夏日粉               = EffectMeta("夏日粉", True, "7261469707138518283", "7261469707138518283", "b667443ab8554ad725bd72bb9cabab2b", [])
     夏日紫霞             = EffectMeta("夏日紫霞", True, "7508030199255026970", "7508030199255026970", "e2511ed7c2027e8df0205c3dc96116cf", [
-                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
-    """参数:
-    effects_adjust_filter: 默认100%, 0% ~ 100%"""
-    夏日繁花             = EffectMeta("夏日繁花", True, "7509774929961684278", "7509774929961684278", "95f365426843cbefe175bf9b6699fee7", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
@@ -891,10 +968,6 @@ class FilterType(EffectEnum):
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
-    夜景增色             = EffectMeta("夜景增色", True, "7341302999068757259", "7341302999068757259", "f144c6f9e9accae6cb76c2b11b9549b2", [
-                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
-    """参数:
-    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     夜景增色II           = EffectMeta("夜景增色II", True, "7411477748130139403", "7411477748130139403", "1be937803f18855a2ee12a82c6d8c30a", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
@@ -902,11 +975,15 @@ class FilterType(EffectEnum):
     夜焰                 = EffectMeta("夜焰", True, "7185289606600953092", "7185289606600953092", "fdafbb7b837d162b7ff32cbb0f130da4", [])
     夜雾                 = EffectMeta("夜雾", True, "7168110568673479948", "7168110568673479948", "e6b2ff75ac938639d840ec586264c2f5", [])
     大吉岭               = EffectMeta("大吉岭", True, "7175076362997288230", "7175076362997288230", "d6138cfc775b365ce144308d5a7c46d9", [])
-    大海增色             = EffectMeta("大海增色", True, "7500853613342772507", "7500853613342772507", "c2c3d5067e31b748bf7c2686047f8ea9", [
+    大疆4Pro             = EffectMeta("大疆4Pro", True, "7534412681785183540", "7534412681785183540", "5a2dba430109143ef37b0547ae287381", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
     大疆电影感           = EffectMeta("大疆电影感", True, "7512706064693988645", "7512706064693988645", "2a70d8e43f4cec20b20d602da4e60676", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    大雪纷飞             = EffectMeta("大雪纷飞", True, "7569682767080901897", "7569682767080901897", "7bdb1acf6b3066b67924788e5e773dab", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
@@ -919,11 +996,8 @@ class FilterType(EffectEnum):
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    奶昔                 = EffectMeta("奶昔", True, "7172169921726565670", "7172169921726565670", "ca0cc9a987f8eca36ac97a5b5d6a5327", [])
     奶油II               = EffectMeta("奶油II", True, "7474592762331942184", "7474592762331942184", "4a972233f7836fd91773131bdba27488", [
-                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
-    """参数:
-    effects_adjust_filter: 默认100%, 0% ~ 100%"""
-    奶油原生             = EffectMeta("奶油原生", True, "7501670015859445055", "7501670015859445055", "ac040ebfb2343dbcf2c0c17227009d4e", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
@@ -935,15 +1009,15 @@ class FilterType(EffectEnum):
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    奶油白肤             = EffectMeta("奶油白肤", True, "7459030855810387251", "7459030855810387251", "325c15b25296e24fe16c44d4732c939c", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     奶油美食             = EffectMeta("奶油美食", True, "7480210942026927423", "7480210942026927423", "406786a335a27c96d88acdb491582c6b", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
     奶油风萌宠           = EffectMeta("奶油风萌宠", True, "7510488117430734118", "7510488117430734118", "9088ec10dbd831542695d8522ba43007", [
-                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
-    """参数:
-    effects_adjust_filter: 默认100%, 0% ~ 100%"""
-    奶白肌               = EffectMeta("奶白肌", True, "7478708795057753370", "7478708795057753370", "74feb842579ef07327bc8172458363e4", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
@@ -954,14 +1028,21 @@ class FilterType(EffectEnum):
     好莱坞II             = EffectMeta("好莱坞II", True, "7226995248814165308", "7226995248814165308", "41348d00e1ab4f1dbe6832f8b6224c13", [])
     好莱坞III            = EffectMeta("好莱坞III", True, "7312617341710372107", "7312617341710372107", "59b8ade3560f637686d6e4b0f56f97fe", [])
     好莱坞IV             = EffectMeta("好莱坞IV", True, "7312647197462367524", "7312647197462367524", "12657ebf4545c621bc0ca38944b9712c", [])
-    嫣时                 = EffectMeta("嫣时", True, "7339908905713143051", "7339908905713143051", "aee9d89426e1208211df5d50a30fe1e8", [
+    嬉皮士               = EffectMeta("嬉皮士", True, "7131431284403981605", "7131431284403981605", "218af350afd9de1bfdd017218e7eeae4", [])
+    子弹列车             = EffectMeta("子弹列车", True, "7202480777387445507", "7202480777387445507", "ee8aa0105ea992ace4fc114c34b08adc", [])
+    安塞尔灰调           = EffectMeta("安塞尔灰调", True, "7581301466128780569", "7581301466128780569", "7caa7c44123efa5c56df0953a01a0c86", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
-    嫩肤                 = EffectMeta("嫩肤", True, "7300523145818148096", "7300523145818148096", "f79fa85e5e9238570b84b95505406213", [])
-    嬉皮士               = EffectMeta("嬉皮士", True, "7131431284403981605", "7131431284403981605", "218af350afd9de1bfdd017218e7eeae4", [])
-    子弹列车             = EffectMeta("子弹列车", True, "7202480777387445507", "7202480777387445507", "ee8aa0105ea992ace4fc114c34b08adc", [])
+    安藤调               = EffectMeta("安藤调", True, "7607806312822443289", "7607806312822443289", "46510f4b879087ceeca71f04fdbe4c67", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     安西娅               = EffectMeta("安西娅", True, "7270142995712773415", "7270142995712773415", "85e046726dee3b398e38a3d31b48e500", [])
+    宝丽来SX70           = EffectMeta("宝丽来SX70", True, "7600301036787600667", "7600301036787600667", "cfb1689fbd6075cdba01aaa046cf5ca6", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     家宴                 = EffectMeta("家宴", True, "7330584144524643595", "7330584144524643595", "1cb453a49c768a3f9c086b047321c233", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
@@ -972,6 +1053,10 @@ class FilterType(EffectEnum):
     富士NC_II            = EffectMeta("富士NC II", True, "7159408376378559747", "7159408376378559747", "0fce68168c67f99c11bf1e05e933eb79", [])
     富士NC_III           = EffectMeta("富士NC III", True, "7159134459088899339", "7159134459088899339", "25f1e0d1d5997b56577a96de8de2005d", [])
     富士NN               = EffectMeta("富士NN", True, "7447157317457513743", "7447157317457513743", "015e667b8a037ff32dd679f96b40963d", [])
+    富士XT5              = EffectMeta("富士XT5", True, "7535108076081335606", "7535108076081335606", "fd1d1579efa189af1ce1380e36f78bce", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     富士x100             = EffectMeta("富士x100", True, "7394357532912782629", "7394357532912782629", "fc5765383ceef36fc858b8c4a4430bb8", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
@@ -984,6 +1069,10 @@ class FilterType(EffectEnum):
     富士蓝II             = EffectMeta("富士蓝II", True, "7226994246471945530", "7226994246471945530", "43bee1438c8372b1f4a8857650fab808", [])
     富士青               = EffectMeta("富士青", True, "7226994214029184313", "7226994214029184313", "77bfdff2d848539626acd538429cc660", [])
     富春山居             = EffectMeta("富春山居", True, "7208496124779302177", "7208496124779302177", "f5ef0379f91fb0004e2886a3bef4e9ce", [])
+    小清新               = EffectMeta("小清新", True, "7482421927462653220", "7482421927462653220", "b0cd714c67da47fb1fbd05c4c9b9e577", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     小美好               = EffectMeta("小美好", True, "7468493795479276835", "7468493795479276835", "7d678f329443e66ad181f12a46e2df8c", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
@@ -993,9 +1082,13 @@ class FilterType(EffectEnum):
     尘烟                 = EffectMeta("尘烟", True, "7148958479326153991", "7148958479326153991", "946cbb3cd0096e46d11cd91630bcd1bc", [])
     山晴                 = EffectMeta("山晴", True, "7246723856222719269", "7246723856222719269", "acbd5fdb5b04114a6eedffdf716ed6b3", [])
     山本                 = EffectMeta("山本", True, "7156638423191784735", "7156638423191784735", "2516de8cc9f3c5ba7e3d02cc9b7a709e", [])
+    山海诗篇             = EffectMeta("山海诗篇", True, "7603667447308389657", "7603667447308389657", "e8a63c858f97ec7d7788d0cd76c1f1d6", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     岚夏                 = EffectMeta("岚夏", True, "7260771472107441471", "7260771472107441471", "5d9760bfa20e1745f2da9d0dddc1f8f3", [])
     岩灰                 = EffectMeta("岩灰", True, "7221472488079904060", "7221472488079904060", "fdd078505b4a102962d962cf461e9544", [])
-    川秋                 = EffectMeta("川秋", True, "7428504360910376229", "7428504360910376229", "4909c43172d4aa6a3557317390a6cb5c", [
+    川秋电影感           = EffectMeta("川秋电影感", True, "7561143628266065204", "7561143628266065204", "d1b0a5b3e939e062bd3bbb196f7fd3c3", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
@@ -1008,12 +1101,31 @@ class FilterType(EffectEnum):
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
     庙会                 = EffectMeta("庙会", True, "7185309693131148555", "7185309693131148555", "e36b0d36967b31a89a953c35ca01e387", [])
     弥晖                 = EffectMeta("弥晖", True, "7148812815246134541", "7148812815246134541", "ad4ca90087a6855a24e76e5bc7bfcf66", [])
+    强曝光               = EffectMeta("强曝光", True, "7568386153783512335", "7568386153783512335", "fc45f26a2287be60b36ed575393d2e4e", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     彩光                 = EffectMeta("彩光", True, "7127824109093866760", "7127824109093866760", "0aeae3c00b2ff3d26f0bba78a0f0cda5", [])
+    影忆                 = EffectMeta("影忆", True, "7379137689599167779", "7379137689599167779", "c5613205380a0465924690e83fa63f28", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    影石4k               = EffectMeta("影石4k", True, "7604153795639135497", "7604153795639135497", "ef35e24492b097e1c5344cadb8254cf0", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     影部                 = EffectMeta("影部", True, "7168136171673963787", "7168136171673963787", "57ebfdd7bdad96f19879e1635d823fb8", [])
-    往昔                 = EffectMeta("往昔", True, "7266322833800727844", "7266322833800727844", "9c2fecfb098b7fa06e47e95dbf2de4cb", [])
+    往事                 = EffectMeta("往事", True, "7530879877180919049", "7530879877180919049", "4d90e27eed027ffa92b9f512ee7d0daf", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     徕卡I                = EffectMeta("徕卡I", True, "7268562944093408523", "7268562944093408523", "91730e54e94b7eeb40bcfbd8f7c9a3cf", [])
     徕卡II               = EffectMeta("徕卡II", True, "7268563047776587020", "7268563047776587020", "a75e26160d19e9db7d9be10f6e8056b7", [])
     徕卡Q2               = EffectMeta("徕卡Q2", True, "7500447762404724018", "7500447762404724018", "44b1d99f86da8399aeb745061acaf9b5", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    徕卡银盐             = EffectMeta("徕卡银盐", True, "7601116367005175067", "7601116367005175067", "ee383f4b01c7e4dcb46c799b2c9ab6f9", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
@@ -1037,10 +1149,6 @@ class FilterType(EffectEnum):
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
-    情绪暗调             = EffectMeta("情绪暗调", True, "7398190560701386022", "7398190560701386022", "43202e6e7d8cffe88ce44627f4ef2e6f", [
-                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
-    """参数:
-    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     情辉                 = EffectMeta("情辉", True, "7329826553477565705", "7329826553477565705", "50b73c148b43973bedc2e6168a1638f5", [])
     慕斯                 = EffectMeta("慕斯", True, "7261185427703418169", "7261185427703418169", "038504b6474c25b4ce735d1d165c4198", [])
     扬帆远航             = EffectMeta("扬帆远航", True, "7487297020743404810", "7487297020743404810", "805da3fa2ca3e11f631e4b4534d3230c", [
@@ -1050,10 +1158,6 @@ class FilterType(EffectEnum):
     拐杖糖               = EffectMeta("拐杖糖", True, "7175093825659079991", "7175093825659079991", "de11b072c9e793ee23a87de1f7265880", [])
     捕风                 = EffectMeta("捕风", True, "7248566556593098024", "7248566556593098024", "2ebec31165718f44bbd2ecbc338c175a", [])
     摩登                 = EffectMeta("摩登", True, "7131219052021779719", "7131219052021779719", "178dab15fb53b396f20c89ccaec799a2", [])
-    摩登暗银             = EffectMeta("摩登暗银", True, "7508033223973244187", "7508033223973244187", "a2924b52e3cb502e0e39827a62f6397a", [
-                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
-    """参数:
-    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     撕拉拍立得           = EffectMeta("撕拉拍立得", True, "7502647335218941220", "7502647335218941220", "604d0b6a7b3b23a0169e1dfd38deccba", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
@@ -1068,19 +1172,15 @@ class FilterType(EffectEnum):
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
     新宿                 = EffectMeta("新宿", True, "7210646550974876984", "7210646550974876984", "1bb8524cde9b57773015e98ba17e0f7d", [])
+    新年喜市             = EffectMeta("新年喜市", True, "7449639936292031781", "7449639936292031781", "a2981bc6a7e88a697bfd4135167febbc", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     新年欢愉             = EffectMeta("新年欢愉", True, "7452802706139352370", "7452802706139352370", "8681ba97d1c52b8bf7cd6bf46d4eb340", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
-    新年祈愿             = EffectMeta("新年祈愿", True, "7449639935717559561", "7449639935717559561", "6fdd51986e85a150f9f888ff55a8b774", [
-                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
-    """参数:
-    effects_adjust_filter: 默认100%, 0% ~ 100%"""
-    新年祈福             = EffectMeta("新年祈福", True, "7457598693915594025", "7457598693915594025", "1f14f122c962e65f7b3f775f171beec9", [
-                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
-    """参数:
-    effects_adjust_filter: 默认100%, 0% ~ 100%"""
-    新年粉肤             = EffectMeta("新年粉肤", True, "7449579862496431375", "7449579862496431375", "739bf508ebc8e84eae2359c9204826f8", [
+    新年电影感           = EffectMeta("新年电影感", True, "7582425874620747008", "7582425874620747008", "3d97863fb08a128b41df65bae1b3f003", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
@@ -1088,24 +1188,21 @@ class FilterType(EffectEnum):
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
-    新年闪胶             = EffectMeta("新年闪胶", True, "7451471584533040395", "7451471584533040395", "f6c5902324dbe52306a59aff02876ceb", [
+    新年红气             = EffectMeta("新年红气", True, "7586522353278962984", "7586522353278962984", "5aaf75b3818098ad583374700c0830ca", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
-    日与                 = EffectMeta("日与", True, "7343499312464137535", "7343499312464137535", "3f290f1ae811a241efaa987e21ea1419", [
+    新年顺意             = EffectMeta("新年顺意", True, "7603025037431541027", "7603025037431541027", "7f5b32c930d643d8d99183d71f2cc51b", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    新颜                 = EffectMeta("新颜", True, "7188018091496951077", "7188018091496951077", "322f374bbff6d0399ee12136889818d9", [])
     日光吻               = EffectMeta("日光吻", True, "7226985203540053305", "7226985203540053305", "12c40e5f562e2f080e7ae157b1b925a8", [])
-    日光肤               = EffectMeta("日光肤", True, "7486736825369840907", "7486736825369840907", "b60fec77dace518d22dba94a8b695407", [
-                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
-    """参数:
-    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     日出增色             = EffectMeta("日出增色", True, "7526422478206356787", "7526422478206356787", "6074c700577f7d04bf32f6a92b48d7b9", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
-    日和                 = EffectMeta("日和", True, "7338311462277991718", "7338311462277991718", "70b43e53688e11ab0f849a5768cf6f6f", [
+    日出时刻             = EffectMeta("日出时刻", True, "7551097988878273826", "7551097988878273826", "701dde0ef765472e2db82ab093a560b9", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
@@ -1117,6 +1214,10 @@ class FilterType(EffectEnum):
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    日漫清新             = EffectMeta("日漫清新", True, "7439037715825413413", "7439037715825413413", "583935b5a865d92247472e4ea8fb1a6c", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     日系增色             = EffectMeta("日系增色", True, "7472373777469328667", "7472373777469328667", "edf1bd45853137dfc8d34657839b082f", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
@@ -1125,7 +1226,15 @@ class FilterType(EffectEnum):
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    日落增色             = EffectMeta("日落增色", True, "7468875753661173004", "7468875753661173004", "5bc34c329c1eb63913ae46655244495a", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     日落时刻             = EffectMeta("日落时刻", True, "7496524092779105551", "7496524092779105551", "c2e34cb2efeb788a5899bfffb6989ac8", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    日落晚霞             = EffectMeta("日落晚霞", True, "7528332870654414142", "7528332870654414142", "e9bb836a8ab978a2c71a3df73a1f63f9", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
@@ -1136,6 +1245,10 @@ class FilterType(EffectEnum):
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
     旧金山               = EffectMeta("旧金山", True, "7159161900389977382", "7159161900389977382", "22f238fa32975ad165c124316008ab31", [])
+    时尚极简             = EffectMeta("时尚极简", True, "7549604752934325556", "7549604752934325556", "d93470ec52e92bb643b5cbfaee42bcbe", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     旷野                 = EffectMeta("旷野", True, "7275698024892943655", "7275698024892943655", "5d52166c545e774971e36e50cb218f04", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
@@ -1157,6 +1270,10 @@ class FilterType(EffectEnum):
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    明媚春色             = EffectMeta("明媚春色", True, "7611007721336311046", "7611007721336311046", "5a6408eaf62091f0fbd7dc566eec6268", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     明媚自然             = EffectMeta("明媚自然", True, "7480823852470177034", "7480823852470177034", "5142e281e72f62ec65c1a801e0b88371", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
@@ -1165,11 +1282,6 @@ class FilterType(EffectEnum):
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
-    明煦                 = EffectMeta("明煦", True, "7343287054228327691", "7343287054228327691", "07ce35eb05d047fd0eccbc6b6c5a1d78", [
-                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
-    """参数:
-    effects_adjust_filter: 默认100%, 0% ~ 100%"""
-    星沫                 = EffectMeta("星沫", True, "7196921394163141946", "7196921394163141946", "0f2a9922d473d11ef83991e93c8dd76f", [])
     春和                 = EffectMeta("春和", True, "7327596304173944127", "7327596304173944127", "dc13ebbcf22161cf0053e75c2d3b7f90", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
@@ -1196,7 +1308,15 @@ class FilterType(EffectEnum):
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
     春日清透             = EffectMeta("春日清透", True, "7485293187616066831", "7485293187616066831", "848bc05cfb1e5e7b9716ba47552407e8", [])
+    春日温柔             = EffectMeta("春日温柔", True, "7477942092459773193", "7477942092459773193", "d5b6cb8dbb0c0def9f49055c04bcc942", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     春日美食III          = EffectMeta("春日美食III", True, "7486868815364492554", "7486868815364492554", "cb202891744256abbd40cfe028092216", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    春日花田             = EffectMeta("春日花田", True, "7611799763343789318", "7611799763343789318", "491659913f37f344c2f1f3d9a4b4f412", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
@@ -1220,7 +1340,7 @@ class FilterType(EffectEnum):
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
-    春澄                 = EffectMeta("春澄", True, "7332492044327243049", "7332492044327243049", "a316ade2301e4c7eec65c49eae5302b8", [
+    春禧电影感           = EffectMeta("春禧电影感", True, "7594482003286838564", "7594482003286838564", "a8ef748c0a0014bfb43aa35163be244f", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
@@ -1230,18 +1350,21 @@ class FilterType(EffectEnum):
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
-    晚晴                 = EffectMeta("晚晴", True, "7297143895408839947", "7297143895408839947", "987e48eb485c58a239d5d67d01b9c76a", [])
     晚柠                 = EffectMeta("晚柠", True, "7262634564428778752", "7262634564428778752", "b9058248c373fa4f49357e1c878ab6cb", [])
     晚樱                 = EffectMeta("晚樱", True, "7127609541839129886", "7127609541839129886", "c30e126bfe5accdb5902c5ba63c8579e", [])
-    晚霞增色             = EffectMeta("晚霞增色", True, "7392898170524618023", "7392898170524618023", "ed6efd67ec78c21a530046b4a6cfbb66", [
-                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
-    """参数:
-    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     晨旭                 = EffectMeta("晨旭", True, "7279062968501832972", "7279062968501832972", "7450c20e328d6fc45b648d999806f2e8", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
     普林斯顿             = EffectMeta("普林斯顿", True, "7127615578705104135", "7127615578705104135", "ab9e14d92af596b94e91fd6253b510cd", [])
+    景明                 = EffectMeta("景明", True, "7329530921755888915", "7329530921755888915", "ba919353aaafdf60651a9189c760142e", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    晴冬暖阳             = EffectMeta("晴冬暖阳", True, "7571508644982902059", "7571508644982902059", "0e657b54dcc856b331f9bc5468f075ba", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     晴天                 = EffectMeta("晴天", True, "7420253131079961868", "7420253131079961868", "df2d876976f447b305a67db1b43d070e", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
@@ -1258,11 +1381,12 @@ class FilterType(EffectEnum):
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
-    晴好假日             = EffectMeta("晴好假日", True, "7374709776623635724", "7374709776623635724", "9747e32d2ec1f251aee54d080ec5fc84", [
+    晴好                 = EffectMeta("晴好", True, "7281163707227344189", "7281163707227344189", "8ab42295fd5c3f9671dc860cab4cf822", [])
+    晴好风光             = EffectMeta("晴好风光", True, "7475397942715632922", "7475397942715632922", "026f69b8fbc1fedb3eb0939366c6617e", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
-    晴好风光             = EffectMeta("晴好风光", True, "7475397942715632922", "7475397942715632922", "026f69b8fbc1fedb3eb0939366c6617e", [
+    晴山质感             = EffectMeta("晴山质感", True, "7542495542429879562", "7542495542429879562", "3cbf0062169ef8bfdd1ec2fda7b4a7ed", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
@@ -1278,7 +1402,12 @@ class FilterType(EffectEnum):
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
-    晴海                 = EffectMeta("晴海", True, "7525755037050539307", "7525755037050539307", "0e0a944fdee0ffede3163e628ae8f2e7", [])
+    晴海                 = EffectMeta("晴海", True, "7363996374083407140", "7363996374083407140", "ccf259f7a3b758c500f93e4ed925587d", [])
+    晴秋                 = EffectMeta("晴秋", True, "7410233668351937846", "7410233668351937846", "df72e5506e6db975a692345ffe3f3e94", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    晴空                 = EffectMeta("晴空", True, "7127558139058179342", "7127558139058179342", "5b5899ce01e0aac5b8f15a2f77c4ee62", [])
     晴空漫游             = EffectMeta("晴空漫游", True, "7477810373060611338", "7477810373060611338", "37a68a5bac333f74da7afac747de12bd", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
@@ -1288,7 +1417,7 @@ class FilterType(EffectEnum):
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
     晴谷                 = EffectMeta("晴谷", True, "7307191907514420491", "7307191907514420491", "2ad917b1c9f293648cf453201987fe5d", [])
-    晴颜                 = EffectMeta("晴颜", True, "7468501080691789094", "7468501080691789094", "5714d281e174b0f66a0ccfb7745645ca", [
+    晶莹雪肤             = EffectMeta("晶莹雪肤", True, "7592615852252335394", "7592615852252335394", "c8ba6aaf1fb2f851b3596c17088e2909", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
@@ -1298,7 +1427,15 @@ class FilterType(EffectEnum):
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
     暖晨                 = EffectMeta("暖晨", True, "7312646382395936010", "7312646382395936010", "03737fce45a4ba22d225edbe7e36a04c", [])
-    暖棕                 = EffectMeta("暖棕", True, "7405241190435523866", "7405241190435523866", "496fff58dbee33b2a2421403753f1f61", [
+    暖阳冬日             = EffectMeta("暖阳冬日", True, "7572802123021290787", "7572802123021290787", "228d775f95ae46401bd487827c7e6d22", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    暖雾晨光             = EffectMeta("暖雾晨光", True, "7595404603575782707", "7595404603575782707", "54794bfd66cf2beeafcc2a48e23b6d5f", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    暖食增色             = EffectMeta("暖食增色", True, "7533181577170373934", "7533181577170373934", "0355f51d9ff2c44036c5058e7db73ba2", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
@@ -1308,7 +1445,11 @@ class FilterType(EffectEnum):
     暗夜明肤             = EffectMeta("暗夜明肤", True, "7328364126449765671", "7328364126449765671", "9fe0da0817604428adb38249ecae911c", [])
     暗影                 = EffectMeta("暗影", True, "7291203298630159676", "7291203298630159676", "21f3af497daf847e50efadc241f88a1a", [])
     暗曛                 = EffectMeta("暗曛", True, "7281163501047991608", "7281163501047991608", "893d483cd405343c9420015066e56096", [])
-    暗调人像             = EffectMeta("暗调人像", True, "7485767950314655002", "7485767950314655002", "7100cf70453b486a99038971890c9411", [
+    暗蓝电影             = EffectMeta("暗蓝电影", True, "7596691154008132915", "7596691154008132915", "9c176d06f4f1a394a3f3254662e77423", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    暗蓝电影感           = EffectMeta("暗蓝电影感", True, "7596940217177705779", "7596940217177705779", "76310240f62e24ecdad60f89991a63f0", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
@@ -1332,12 +1473,24 @@ class FilterType(EffectEnum):
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    暗调阴郁             = EffectMeta("暗调阴郁", True, "7596555533230902579", "7596555533230902579", "014d3108cf9855ef67f636f376a80764", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    暗部漫游             = EffectMeta("暗部漫游", True, "7595398794410347826", "7595398794410347826", "effefb5f0c9b9fc19bf4920b79ae2a31", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     暗金                 = EffectMeta("暗金", True, "7511619145864187136", "7511619145864187136", "725fc1d6b1623309eeee59015a5c6bdc", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
     暗银                 = EffectMeta("暗银", True, "7177725752513793284", "7177725752513793284", "ad378d530ac056cb2b2e0b0ab171ede8", [])
     暗银II               = EffectMeta("暗银II", True, "7223630575888780602", "7223630575888780602", "33f209efb496924d6da0c7ad89bea81f", [])
+    暗黑玫瑰             = EffectMeta("暗黑玫瑰", True, "7562034253412715811", "7562034253412715811", "7f83df0b8fdd6a3563cc89ed19e5d8f3", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     暮信                 = EffectMeta("暮信", True, "7279061785922080055", "7279061785922080055", "0635e0022bfbda491e52a8eef142b33d", [])
     暮川                 = EffectMeta("暮川", True, "7262351934785408267", "7262351934785408267", "187450ba96a5e11233e9d38396274d87", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
@@ -1367,12 +1520,20 @@ class FilterType(EffectEnum):
     杏铃                 = EffectMeta("杏铃", True, "7295630593063193865", "7295630593063193865", "2727cb3874cfcc3541fbf4f08052a6da", [])
     松绿                 = EffectMeta("松绿", True, "7246723559047941433", "7246723559047941433", "1aca4ded18b11bff899309955ed07c5c", [])
     果酥                 = EffectMeta("果酥", True, "7160594387594972446", "7160594387594972446", "f68ff633bab02132880a03034894d378", [])
+    柏林                 = EffectMeta("柏林", True, "7530690874699713842", "7530690874699713842", "4359ffed00242d8940bab8a902a7f588", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     柔光                 = EffectMeta("柔光", True, "7395596262252334373", "7395596262252334373", "01d991f6057be53b6eb319f5c69a1798", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
     柔焦                 = EffectMeta("柔焦", True, "7345412316621442354", "7345412316621442354", "e9449745f95a354e4d835961cbb0e674", [])
-    柠檬海               = EffectMeta("柠檬海", True, "7258220845041061180", "7258220845041061180", "341ab073d16faca8edf318285dab36d9", [])
+    柔雾感               = EffectMeta("柔雾感", True, "7480785731015691539", "7480785731015691539", "c3a6c183bf91b95f792847ced8aa6ad5", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    柠青                 = EffectMeta("柠青", True, "7127653798272683278", "7127653798272683278", "1689d0cca2119b6ab3d54573e53e1902", [])
     柯达金200            = EffectMeta("柯达金200", True, "7517685395102977334", "7517685395102977334", "c28090d8f54cf11516c16126a0efb84d", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
@@ -1382,12 +1543,18 @@ class FilterType(EffectEnum):
     格金                 = EffectMeta("格金", True, "7348301778909252879", "7348301778909252879", "256144ddabaf723badea240301660868", [])
     桃木                 = EffectMeta("桃木", True, "7252673818035064124", "7252673818035064124", "7e5d4fb53f764eaa07d6e465fd60588e", [])
     桃粉                 = EffectMeta("桃粉", True, "7297131749346135331", "7297131749346135331", "80b55b69c2b4662c65835f49ee46ad97", [])
-    桃野                 = EffectMeta("桃野", True, "7199093989742562597", "7199093989742562597", "1a216be7e4423bb5962ff832faf45814", [])
     桐影                 = EffectMeta("桐影", True, "7275699191253339455", "7275699191253339455", "b77671ede2639384b704eb73722e928a", [])
     梦境                 = EffectMeta("梦境", True, "7127675251604917517", "7127675251604917517", "12627ad5e79adab77540c65ea8ee7cc2", [])
     梦幻夏               = EffectMeta("梦幻夏", True, "7377370067798985993", "7377370067798985993", "3adb502f6928cf41be040b6f52e1a48e", [])
-    梦暮                 = EffectMeta("梦暮", True, "7272341241893768506", "7272341241893768506", "8d0fdc61596d3f60fa7f307241ea703b", [])
     梦核紫               = EffectMeta("梦核紫", True, "7261463763344248103", "7261463763344248103", "41ed7e729f06a288363ca93a928f8a90", [])
+    梨花白               = EffectMeta("梨花白", True, "7470438095998029066", "7470438095998029066", "307bdbcd9b1e9068e702e47360d10278", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    梨花白皙             = EffectMeta("梨花白皙", True, "7611013816964500788", "7611013816964500788", "ec6e6fb170e90c7b162808e8abe958cb", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     棕榈                 = EffectMeta("棕榈", True, "7252676190073392444", "7252676190073392444", "113b463fa3945ef37700c7c52dfc6bb9", [])
     森山                 = EffectMeta("森山", True, "7242215081663008056", "7242215081663008056", "0dc17be521cf783590bebcf2a5c888df", [])
     森林徒步             = EffectMeta("森林徒步", True, "7524262165273005321", "7524262165273005321", "c889505e8e46aaeaa48f792c770ec042", [
@@ -1396,22 +1563,19 @@ class FilterType(EffectEnum):
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
     森秋                 = EffectMeta("森秋", True, "7274575376095923497", "7274575376095923497", "b055e64a58bd8d9b882477c9be6ef3a6", [])
     森绿                 = EffectMeta("森绿", True, "7510128089511349555", "7510128089511349555", "992abfe865ee701777a6cccdf033dc2b", [])
-    榄白                 = EffectMeta("榄白", True, "7169350167903112451", "7169350167903112451", "6068c4a2ea7f0854027347a938115dae", [])
-    模糊氛围             = EffectMeta("模糊氛围", True, "7398486193924623628", "7398486193924623628", "103608c9a5a16edf4b9bba541db8324e", [])
+    樱晴                 = EffectMeta("樱晴", True, "7274246029824806155", "7274246029824806155", "9c902cf649dd7820589ddb51869bc045", [])
     樱花粉肤             = EffectMeta("樱花粉肤", True, "7467985496988241204", "7467985496988241204", "01a1557eeb00bf1f68755765e18b4281", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
-    橘子海               = EffectMeta("橘子海", True, "7526948433597336832", "7526948433597336832", "823f1fb8e26bb8ee1406b027f30ac446", [
-                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
-    """参数:
-    effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    橘光                 = EffectMeta("橘光", True, "7127675251961384205", "7127675251961384205", "1c0060b506446d78b609c4383b9eba3f", [])
     橘海                 = EffectMeta("橘海", True, "7278615838628924733", "7278615838628924733", "2c1496f259e375191ad52c8c43c6cf2f", [])
     橙蓝                 = EffectMeta("橙蓝", True, "7127561047048850718", "7127561047048850718", "4dd590015f2e14265dd5456a91ec86a6", [])
     欧若淡彩             = EffectMeta("欧若淡彩", True, "7479295334930205952", "7479295334930205952", "c188665c6348ae65e32b6e70a691151b", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    殷粉                 = EffectMeta("殷粉", True, "7169357894868061478", "7169357894868061478", "91d27d5647faec40a747359ec6dd6eb4", [])
     毕业胶片             = EffectMeta("毕业胶片", True, "7510863205011393844", "7510863205011393844", "a064e9e21ae3fb3664c66b857d792902", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
@@ -1424,17 +1588,32 @@ class FilterType(EffectEnum):
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    氧气春日             = EffectMeta("氧气春日", True, "7471717864001506587", "7471717864001506587", "51de5abddac2c4cb01f10cbd6d34ac20", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     氧气甜白             = EffectMeta("氧气甜白", True, "7470913918186163468", "7470913918186163468", "d83fe74d8abe64f7bb31e01dc17ab59a", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
-    氧气自然             = EffectMeta("氧气自然", True, "7501345307830013222", "7501345307830013222", "ddd0973ffc24018949081cbb922f8618", [
+    水光红润             = EffectMeta("水光红润", True, "7546838732532436224", "7546838732532436224", "f3909397f05a0275d5da7a642c6edd9e", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
-    水泽                 = EffectMeta("水泽", True, "7210613511133646135", "7210613511133646135", "ae8b8e426b2c3fa77d2bc8db2f8bfb7b", [])
+    水墨意境             = EffectMeta("水墨意境", True, "7592199246766542104", "7592199246766542104", "c06ae9c8273fd8d3c71e91e4d76b21be", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     沙漫                 = EffectMeta("沙漫", True, "7148776798715776292", "7148776798715776292", "b6a48f6276a19984c0e466362bcd0999", [])
     沙砾                 = EffectMeta("沙砾", True, "7160580722774920461", "7160580722774920461", "a796471629be7b3bfbd649deafca3ddb", [])
+    沙龙暖调             = EffectMeta("沙龙暖调", True, "7604669372958788900", "7604669372958788900", "4cfa40ea53b69116d5f3bf2dbb345346", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    治愈奶萌             = EffectMeta("治愈奶萌", True, "7535396553368948018", "7535396553368948018", "b0ed204b3cf34517a869cdb4f3c4ba69", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     法式少女             = EffectMeta("法式少女", True, "7480196177611230514", "7480196177611230514", "fcbe6cb7764d3023cd221aaecfdc7d8d", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
@@ -1444,13 +1623,53 @@ class FilterType(EffectEnum):
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
     法餐                 = EffectMeta("法餐", True, "7127655700532186398", "7127655700532186398", "b8b6d5ae88e12e25be14a2dd85b7cbc6", [])
+    洋气新年             = EffectMeta("洋气新年", True, "7452802627991129380", "7452802627991129380", "4d13496829650356a30bf7cf96b72dd2", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     洛丽塔粉             = EffectMeta("洛丽塔粉", True, "7476109684169133362", "7476109684169133362", "cb02e21da652aa4dabd912a8b009df89", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    浅空                 = EffectMeta("浅空", True, "7297910428703657227", "7297910428703657227", "dcb2f23d5604acc06982464a227b8e40", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    浅绿微曝             = EffectMeta("浅绿微曝", True, "7589518503460310296", "7589518503460310296", "2988956aa2c0578d30b28ce04321a525", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
     浅茶                 = EffectMeta("浅茶", True, "7221481120083283257", "7221481120083283257", "6acf81ddf75fc8c5ddb20f3a927dcaa3", [])
     浅草                 = EffectMeta("浅草", True, "7195783041376111932", "7195783041376111932", "8c4eb75992a7f07bd07e56c16b388d87", [])
+    浓咖                 = EffectMeta("浓咖", True, "7526564908188568866", "7526564908188568866", "8a8bb532202c25217236311956506247", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    浓调电影             = EffectMeta("浓调电影", True, "7608956042701065487", "7608956042701065487", "d44494db028e4a2558182249d23cd46f", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    浓郁增色             = EffectMeta("浓郁增色", True, "7578511090758192384", "7578511090758192384", "380c1144bde6ebb3bca0d4570be8e25e", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    浓郁日落             = EffectMeta("浓郁日落", True, "7591499629557075251", "7591499629557075251", "005a8985f0c1721fc6c158bb641a3992", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    浓郁电影感           = EffectMeta("浓郁电影感", True, "7602322655651400970", "7602322655651400970", "1008b11504257570fcf75eaf37722544", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    浓郁秋意             = EffectMeta("浓郁秋意", True, "7562593990671895808", "7562593990671895808", "0c99beeab4b6b4bee54fb35525055f66", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     浓郁胶卷             = EffectMeta("浓郁胶卷", True, "7499121362351574282", "7499121362351574282", "ed6846e943d41e7776b9cfddbb1f0ce6", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    浪漫质感             = EffectMeta("浪漫质感", True, "7537336415810489619", "7537336415810489619", "1614a827abe09365506b4c097a625b0f", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
@@ -1462,17 +1681,13 @@ class FilterType(EffectEnum):
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    海山                 = EffectMeta("海山", True, "7281162426219859255", "7281162426219859255", "33fb59b0082de5109778483e30235a46", [])
     海松                 = EffectMeta("海松", True, "7145394304377163045", "7145394304377163045", "d94890916054949103ba41e9eb36e948", [])
-    海水正蓝             = EffectMeta("海水正蓝", True, "7494117715142053130", "7494117715142053130", "5be967f1fc854f15d22c5103fcb43a3a", [
+    海水正蓝             = EffectMeta("海水正蓝", True, "7361398032753020201", "7361398032753020201", "9f61634eccac5b971ce92279a50b9a99", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
-    海湾                 = EffectMeta("海湾", True, "7210611719180193083", "7210611719180193083", "98c3ab54b9c3903f2d9edec90ad90766", [])
     海盐                 = EffectMeta("海盐", True, "7473034636436852031", "7473034636436852031", "91b796a25fbca315800d4db4c4f4081e", [
-                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
-    """参数:
-    effects_adjust_filter: 默认100%, 0% ~ 100%"""
-    海盐夏日             = EffectMeta("海盐夏日", True, "7501729703544343820", "7501729703544343820", "34123fa8c0f71091c32795ae337f415d", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
@@ -1485,13 +1700,17 @@ class FilterType(EffectEnum):
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
     润光                 = EffectMeta("润光", True, "7199093300526173501", "7199093300526173501", "3916e1d5dc3a3522f4b883c3b1f2b43a", [])
-    润白                 = EffectMeta("润白", True, "7366518614729493799", "7366518614729493799", "1686ce704f4899b9e9a1e42693f24037", [
+    涩谷                 = EffectMeta("涩谷", True, "7210645355136961852", "7210645355136961852", "7ca84443c2a14a2e9de11a5708a62a63", [])
+    淡奶油               = EffectMeta("淡奶油", True, "7127668617101020423", "7127668617101020423", "e53103dabd1bbb6ab4481b18a4c42b2c", [])
+    深蓝电影感           = EffectMeta("深蓝电影感", True, "7607867444048317706", "7607867444048317706", "f31c8f7ba639041a53ceb2f3e63b3e72", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
-    涩谷                 = EffectMeta("涩谷", True, "7210645355136961852", "7210645355136961852", "7ca84443c2a14a2e9de11a5708a62a63", [])
-    淡奶油               = EffectMeta("淡奶油", True, "7127668617101020423", "7127668617101020423", "e53103dabd1bbb6ab4481b18a4c42b2c", [])
     清冷国风             = EffectMeta("清冷国风", True, "7493171130753174835", "7493171130753174835", "7d053e14ed86f5176b46c2c9408ccd90", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    清冷情绪感           = EffectMeta("清冷情绪感", True, "7602661089280560394", "7602661089280560394", "4d2118f02b426a8a1cecc3952df44e68", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
@@ -1499,7 +1718,7 @@ class FilterType(EffectEnum):
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
-    清新度假             = EffectMeta("清新度假", True, "7503785630606904630", "7503785630606904630", "266afa90af699388a2c3fdb19d754cf5", [
+    清冷破碎III          = EffectMeta("清冷破碎III", True, "7415242837555416330", "7415242837555416330", "1b226ab430f4d82233a250b10444227d", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
@@ -1543,10 +1762,15 @@ class FilterType(EffectEnum):
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    清新雪肤             = EffectMeta("清新雪肤", True, "7441124539016219943", "7441124539016219943", "984a69be99e9c48c3fb48429449c9cfe", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     清晰                 = EffectMeta("清晰", True, "7447719105563610404", "7447719105563610404", "5f6d758ab20aa947bba241a6b76b85b2", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    清晰ll               = EffectMeta("清晰ll", True, "7127669764792634637", "7127669764792634637", "7b2ad7edaed946467ab161d016cfca93", [])
     清晰严冬             = EffectMeta("清晰严冬", True, "7449939197223243058", "7449939197223243058", "d9d8276e9a3c42cfd6fc7f4ca7a4df81", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
@@ -1579,10 +1803,6 @@ class FilterType(EffectEnum):
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
-    清晰绿妍             = EffectMeta("清晰绿妍", True, "7494607226519260442", "7494607226519260442", "03691f968027b37c11855d789231cec5", [
-                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
-    """参数:
-    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     清晰自然             = EffectMeta("清晰自然", True, "7473805985388317978", "7473805985388317978", "3e1cc9a595ff0c720a894699eb20a9d5", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
@@ -1603,8 +1823,7 @@ class FilterType(EffectEnum):
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
-    清爽                 = EffectMeta("清爽", True, "7392897785755897100", "7392897785755897100", "c012321a086ec42b7570338f557a713e", [])
-    清爽夏颜             = EffectMeta("清爽夏颜", True, "7499484084197018889", "7499484084197018889", "62828fb39511d31fec4b3dacf2861925", [
+    清透II               = EffectMeta("清透II", True, "7472986633399225635", "7472986633399225635", "9781a0c82f0455cf221e683c0006ec1d", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
@@ -1616,15 +1835,15 @@ class FilterType(EffectEnum):
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    清透春日             = EffectMeta("清透春日", True, "7614215952338636058", "7614215952338636058", "dccbb81ecdce0585b38b54afcec883ee", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     清透美食             = EffectMeta("清透美食", True, "7403664041945681191", "7403664041945681191", "3121bd38673441c5417ec3e6f0da13a2", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
     清透萌宠             = EffectMeta("清透萌宠", True, "7473126624322391308", "7473126624322391308", "65f21eb6f46b4bc1620c3b942ccecadc", [
-                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
-    """参数:
-    effects_adjust_filter: 默认100%, 0% ~ 100%"""
-    清风绿妍             = EffectMeta("清风绿妍", True, "7486694625009339689", "7486694625009339689", "9e9143be40f46c6208dc96c55574e623", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
@@ -1640,10 +1859,15 @@ class FilterType(EffectEnum):
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    湖畔                 = EffectMeta("湖畔", True, "7210609383804390711", "7210609383804390711", "e1c8871f6971098d209bfbff648d2044", [])
     漠土                 = EffectMeta("漠土", True, "7347670931646549282", "7347670931646549282", "9dfde36f1fab0e85773d04fadeb30650", [])
     漫樱                 = EffectMeta("漫樱", True, "7356883843376221475", "7356883843376221475", "1799ab3b4a9bf0957995b69d27195229", [])
     漫空                 = EffectMeta("漫空", True, "7210749292888280359", "7210749292888280359", "cd88f8152fffe8033bb5057fc2539319", [])
     漫荫                 = EffectMeta("漫荫", True, "7210758351595048195", "7210758351595048195", "fc46efdc25a15ca3958126a8c72c1cd8", [])
+    漫银纪元             = EffectMeta("漫银纪元", True, "7571383496334150937", "7571383496334150937", "d91f6447af1458dfa0b51d593375a687", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     漱石                 = EffectMeta("漱石", True, "7145394477249678606", "7145394477249678606", "ac50156682af7d7ce4e76eb731a5a832", [])
     潘多拉               = EffectMeta("潘多拉", True, "7127620215290039566", "7127620215290039566", "36e7d537966ee59eb61c326598546cb0", [])
     灯会                 = EffectMeta("灯会", True, "7145394908608662814", "7145394908608662814", "21472133401674a3e5645f79e9d30ae9", [])
@@ -1669,9 +1893,34 @@ class FilterType(EffectEnum):
     烈日                 = EffectMeta("烈日", True, "7145395383475113230", "7145395383475113230", "cc04d06002980d31b709b833290441b2", [])
     烈空                 = EffectMeta("烈空", True, "7246722333010824508", "7246722333010824508", "849e979a487594a0da039ddd33e43c6b", [])
     烘挞                 = EffectMeta("烘挞", True, "7160598329817091364", "7160598329817091364", "8df6f056381a16178b36fa8ad6e559bf", [])
+    烛光晚餐             = EffectMeta("烛光晚餐", True, "7575953878076673323", "7575953878076673323", "c9599a6599bd63181d919ccb8b93302c", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     烟橙                 = EffectMeta("烟橙", True, "7131582482608164132", "7131582482608164132", "e958619538087c86308f718045b292f2", [])
+    烟火年年             = EffectMeta("烟火年年", True, "7582992418941717823", "7582992418941717823", "a2fbff851c2cf4abb37af3610d491b3c", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    烟火迎春             = EffectMeta("烟火迎春", True, "7595505308848360750", "7595505308848360750", "9870636e51f5bc409077c62208cc4e7f", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    烟花去雾             = EffectMeta("烟花去雾", True, "7595588267978837282", "7595588267978837282", "1565db93cb09db3e482149ca799753da", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    烟花灿烂             = EffectMeta("烟花灿烂", True, "7604545611471408390", "7604545611471408390", "e50d944774217a344777088c3d5c3db1", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     烟花璀璨             = EffectMeta("烟花璀璨", True, "7328363415313993001", "7328363415313993001", "0d2282c9172ed09758f861849916ab4b", [])
+    烟花璀璨_II          = EffectMeta("烟花璀璨 II", True, "7462635722969730323", "7462635722969730323", "9b5d3dc3140ea461c77235ceb39df35b", [])
     热带季风             = EffectMeta("热带季风", True, "7377368986276646171", "7377368986276646171", "2879146129f3375e8fefc940fe970397", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    热显宝丽来           = EffectMeta("热显宝丽来", True, "7542376153407950095", "7542376153407950095", "c3687961a6970093faa88b7b3ec8b894", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
@@ -1679,10 +1928,10 @@ class FilterType(EffectEnum):
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
-    热红酒               = EffectMeta("热红酒", True, "7447164085122256143", "7447164085122256143", "157ee7ccdd413e211df98ec989b9fac9", [])
     焕肤                 = EffectMeta("焕肤", True, "7127674287238008078", "7127674287238008078", "073940956259c1077acaec764f52f31c", [])
     焰色                 = EffectMeta("焰色", True, "7131539023817936158", "7131539023817936158", "efcc2f7cdccc176ce06f14d9029bcbf2", [])
     熏柏                 = EffectMeta("熏柏", True, "7145395127089909028", "7145395127089909028", "1081c5bbbf4ed18971b14f24316d1905", [])
+    燃空                 = EffectMeta("燃空", True, "7226265591760358713", "7226265591760358713", "e3bc331ba068b35f92a7fc1c282530fc", [])
     爱丽丝               = EffectMeta("爱丽丝", True, "7328694736565439807", "7328694736565439807", "deae47ffa17d61be87aabf804cea348c", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
@@ -1722,6 +1971,18 @@ class FilterType(EffectEnum):
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    电影光感             = EffectMeta("电影光感", True, "7575372908076338457", "7575372908076338457", "f11c4c537cc8c01305d1f1fe2e227353", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    电影叙事感           = EffectMeta("电影叙事感", True, "7539542018494663975", "7539542018494663975", "52aa2a88fa78c85bee650dfe0087c065", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    电影境遇             = EffectMeta("电影境遇", True, "7611777721500306723", "7611777721500306723", "cbfb00635fd223ddb16f9b46ac9f63a9", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     电影增强             = EffectMeta("电影增强", True, "7439365849703550247", "7439365849703550247", "61b80862b0f2f60fb42dbf3974ccbcdc", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
@@ -1730,7 +1991,27 @@ class FilterType(EffectEnum):
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    电影大师             = EffectMeta("电影大师", True, "7569903362355891518", "7569903362355891518", "6b2290221ec8c89ef691dd93a17a99c9", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    电影往事             = EffectMeta("电影往事", True, "7604153456365948169", "7604153456365948169", "ed514ff59aa8cb2eebc7ee49df61cabf", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     电影感增强           = EffectMeta("电影感增强", True, "7486832436819578151", "7486832436819578151", "4c90165bf74665c89b9eba6408ef3bba", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    电影感大片           = EffectMeta("电影感大片", True, "7575521370369428742", "7575521370369428742", "0c93dec8336a85d615bab1e787f5f07d", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    电影慢镜             = EffectMeta("电影慢镜", True, "7591523217345449279", "7591523217345449279", "de864f5abe14d8319a5c518fa923c654", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    电影慢镜II           = EffectMeta("电影慢镜II", True, "7592642498489503026", "7592642498489503026", "be22ffebcc4a52afd09e0b52273faa62", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
@@ -1742,11 +2023,19 @@ class FilterType(EffectEnum):
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    电影独白             = EffectMeta("电影独白", True, "7595136957605252390", "7595136957605252390", "69cccaa977b143bf9c2884a918360eac", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     电影画质             = EffectMeta("电影画质", True, "7472770427245448474", "7472770427245448474", "3c17e8775c8ffd2f8875c1b06720a81d", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
-    电影雪肤             = EffectMeta("电影雪肤", True, "7441124730066701604", "7441124730066701604", "39c3b6b1424f1a66e9a1d424f5623283", [
+    电影葡街             = EffectMeta("电影葡街", True, "7589559390106062132", "7589559390106062132", "9e21d6b27e52c0442aea729950266bea", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    电影镜头             = EffectMeta("电影镜头", True, "7591844323558165800", "7591844323558165800", "04bd57ed5fd14719cb5896275281716b", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
@@ -1755,26 +2044,30 @@ class FilterType(EffectEnum):
                               EffectParam("effects_adjust_filter", 0.500, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认50%, 0% ~ 100%"""
+    画质增蓝             = EffectMeta("画质增蓝", True, "7525722154726329650", "7525722154726329650", "d4bbe627e3786316720acfda6ba49b23", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     画质高清             = EffectMeta("画质高清", True, "7439560136630471963", "7439560136630471963", "b08bde10ef963cf648e677615667fda3", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
     登高                 = EffectMeta("登高", True, "7195925533031435558", "7195925533031435558", "688df92b416581b9cf33e543ae7ae03b", [])
     白富美               = EffectMeta("白富美", True, "7302336985513970963", "7302336985513970963", "9fb4286e708d3bbf2b6bc6af85120be2", [])
-    白桃                 = EffectMeta("白桃", True, "7300522962937990415", "7300522962937990415", "2c277b4b642fa2a5d7ddd7bff681ff91", [
+    白瓷亮肤             = EffectMeta("白瓷亮肤", True, "7545707655537397044", "7545707655537397044", "30d45d50d67e78c4fbceca515f6aeef8", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
-    白皙                 = EffectMeta("白皙", True, "7524363630498827530", "7524363630498827530", "f534e97ffd440e75902dda9f72dcf132", [
+    白皙丝绸             = EffectMeta("白皙丝绸", True, "7600637764823993650", "7600637764823993650", "7e6fb86a203656c5dfcae95bd6ccf5a0", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    白皙去黄             = EffectMeta("白皙去黄", True, "7531992666729352482", "7531992666729352482", "d69785c1d162574ce7fc3b74fe3e807d", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
     百川                 = EffectMeta("百川", True, "7210616269597314362", "7210616269597314362", "cd1f1360bd1891f9b31c63542689d8ea", [])
     盐系                 = EffectMeta("盐系", True, "7127823742830398757", "7127823742830398757", "9d48681f2c1f584e9b93fa37485693d1", [])
-    盐系清透             = EffectMeta("盐系清透", True, "7500997115917651227", "7500997115917651227", "7b5501b506c712a2567eefd55551c165", [
-                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
-    """参数:
-    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     石山                 = EffectMeta("石山", True, "7194091413728922941", "7194091413728922941", "a9faf4808c5ec06b8d2ecc944a3682c6", [])
     砂金                 = EffectMeta("砂金", True, "7131655685321821477", "7131655685321821477", "9a4836294cf0cc48fcf84af02d963400", [])
     破晓                 = EffectMeta("破晓", True, "7348707347419712794", "7348707347419712794", "0f73c6cf0189f4c0e462e76102e46084", [])
@@ -1786,6 +2079,18 @@ class FilterType(EffectEnum):
     碎芒                 = EffectMeta("碎芒", True, "7148945136280440101", "7148945136280440101", "c40eb1ab380e7e22f5a4a71d69520a54", [])
     碳烤                 = EffectMeta("碳烤", True, "7363537225620983067", "7363537225620983067", "596d7d07b942eff22e9f8aaa47918711", [])
     福桔                 = EffectMeta("福桔", True, "7323020458050260262", "7323020458050260262", "e0d586addaf8f3b790f011effa361c80", [])
+    福气新年             = EffectMeta("福气新年", True, "7582612168625982739", "7582612168625982739", "cfbb0a5235f70d9b9377840689dfb210", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    福气新春             = EffectMeta("福气新春", True, "7595423045704027442", "7595423045704027442", "49b3bd7bfd195e8b70e31082f77198e6", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    福漫                 = EffectMeta("福漫", True, "7602179574549761305", "7602179574549761305", "42c9e43f879101736833459671bfd4ae", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     福运                 = EffectMeta("福运", True, "7453122471810714930", "7453122471810714930", "a6ec7e80c2ecff207da782397d0f9068", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
@@ -1795,7 +2100,23 @@ class FilterType(EffectEnum):
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
     私语                 = EffectMeta("私语", True, "7127674303306419464", "7127674303306419464", "7f8596dc2626cd91e642c6a17c953390", [])
+    秋叶黄               = EffectMeta("秋叶黄", True, "7542556208268348712", "7542556208268348712", "161e16336ce1768fc9e7395de07c83b9", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    秋季电影感           = EffectMeta("秋季电影感", True, "7540164276858801448", "7540164276858801448", "7f62d804192fe06b9e8c4b3716fa6f62", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    秋意电影感           = EffectMeta("秋意电影感", True, "7551307375555185956", "7551307375555185956", "04899a4d2671dfbcd2a737a750b1272f", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     秋日物语II           = EffectMeta("秋日物语II", True, "7404121905780772122", "7404121905780772122", "1d70b53cb9e08dd8e5205d1f8d9258b1", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    秋日自然             = EffectMeta("秋日自然", True, "7556996788276841791", "7556996788276841791", "ccf27de6fd29f43da006f5ac5d0299bd", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
@@ -1828,6 +2149,7 @@ class FilterType(EffectEnum):
                               EffectParam("effects_adjust_filter", 0.700, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认70%, 0% ~ 100%"""
+    粉霞                 = EffectMeta("粉霞", True, "7525754134151105833", "7525754134151105833", "c551709419f57acb321c36d879ed4376", [])
     素净                 = EffectMeta("素净", True, "7351018816215764233", "7351018816215764233", "3c792ad3327a3b6774aa89990dacf093", [])
     素简                 = EffectMeta("素简", True, "7300968790391606567", "7300968790391606567", "091f103fae7c3a0480f05be172a0c904", [])
     紫霞时分             = EffectMeta("紫霞时分", True, "7507920355613248803", "7507920355613248803", "0666e85ae9821a1ba83106da65094df9", [
@@ -1852,39 +2174,48 @@ class FilterType(EffectEnum):
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
-    绮思                 = EffectMeta("绮思", True, "7148796681176288548", "7148796681176288548", "d48bab64f2d456f4e5f577220fddd1a1", [])
     绿妍II               = EffectMeta("绿妍II", True, "7361401117672066345", "7361401117672066345", "2f29b2a050dc8c75c742e1ffb7be4cf0", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
     绿野                 = EffectMeta("绿野", True, "7148817459095670029", "7148817459095670029", "be31c5c42c288d05bd0a7ba6781c7d55", [])
-    绿野仙踪             = EffectMeta("绿野仙踪", True, "7355426069840661798", "7355426069840661798", "62b937613f92773795a7e71048f547f6", [])
     绿野漫旅             = EffectMeta("绿野漫旅", True, "7409674961595518258", "7409674961595518258", "f4b64f852dc51be8707a058245200c09", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    缎光肌               = EffectMeta("缎光肌", True, "7551730848282742070", "7551730848282742070", "4bca1d9f6da952f5269affa22ac43871", [
+                              EffectParam("effects_adjust_filter", 0.175, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认18%, 0% ~ 100%"""
     美味brunch           = EffectMeta("美味brunch", True, "7494869214751182121", "7494869214751182121", "3e2f1a0747b5380d3adbbc60118de785", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    美好春日             = EffectMeta("美好春日", True, "7480550244233809189", "7480550244233809189", "ad5934723eb251d50206e74ee43de934", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
     美好瞬间             = EffectMeta("美好瞬间", True, "7332345211621887251", "7332345211621887251", "1b989818420007070e3ecdc7df7fba1e", [])
     美拉德               = EffectMeta("美拉德", True, "7273782607257685309", "7273782607257685309", "f22f3b6e1ef2d6f6e5b7a9e3b753fe18", [])
-    美白嫩肤             = EffectMeta("美白嫩肤", True, "7495821426562288915", "7495821426562288915", "97fe1998783848b457e99c2ca0dfc462", [
-                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
-    """参数:
-    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     美食增色             = EffectMeta("美食增色", True, "7403664465390013735", "7403664465390013735", "ada69091300af58308e5bbdaa2c818dc", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
     美高                 = EffectMeta("美高", True, "7239236880858877217", "7239236880858877217", "29446ccd642910767b50978b2fe45f4b", [])
     羽梦                 = EffectMeta("羽梦", True, "7213573482850880827", "7213573482850880827", "ee8c5d6e7808f4e6662d42298104b87b", [])
-    老街                 = EffectMeta("老街", True, "7325416529166732583", "7325416529166732583", "f2f631bdba9a97d0527f708970fc2942", [])
     聆时                 = EffectMeta("聆时", True, "7279063581092531510", "7279063581092531510", "9e59d950f575eb8a28d1f789a3b8ab50", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
     聚焦                 = EffectMeta("聚焦", True, "7320428711487098153", "7320428711487098153", "54fcd82f212e40df18ac882bd748f59c", [])
+    背景增色             = EffectMeta("背景增色", True, "7538027894447131967", "7538027894447131967", "3d3ae418605554d05b52e82b280aa9db", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    胶片微曝             = EffectMeta("胶片微曝", True, "7578191333169417523", "7578191333169417523", "a5259ff5c583f14d2e8acdd6a483554e", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     胶片电影             = EffectMeta("胶片电影", True, "7496103061845249316", "7496103061845249316", "b1ceda65b100e3c6799c576668c9e945", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
@@ -1893,15 +2224,11 @@ class FilterType(EffectEnum):
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    自然明亮             = EffectMeta("自然明亮", True, "7439995841366035724", "7439995841366035724", "1d53604a9caed4ee27a7e1f8f5fd9785", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     自然春色             = EffectMeta("自然春色", True, "7478210864818965779", "7478210864818965779", "21a8812e6490383c0eaaa6121cc71454", [
-                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
-    """参数:
-    effects_adjust_filter: 默认100%, 0% ~ 100%"""
-    自然雪肤             = EffectMeta("自然雪肤", True, "7446467221666204969", "7446467221666204969", "67e61e6010bb7464c7efc6c8b086c408", [
-                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
-    """参数:
-    effects_adjust_filter: 默认100%, 0% ~ 100%"""
-    舞霞                 = EffectMeta("舞霞", True, "7226257534313631037", "7226257534313631037", "ab2ba28dc4104399f9ea733837bf9364", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
@@ -1916,30 +2243,41 @@ class FilterType(EffectEnum):
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
     花间                 = EffectMeta("花间", True, "7211008985187487036", "7211008985187487036", "6acce0fe02d2e0328e597abcb1043de3", [])
-    花间II               = EffectMeta("花间II", True, "7356877435184450851", "7356877435184450851", "78e26d36522db19bd16b83f52ae81593", [])
     花食                 = EffectMeta("花食", True, "7261180740283403578", "7261180740283403578", "37b2683488f5e586c98256dab864ab84", [])
     苍橘                 = EffectMeta("苍橘", True, "7131605817958075685", "7131605817958075685", "43666fcf1f38cb2036f87b7e496ccec4", [])
+    苏打气泡             = EffectMeta("苏打气泡", True, "7535720421677731098", "7535720421677731098", "a08729a75a9c12cd53d42720ee2c94c3", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     苦尽柑来             = EffectMeta("苦尽柑来", True, "7493339669950729481", "7493339669950729481", "72833304e3f98f8a607dc9006676cbcd", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    苦檀                 = EffectMeta("苦檀", True, "7145391965847162142", "7145391965847162142", "1dad3330806a06ca9abdd9ef20ef9216", [])
     英伦复古             = EffectMeta("英伦复古", True, "7481337713443048755", "7481337713443048755", "88568151518cb4c4f5fd605bd7260260", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    茶卡盐湖             = EffectMeta("茶卡盐湖", True, "7526507478738013476", "7526507478738013476", "6a12ea5bd3c3a73148f39425a6512151", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
     茶墨                 = EffectMeta("茶墨", True, "7177728466354326822", "7177728466354326822", "d80d22c59b7846cfe3a0e8970825b316", [])
     茶酪                 = EffectMeta("茶酪", True, "7160603159486827783", "7160603159486827783", "3115e57bcd131acf89d8bdef6cd11cbd", [])
-    荒原                 = EffectMeta("荒原", True, "7410401136387132724", "7410401136387132724", "18d15902359bd0e9735acef5827fe229", [
+    荒原风光             = EffectMeta("荒原风光", True, "7531037440736349491", "7531037440736349491", "efa0f0ca6a0f065b891711f0156ceea9", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
-    荷郁                 = EffectMeta("荷郁", True, "7274241173764525324", "7274241173764525324", "a2d1350cccd85856e3a7d58aa73cf1c4", [])
     莫吉托               = EffectMeta("莫吉托", True, "7131419324622982408", "7131419324622982408", "9b6cb49204cfb1ae3b38e70f4f71a0a7", [])
+    莫奈睡莲             = EffectMeta("莫奈睡莲", True, "7584815680642551102", "7584815680642551102", "bfb2e4a20f924d068ff7d6c7e3e835cf", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     莫奈花园             = EffectMeta("莫奈花园", True, "7500930664041172278", "7500930664041172278", "2a39723f27860f53fe08437092bf9109", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
-    莱顿                 = EffectMeta("莱顿", True, "7381020276177276214", "7381020276177276214", "97eeba5f505a525c4781f0e7ae990fdd", [
+    菁润明肤             = EffectMeta("菁润明肤", True, "7396300458781936906", "7396300458781936906", "7ee2a3e6c8d54cf46fd9789913459e64", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
@@ -1948,10 +2286,6 @@ class FilterType(EffectEnum):
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
     落日派对             = EffectMeta("落日派对", True, "7374708995501739305", "7374708995501739305", "e00847299fab64d98f8ae309c62b98aa", [
-                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
-    """参数:
-    effects_adjust_filter: 默认100%, 0% ~ 100%"""
-    落日火烧云           = EffectMeta("落日火烧云", True, "7511197003057990952", "7511197003057990952", "4e1837427374dd8ae9fa60879e6a9240", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
@@ -1972,12 +2306,9 @@ class FilterType(EffectEnum):
     蓝橙II               = EffectMeta("蓝橙II", True, "7337929426493132058", "7337929426493132058", "40056bb94f392bdc1ab305683e265b2b", [])
     蓝灰                 = EffectMeta("蓝灰", True, "7127667757839076645", "7127667757839076645", "aa8ef49b3edba824d41f097effe534c0", [])
     蓝调                 = EffectMeta("蓝调", True, "7127664822921022734", "7127664822921022734", "3f0f50b54a2486b3fe5cfbb68dfaeaae", [])
-    蓝调时刻             = EffectMeta("蓝调时刻", True, "7392898023505792319", "7392898023505792319", "1bcdd5c706e257d4935503a026ee6b20", [
-                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
-    """参数:
-    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     蓝调烟火             = EffectMeta("蓝调烟火", True, "7328363887542209828", "7328363887542209828", "fe2367155cae2d1d5c07c10a64e3b6ef", [])
     蓝调舞曲             = EffectMeta("蓝调舞曲", True, "7366562845120646463", "7366562845120646463", "95d43f9239219401b66eae286f0ccc1c", [])
+    蓝都                 = EffectMeta("蓝都", True, "7166470141494955297", "7166470141494955297", "6b7636f5921c185131dd935a77713dd7", [])
     蓝金                 = EffectMeta("蓝金", True, "7341300292148907327", "7341300292148907327", "4107fa238d7b56801c9cc3a4a3a15c32", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
@@ -1994,17 +2325,19 @@ class FilterType(EffectEnum):
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
-    薄霞                 = EffectMeta("薄霞", True, "7199458491315145988", "7199458491315145988", "ef713708b453e556415724e90c886a95", [])
     薰草                 = EffectMeta("薰草", True, "7199455696017018151", "7199455696017018151", "9864263dc92e5a276336767b1845a731", [])
     藤宅                 = EffectMeta("藤宅", True, "7159133894975999244", "7159133894975999244", "50294465be1355e66f9b789711193204", [])
     街头                 = EffectMeta("街头", True, "7263357855678467364", "7263357855678467364", "cec28e1462ddc4ce254c41bc0465d083", [])
-    裸粉                 = EffectMeta("裸粉", True, "7127671519450303775", "7127671519450303775", "cea47ac2c5469b0c7630c2bcd83e3e87", [])
     褪色胶卷             = EffectMeta("褪色胶卷", True, "7502716416567545099", "7502716416567545099", "8eee6f53a48048bc43e278fe7455fa6b", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
     西冷                 = EffectMeta("西冷", True, "7131899038625975559", "7131899038625975559", "582a118ed87f8ddfbf2bab6ce6ccbba2", [])
     西西里               = EffectMeta("西西里", True, "7131488780451663140", "7131488780451663140", "36c35e9b449bd69a2d186c044c8032c8", [])
+    西部峡谷             = EffectMeta("西部峡谷", True, "7595798301719694654", "7595798301719694654", "ba098db9df33ac91894368a2420a39a7", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     西雅图               = EffectMeta("西雅图", True, "7159175960414194982", "7159175960414194982", "d89963be26099b79db297b25e18011a6", [])
     诗诺                 = EffectMeta("诗诺", True, "7330543523042708790", "7330543523042708790", "ddc9145845f6f5548aba0c4f5ceb76ed", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
@@ -2019,15 +2352,7 @@ class FilterType(EffectEnum):
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
-    质感婚礼             = EffectMeta("质感婚礼", True, "7482072671715396901", "7482072671715396901", "1cf92540897de95e6708796e98ed72e2", [
-                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
-    """参数:
-    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     质感新中式           = EffectMeta("质感新中式", True, "7493945660903787803", "7493945660903787803", "4d5b0b65c44336d48392212a0cf39f90", [
-                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
-    """参数:
-    effects_adjust_filter: 默认100%, 0% ~ 100%"""
-    质感明亮             = EffectMeta("质感明亮", True, "7486202141447589174", "7486202141447589174", "1ecc6170aa764a51fac34de94d0acda5", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
@@ -2036,7 +2361,7 @@ class FilterType(EffectEnum):
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
     赏味                 = EffectMeta("赏味", True, "7127608379056459015", "7127608379056459015", "d29bc8b2ddd9d018da1309ba9a467517", [])
-    赤墙                 = EffectMeta("赤墙", True, "7226238039155150139", "7226238039155150139", "bca90c246ee0eae785e624ceb339e9f9", [
+    超清4K               = EffectMeta("超清4K", True, "7452918022752275762", "7452918022752275762", "b5f7af272fe9c86eba1ab10dfb30af53", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
@@ -2053,13 +2378,25 @@ class FilterType(EffectEnum):
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
     超白                 = EffectMeta("超白", True, "7302338645938261287", "7302338645938261287", "08f7a0eb8cd3535a23b4360acc4cc2f0", [])
-    超高清               = EffectMeta("超高清", True, "7471501720732863753", "7471501720732863753", "f15b1ce7b64f37660ec166de2156e0b5", [
+    超透白皙             = EffectMeta("超透白皙", True, "7554056334228917514", "7554056334228917514", "bc71eed566e221f65b3f0ade45e0a7b2", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    超高清               = EffectMeta("超高清", True, "7471501720732863753", "7471501720732863753", "fa6384cf3f1bba156d8aa7d8c75707c5", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
     越岭                 = EffectMeta("越岭", True, "7193989203930123554", "7193989203930123554", "80634d76c41bb167ee4c2bec4172235b", [])
     越野                 = EffectMeta("越野", True, "7195931118166609190", "7195931118166609190", "f8f340ecb359e2dd7f155da84b06f013", [])
+    轻古早               = EffectMeta("轻古早", True, "7592592527794998580", "7592592527794998580", "4885d22159b8eae574e31fec0f3c086a", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     轻氧夏               = EffectMeta("轻氧夏", True, "7522455016272121124", "7522455016272121124", "94ed475a3c59137c13fa00a9775987f2", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    轻肤III              = EffectMeta("轻肤III", True, "7387063538507975974", "7387063538507975974", "cbdb0b96103a7d22d960553d35bc8ebe", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
@@ -2078,7 +2415,7 @@ class FilterType(EffectEnum):
                               EffectParam("effects_adjust_filter", 0.700, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认70%, 0% ~ 100%"""
-    逆光提亮             = EffectMeta("逆光提亮", True, "7366260047401323811", "7366260047401323811", "8990c9bac399f2eaedfd706d99dbdd4e", [
+    逆光提亮             = EffectMeta("逆光提亮", True, "7524288987129810214", "7524288987129810214", "314431f06e12dda849a2404eae2086cd", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
@@ -2126,14 +2463,8 @@ class FilterType(EffectEnum):
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
     野趣                 = EffectMeta("野趣", True, "7193983160231742772", "7193983160231742772", "dc9a0e3b25c1b462e5c684ac64bbb1b7", [])
-    金喜                 = EffectMeta("金喜", True, "7323022101735083315", "7323022101735083315", "184ae43f227bd4d20edab495a6574610", [])
     金姜                 = EffectMeta("金姜", True, "7233733326517832995", "7233733326517832995", "5116f63c46a435d34ccb83fd58b3d009", [])
-    金照落日             = EffectMeta("金照落日", True, "7385416407049194787", "7385416407049194787", "33cabc7aa2c2079319df9b4149e89758", [
-                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
-    """参数:
-    effects_adjust_filter: 默认100%, 0% ~ 100%"""
-    金秋                 = EffectMeta("金秋", True, "7145394185108065567", "7145394185108065567", "dc9528761fa2ae6baedb466ee3ce5b12", [])
-    金色韶华             = EffectMeta("金色韶华", True, "7376141023656873254", "7376141023656873254", "6fe8d7f355b0895a9b4bd4110d7f58d4", [
+    金粉飘落             = EffectMeta("金粉飘落", True, "7456773992901397787", "7456773992901397787", "0367f5e04e48d7526c33f0b210ebb41d", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
@@ -2145,17 +2476,18 @@ class FilterType(EffectEnum):
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    阳光肤               = EffectMeta("阳光肤", True, "7234795543178775868", "7234795543178775868", "116a1adcf464b736d76bf31d679b3d72", [])
     阴天拯救             = EffectMeta("阴天拯救", True, "7361399516454604071", "7361399516454604071", "a219fa1f7b74d889f137be1ef3b136a6", [
-                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
-    """参数:
-    effects_adjust_filter: 默认100%, 0% ~ 100%"""
-    阿勒泰               = EffectMeta("阿勒泰", True, "7377370363035979034", "7377370363035979034", "3252b9d3b1d4e9d6110f343eba73e4c4", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
     陶瓷肌               = EffectMeta("陶瓷肌", True, "7234793127867878712", "7234793127867878712", "e7b66853ca5dbdb1c049d45225b355cb", [])
     随性                 = EffectMeta("随性", True, "7271140658071588132", "7271140658071588132", "6619560c233df84381e8c371b7387faa", [])
     雀染                 = EffectMeta("雀染", True, "7145394848361729288", "7145394848361729288", "c6bc39d80e10c8bfe361164e83585a01", [])
+    雅西卡               = EffectMeta("雅西卡", True, "7569903893891714329", "7569903893891714329", "2076756290bdcea6bca3040162a47637", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     雨皂                 = EffectMeta("雨皂", True, "7145678373530946824", "7145678373530946824", "af2869df0cbd9ea0ac0443206e91b135", [])
     雨空                 = EffectMeta("雨空", True, "7196917591909109052", "7196917591909109052", "ffe686005136a692517b6e19e4e490e7", [])
     雪地胶片             = EffectMeta("雪地胶片", True, "7431914829876694324", "7431914829876694324", "fb5e7ff5746e82dc6a426e2731012359", [
@@ -2171,31 +2503,22 @@ class FilterType(EffectEnum):
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
     雪挞                 = EffectMeta("雪挞", True, "7262376135202327871", "7262376135202327871", "319cab31ed6a056c3f5256a357eb9b96", [])
-    雪白肤               = EffectMeta("雪白肤", True, "7426222844872330522", "7426222844872330522", "10cdb8b77362ba307e5cbe93b83209bd", [
+    雪白肤III            = EffectMeta("雪白肤III", True, "7426223181205146890", "7426223181205146890", "76bb0c72be291d1ea9d9f108b67a70c1", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    雪白透亮             = EffectMeta("雪白透亮", True, "7564026160212987190", "7564026160212987190", "cea2e70ffe56f0f03ec4e1be240bd34d", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
     雾都                 = EffectMeta("雾都", True, "7312646650202262820", "7312646650202262820", "00b8522f76bf9a991e0a6090f63747ee", [])
     雾野                 = EffectMeta("雾野", True, "7127823362356727077", "7127823362356727077", "6fbd00682d2a15e079bc242301e9b757", [])
-    青巷                 = EffectMeta("青巷", True, "7185425707231644961", "7185425707231644961", "3ce24fadb400619dd73d6fbad3211229", [])
     青提                 = EffectMeta("青提", True, "7131290518838938887", "7131290518838938887", "9cd0e0ba2190b96f6eccacbed5151b24", [])
-    青春                 = EffectMeta("青春", True, "7502056246804024611", "7502056246804024611", "ca3ed1c728e48270ab32bef1dd79b3ab", [
-                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
-    """参数:
-    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     青春照               = EffectMeta("青春照", True, "7513077194952936767", "7513077194952936767", "754dec3e8e77d8fcb6e0902e63a923bd", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
-    青春物语             = EffectMeta("青春物语", True, "7511949534042311946", "7511949534042311946", "885801c812396bb1688ef9bd45bfe4c0", [
-                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
-    """参数:
-    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     青春胶片             = EffectMeta("青春胶片", True, "7510888042761096459", "7510888042761096459", "d7cee0f1454e87ac7735278aef69ebc7", [
-                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
-    """参数:
-    effects_adjust_filter: 默认100%, 0% ~ 100%"""
-    青春记忆             = EffectMeta("青春记忆", True, "7495811579095682367", "7495811579095682367", "4ae2a67a3635524b1c0de0d6c34304d0", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
@@ -2205,15 +2528,27 @@ class FilterType(EffectEnum):
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
     青灰                 = EffectMeta("青灰", True, "7127671508264078599", "7127671508264078599", "a9b480c9b5bf91d2aa0b5e8388f53746", [])
+    青蒲                 = EffectMeta("青蒲", True, "7145393992673414407", "7145393992673414407", "7cd919e92b66b19e00c95b9f3db9def8", [])
     青黄                 = EffectMeta("青黄", True, "7127541821332409630", "7127541821332409630", "e777bf266933df88bfc019a84e6dd792", [])
     青黄II               = EffectMeta("青黄II", True, "7337932621046910262", "7337932621046910262", "059b7e40c1fe52a2451c35bd82e329e5", [])
     韦斯                 = EffectMeta("韦斯", True, "7226989951911562553", "7226989951911562553", "7162086ae8bf07df55d86ce535bdd75c", [])
-    顺意                 = EffectMeta("顺意", True, "7186934131484331322", "7186934131484331322", "b22dbc165fbe869cc1522d8255afe928", [])
-    颜白                 = EffectMeta("颜白", True, "7484983198800301321", "7484983198800301321", "55bd0be59e02370787cbafb22bace0e0", [
+    韩女古早             = EffectMeta("韩女古早", True, "7538333322636741903", "7538333322636741903", "b6d5cb83bda0447010412e05d9471992", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    韩式古早             = EffectMeta("韩式古早", True, "7592591080688864546", "7592591080688864546", "4b481cd8955cc08bf0daaad898186364", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    韩系INS              = EffectMeta("韩系INS", True, "7407460599929572627", "7407460599929572627", "797ac245a94d625e2b38faf848e12fd8", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
     风味                 = EffectMeta("风味", True, "7330579916272012580", "7330579916272012580", "7abbb099b234e92b6a7169f2ae6232b6", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    风铃II               = EffectMeta("风铃II", True, "7356885346841349410", "7356885346841349410", "7e36a3f345976371e7a668d1e96c7905", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
@@ -2234,10 +2569,6 @@ class FilterType(EffectEnum):
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
     高清                 = EffectMeta("高清", True, "7447039744229428534", "7447039744229428534", "838ba5b40cfb93c8c8f4ac23489dd0ce", [
-                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
-    """参数:
-    effects_adjust_filter: 默认100%, 0% ~ 100%"""
-    高清4K               = EffectMeta("高清4K", True, "7463103811276655881", "7463103811276655881", "c7950f4b5629606b1c32165ec8967675", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
@@ -2263,10 +2594,6 @@ class FilterType(EffectEnum):
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
     高清冷冬             = EffectMeta("高清冷冬", True, "7446737538967932186", "7446737538967932186", "a29f0443ce7468781539fe86dc17918a", [
-                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
-    """参数:
-    effects_adjust_filter: 默认100%, 0% ~ 100%"""
-    高清冷调             = EffectMeta("高清冷调", True, "7478329447545081129", "7478329447545081129", "e56a34d74560aa6204b16da614a64c74", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
@@ -2362,6 +2689,10 @@ class FilterType(EffectEnum):
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    高清自然             = EffectMeta("高清自然", True, "7469688503262039334", "7469688503262039334", "2f74c3aca65c95a3f998812d6e492016", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     高清质感             = EffectMeta("高清质感", True, "7433451928773807397", "7433451928773807397", "30ae508cfe0edc3ec1f749c243997a2a", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
@@ -2390,19 +2721,20 @@ class FilterType(EffectEnum):
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    高级质感             = EffectMeta("高级质感", True, "7525074000846802227", "7525074000846802227", "bbde98630add7a33bab859fb52a27bf2", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     高街                 = EffectMeta("高街", True, "7145394469666376991", "7145394469666376991", "7036694f303647fe7526848bb622947f", [])
+    高质感电影           = EffectMeta("高质感电影", True, "7528823226357665050", "7528823226357665050", "7372405faae785d55b79a73d6b7723a5", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     魅影                 = EffectMeta("魅影", True, "7175076304058895619", "7175076304058895619", "361328c4bc995c85053ea003268aefbf", [])
     魔都                 = EffectMeta("魔都", True, "7166480345666260263", "7166480345666260263", "cf4adfafcc5e59b9bddd8eeb4d20f44e", [])
-    鲜亮                 = EffectMeta("鲜亮", True, "7428441733123345702", "7428441733123345702", "9c3aca0a52af31cc7d60152290156687", [
-                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
-    """参数:
-    effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    鲜亮                 = EffectMeta("鲜亮", True, "7127615338035858702", "7127615338035858702", "329252a715f5e0f9727810511e0e9832", [])
     鲜明                 = EffectMeta("鲜明", True, "7320434750018047251", "7320434750018047251", "ba8b7cbf504c97a30c923d0d6a6c2b44", [])
     鲜明II               = EffectMeta("鲜明II", True, "7361400073533820196", "7361400073533820196", "350ff543fdd150a6f7e571aa3f467640", [
-                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
-    """参数:
-    effects_adjust_filter: 默认100%, 0% ~ 100%"""
-    鲜明增强             = EffectMeta("鲜明增强", True, "7451608395745889586", "7451608395745889586", "208197f9859dd06b1868cd75859676d1", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
@@ -2430,15 +2762,31 @@ class FilterType(EffectEnum):
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
-    鹅冠                 = EffectMeta("鹅冠", True, "7308714123913612607", "7308714123913612607", "37be69ef37633c108a65ab994875d06e", [])
-    黄昏                 = EffectMeta("黄昏", True, "7272330168717430075", "7272330168717430075", "eebcc8f84ff895bd0d66535d9ad44275", [])
-    黄昏时               = EffectMeta("黄昏时", True, "7418828782020168999", "7418828782020168999", "844bdb555340709e50d47c842a6da1e7", [
+    鲜花自然             = EffectMeta("鲜花自然", True, "7610447734406941994", "7610447734406941994", "ea05726be30c1ff7645cb754c3df8292", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    鲜萃食光             = EffectMeta("鲜萃食光", True, "7580047192463969560", "7580047192463969560", "0cc0343094d17a7136fbbff28bd08a36", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    鸿运新春             = EffectMeta("鸿运新春", True, "7595835595054730542", "7595835595054730542", "6ba9471c2fc7de958fde09e2488ff7ba", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    鹅冠                 = EffectMeta("鹅冠", True, "7308714123913612607", "7308714123913612607", "37be69ef37633c108a65ab994875d06e", [])
+    麋鹿                 = EffectMeta("麋鹿", True, "7430673747708792075", "7430673747708792075", "80fb6fdd7346e05845f45a7f0966049d", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    黄昏                 = EffectMeta("黄昏", True, "7272330168717430075", "7272330168717430075", "eebcc8f84ff895bd0d66535d9ad44275", [])
     黑冰                 = EffectMeta("黑冰", True, "7131522303082466597", "7131522303082466597", "d03c03e8f1e67f5cff0a5671fe96dfb9", [])
     黑暗神话             = EffectMeta("黑暗神话", True, "7408496787398446362", "7408496787398446362", "0685a00dcd0068efd472e6019d312774", [])
     黑曜                 = EffectMeta("黑曜", True, "7223712396769119545", "7223712396769119545", "3b81efb578ddec8efa40dd0c5b754056", [])
+    黑白记忆             = EffectMeta("黑白记忆", True, "7533265997478808841", "7533265997478808841", "6c0dc5428414f66db73be80c2bc1c012", [
+                              EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
+    """参数:
+    effects_adjust_filter: 默认100%, 0% ~ 100%"""
     黑金                 = EffectMeta("黑金", True, "7414902721733479699", "7414902721733479699", "46eddfebd9864056c59bf8219cb671e9", [
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
@@ -2447,4 +2795,5 @@ class FilterType(EffectEnum):
                               EffectParam("effects_adjust_filter", 1.000, 0.000, 1.000)])
     """参数:
     effects_adjust_filter: 默认100%, 0% ~ 100%"""
+    黛瓦                 = EffectMeta("黛瓦", True, "7226247580018019644", "7226247580018019644", "5d96058b7d47716b7c928aca57407cb7", [])
     龙舌兰               = EffectMeta("龙舌兰", True, "7252674245396942139", "7252674245396942139", "254083154fd15d41d41cc3763eda9f40", [])

@@ -108,8 +108,6 @@ class TransitionType(EffectEnum):
     """默认时长: 4.00s"""
     弹跳                 = TransitionMeta("弹跳", False, "6747865141120864779", "368205", "4b3b8b53bc1f947d57a30489d81387eb", 0.500, True)
     """默认时长: 0.50s"""
-    快门                 = TransitionMeta("快门", False, "6882983860615778823", "944120", "2df569fefb5004c041af5509c10d6c53", 0.500, True)
-    """默认时长: 0.50s"""
     打板转场_I           = TransitionMeta("打板转场 I", False, "7028143517570437668", "1432322", "355d5c4df581f6c4940c9b999e010f81", 4.000, False)
     """默认时长: 4.00s"""
     打板转场_II          = TransitionMeta("打板转场 II", False, "7029592645538157086", "1437264", "021dfc9a6541d8d08bac631749f9e87d", 4.000, False)
@@ -156,6 +154,8 @@ class TransitionType(EffectEnum):
     """默认时长: 0.50s"""
     气泡转场             = TransitionMeta("气泡转场", False, "7028880945671311903", "1433968", "66489506132d1314f3c7264bcd947cad", 4.000, False)
     """默认时长: 4.00s"""
+    水墨                 = TransitionMeta("水墨", False, "6789847231873683976", "521328", "d1dd3dd8905f0b96be756bd34be1a84d", 0.500, True)
+    """默认时长: 0.50s"""
     水波卷动             = TransitionMeta("水波卷动", False, "6858191497280360973", "878910", "cf9bac91349a227a6155eca9d94a8af8", 0.500, False)
     """默认时长: 0.50s"""
     水波向右             = TransitionMeta("水波向右", False, "6858191510865711629", "878909", "e9301bacebc6dc444aa4e6f835dd4a31", 0.500, False)
@@ -304,6 +304,8 @@ class TransitionType(EffectEnum):
     """默认时长: 0.80s"""
     像素冲屏             = TransitionMeta("像素冲屏", True, "6981689835534684702", "1182216", "b7f8e6cd03560d1f52e1270dcf7c9ba4", 0.800, True)
     """默认时长: 0.80s"""
+    光束                 = TransitionMeta("光束", True, "6982127832042312206", "4202531", "84525ee78728b5cce44c8404d9f50b0d", 0.500, True)
+    """默认时长: 0.50s"""
     全息投影             = TransitionMeta("全息投影", True, "7298230450768581129", "28518430", "95a2a049736e0843b5984e0090276f7b", 0.400, True)
     """默认时长: 0.40s"""
     六边形变焦           = TransitionMeta("六边形变焦", True, "7182413216276812346", "7824963", "faf521d87b90c79031bfd08d687df52a", 1.000, True)
@@ -372,6 +374,10 @@ class TransitionType(EffectEnum):
     """默认时长: 0.70s"""
     圣诞礼盒             = TransitionMeta("圣诞礼盒", True, "7447067834628182578", "96154390", "6da15163fec7a5af3ab7a25e44f94da9", 1.500, True)
     """默认时长: 1.50s"""
+    复古叠影             = TransitionMeta("复古叠影", True, "7200638304591548985", "9529419", "078be6db2b8d8abded47cbd72f5635df", 1.000, True)
+    """默认时长: 1.00s"""
+    复古放映_II          = TransitionMeta("复古放映 II", True, "7240050497804046908", "14607947", "9891a08898646c3795cab650979bf0dc", 1.000, True)
+    """默认时长: 1.00s"""
     复古漏光             = TransitionMeta("复古漏光", True, "7181752495150993957", "8104139", "0af78adb0da721bbe253b096b8152851", 0.800, True)
     """默认时长: 0.80s"""
     复古漏光_II          = TransitionMeta("复古漏光 II", True, "7287881053534949943", "25193261", "1789e06f18340fbcbd30e6757f10ba75", 0.600, True)
@@ -422,6 +428,8 @@ class TransitionType(EffectEnum):
     """默认时长: 1.00s"""
     快速震闪             = TransitionMeta("快速震闪", True, "7403364394404418074", "79172318", "5d1d93e09913898ffd9140351d7a9224", 1.000, True)
     """默认时长: 1.00s"""
+    快门                 = TransitionMeta("快门", True, "6882983860615778823", "2917720", "2df569fefb5004c041af5509c10d6c53", 0.500, True)
+    """默认时长: 0.50s"""
     惊悚屏闪             = TransitionMeta("惊悚屏闪", True, "7425528298395931187", "86397088", "7bad249a916e313a5e2f422291e9d4e9", 1.000, True)
     """默认时长: 1.00s"""
     手机屏放大           = TransitionMeta("手机屏放大", True, "7447351620649620005", "96240495", "47f7a2d93348de0cc3363f8bed9e27b8", 2.000, True)
@@ -444,10 +452,18 @@ class TransitionType(EffectEnum):
     """默认时长: 1.00s"""
     折痕胶带             = TransitionMeta("折痕胶带", True, "7436273714733257225", "90037011", "949b5a139458534e713b4751f89cc366", 1.000, True)
     """默认时长: 1.00s"""
+    抽象前景             = TransitionMeta("抽象前景", True, "7104215831919202853", "2459634", "88b3ead3e00313684cd868d51c1173c9", 0.500, True)
+    """默认时长: 0.50s"""
+    抽象前景_II          = TransitionMeta("抽象前景 II", True, "7108564115529929229", "2870170", "b8628f4b1d6fc27447dfad6a5f25beb4", 0.500, True)
+    """默认时长: 0.50s"""
     拉开                 = TransitionMeta("拉开", True, "7384323685026370098", "72601002", "828b81127e669508f999900bff18cf2a", 0.600, True)
     """默认时长: 0.60s"""
     拉框入屏             = TransitionMeta("拉框入屏", True, "7297077423487586826", "28115429", "bfc8a51d2b304be3dd36a68331f8d0f8", 1.000, True)
     """默认时长: 1.00s"""
+    拍摄器_II            = TransitionMeta("拍摄器 II", True, "7109727014780670495", "2958464", "5483f878a302c6d7879bd566cebab543", 0.900, True)
+    """默认时长: 0.90s"""
+    拍摄器_III           = TransitionMeta("拍摄器 III", True, "7107542030976291336", "2792048", "36c9b870a00e16365421398ac4e51652", 0.800, True)
+    """默认时长: 0.80s"""
     挤压分屏             = TransitionMeta("挤压分屏", True, "7435897594074632713", "89895302", "ca0072e8c95318ca9babfa5a6d699cac", 0.830, True)
     """默认时长: 0.83s"""
     推近_II              = TransitionMeta("推近 II", True, "7290852476259930685", "26135688", "94815943a86e741a5fec1737fbb46d60", 0.900, True)
@@ -476,6 +492,8 @@ class TransitionType(EffectEnum):
     """默认时长: 1.00s"""
     故障模糊             = TransitionMeta("故障模糊", True, "7302270954602762789", "29927992", "fc3fae70595c7bb6f943aca08dc7b9f1", 0.700, True)
     """默认时长: 0.70s"""
+    数字矩阵             = TransitionMeta("数字矩阵", True, "7268870949548593725", "20983534", "f39bf079c6066cbfee7c5eca1491b276", 1.000, True)
+    """默认时长: 1.00s"""
     斜向模糊             = TransitionMeta("斜向模糊", True, "7125661284762128910", "3796323", "b14d9650ca6eef79d6b19c16c65166d3", 0.800, True)
     """默认时长: 0.80s"""
     斜向闪光             = TransitionMeta("斜向闪光", True, "7384331194978013711", "72603864", "eba796256a96c4ff0d1b331a8819c6f2", 0.700, True)
@@ -526,6 +544,10 @@ class TransitionType(EffectEnum):
     """默认时长: 1.60s"""
     日历转场             = TransitionMeta("日历转场", True, "7460472998944838154", "101496138", "ca48c1fe6e5b7cdcc100469f5294820b", 2.000, True)
     """默认时长: 2.00s"""
+    旧胶片               = TransitionMeta("旧胶片", True, "7099310030138118687", "1933296", "782110cae96a4f9ed73f6a85d0610a7a", 0.500, False)
+    """默认时长: 0.50s"""
+    旧胶片_II            = TransitionMeta("旧胶片 II", True, "7111634884153578014", "3114014", "79901fab61f0b8c2960c73a78e84e5a3", 0.500, True)
+    """默认时长: 0.50s"""
     时光穿梭             = TransitionMeta("时光穿梭", True, "7306853312400200229", "31645629", "74eab27c1dc1a568b851a2e543682058", 1.100, True)
     """默认时长: 1.10s"""
     星光                 = TransitionMeta("星光", True, "7177201869612126777", "7339355", "2215320b9ba4138c53f1f7b9d0c58b54", 1.500, True)
@@ -552,6 +574,8 @@ class TransitionType(EffectEnum):
     """默认时长: 0.70s"""
     未来光谱             = TransitionMeta("未来光谱", True, "7176890183940313658", "7307905", "7974c984bf60d60079cc03be5928f74d", 0.800, True)
     """默认时长: 0.80s"""
+    未来光谱II           = TransitionMeta("未来光谱II", True, "7176914791267570232", "7312585", "524895c4bce265b44ffa8ac92bf0dd6a", 0.800, True)
+    """默认时长: 0.80s"""
     条形模糊             = TransitionMeta("条形模糊", True, "7122387202725646862", "3675841", "0a5742430e336b3a1e1b6ff9983c5d25", 1.000, True)
     """默认时长: 1.00s"""
     模糊放大             = TransitionMeta("模糊放大", True, "7301280654015074842", "29614872", "7c0ef1a54495f7cd9343efe2acc57b26", 1.000, True)
@@ -572,8 +596,6 @@ class TransitionType(EffectEnum):
     """默认时长: 0.80s"""
     樱花飞舞             = TransitionMeta("樱花飞舞", True, "7462198817211814426", "102144538", "ecd91f7ebaa7817d7eab538a50147fb4", 2.000, True)
     """默认时长: 2.00s"""
-    水墨                 = TransitionMeta("水墨", True, "6789847231873683976", "2912466", "d1dd3dd8905f0b96be756bd34be1a84d", 0.500, True)
-    """默认时长: 0.50s"""
     水滴                 = TransitionMeta("水滴", True, "7218875183413596730", "11765299", "d5fa6a1daecd2c45b0414626a69e7674", 0.500, True)
     """默认时长: 0.50s"""
     水滴_II              = TransitionMeta("水滴 II", True, "7231860840452854332", "13482623", "eebf40246476d57ccbf8bbdf15864864", 0.900, True)
@@ -618,6 +640,12 @@ class TransitionType(EffectEnum):
     """默认时长: 0.80s"""
     火焰湍流             = TransitionMeta("火焰湍流", True, "7397337005375361562", "77055404", "133e52c43b2639f2a202b3b1394846bf", 1.000, True)
     """默认时长: 1.00s"""
+    炫光                 = TransitionMeta("炫光", True, "6726707814028284423", "4202524", "a3fd6266c293496fd9480884a93fb90e", 0.500, True)
+    """默认时长: 0.50s"""
+    炫光_II              = TransitionMeta("炫光 II", True, "6950255790762496548", "4202530", "aafb556352016d087cddd1939ada20f8", 0.500, False)
+    """默认时长: 0.50s"""
+    炫光_III             = TransitionMeta("炫光 III", True, "6950255930160189988", "4202529", "5ed29701053e9f7640ecf8dcfc34c7cc", 0.500, False)
+    """默认时长: 0.50s"""
     炫光弹动             = TransitionMeta("炫光弹动", True, "7348337133838406194", "52201950", "113a7490b314d57a7dea4826e056ff99", 1.000, True)
     """默认时长: 1.00s"""
     炫光扫描             = TransitionMeta("炫光扫描", True, "7371717412736995903", "66131585", "4bd676f9001765af20ac02b252da5575", 1.467, True)
@@ -666,6 +694,8 @@ class TransitionType(EffectEnum):
     """默认时长: 1.00s"""
     生气                 = TransitionMeta("生气", True, "7070430937900651016", "1600475", "be7a4f8a24aafb10db343e51e72fead2", 0.500, False)
     """默认时长: 0.50s"""
+    电光                 = TransitionMeta("电光", True, "7186953120490983997", "8298317", "6142261f8bd0361a56d15a3d408c20ab", 1.000, True)
+    """默认时长: 1.00s"""
     电光_II              = TransitionMeta("电光 II", True, "7292990637350064690", "26773684", "e8a9edb89dae57afad5dfd6b707a6b57", 1.300, True)
     """默认时长: 1.30s"""
     电流                 = TransitionMeta("电流", True, "7402545346741539365", "78884363", "435f3111d5b73043c9da4fb52bc1c5aa", 1.167, True)
@@ -678,6 +708,8 @@ class TransitionType(EffectEnum):
     """默认时长: 2.00s"""
     相片切换             = TransitionMeta("相片切换", True, "7324946677305971226", "40583461", "0bcab7309cd00dc17a95071b62282d0a", 0.700, True)
     """默认时长: 0.70s"""
+    相片拼贴             = TransitionMeta("相片拼贴", True, "7212523710685647420", "10917367", "bdff0041ed99b812568c15e5a7c5d798", 0.600, True)
+    """默认时长: 0.60s"""
     礼物落下             = TransitionMeta("礼物落下", True, "7462627865197023782", "102354705", "bc569b8205db8dad3eb195df697dfda8", 2.000, True)
     """默认时长: 2.00s"""
     空间上移             = TransitionMeta("空间上移", True, "7405560276180800009", "79942985", "7043746b8dd5592ffa7e5e8baec3e504", 0.500, True)
@@ -744,6 +776,8 @@ class TransitionType(EffectEnum):
     """默认时长: 2.00s"""
     胶片切闪             = TransitionMeta("胶片切闪", True, "7468603557348905510", "104151439", "a4efe5e3a9fd8ce07b1760f5e998acc4", 1.330, True)
     """默认时长: 1.33s"""
+    胶片定格             = TransitionMeta("胶片定格", True, "7211146962513433147", "10764691", "1a96476b4a04acd24a1b5a7f293fc2eb", 1.000, True)
+    """默认时长: 1.00s"""
     胶片擦除             = TransitionMeta("胶片擦除", True, "7308265370480022026", "32274061", "4bbb3dcb507832529d7a18020c8fc88d", 0.800, True)
     """默认时长: 0.80s"""
     胶片融化             = TransitionMeta("胶片融化", True, "7346474643827462667", "51067351", "563d0dfa49528bb59646384d8a18552a", 0.700, True)
@@ -818,10 +852,16 @@ class TransitionType(EffectEnum):
     """默认时长: 0.57s"""
     长曝光               = TransitionMeta("长曝光", True, "7306435255286633010", "31452163", "c239e26c5f99cf83cabd28f63d04b93f", 1.000, True)
     """默认时长: 1.00s"""
+    闪光灯               = TransitionMeta("闪光灯", True, "6986584807543149063", "4202532", "9abfb7452d046a1dafd4d9525b58ec3a", 1.000, True)
+    """默认时长: 1.00s"""
     闪光灯_II            = TransitionMeta("闪光灯 II", True, "7244074212158083641", "15250161", "1fcc7fccf7829d94f2747938fcb84706", 1.900, True)
     """默认时长: 1.90s"""
     闪光灯_III           = TransitionMeta("闪光灯 III", True, "7246234663755190839", "15638113", "5af30d0f877301d5235b925ccbda0703", 0.800, True)
     """默认时长: 0.80s"""
+    闪动光斑             = TransitionMeta("闪动光斑", True, "6777178510050988551", "4202525", "06560e9ea51f532b18b7e5ae23bd2b9c", 0.500, False)
+    """默认时长: 0.50s"""
+    闪动光斑_II          = TransitionMeta("闪动光斑 II", True, "7148374073716773407", "4840333", "ffeb2bd8b46b0a212c1fbf004aeac626", 1.000, True)
+    """默认时长: 1.00s"""
     闪回                 = TransitionMeta("闪回", True, "7250427149318885945", "16638473", "0a22de17ce5c2fd97f2bd77aa115de77", 0.200, True)
     """默认时长: 0.20s"""
     闪屏故障             = TransitionMeta("闪屏故障", True, "7348352782744687130", "52211013", "a76337e1d1e2301f5d13fd7c90c41282", 1.000, True)
