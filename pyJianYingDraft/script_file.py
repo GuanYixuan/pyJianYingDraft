@@ -14,7 +14,7 @@ from .time_util import Timerange, tim, srt_tstamp
 from .local_materials import VideoMaterial, AudioMaterial
 from .segment import BaseSegment, Speed, ClipSettings
 from .audio_segment import AudioSegment, AudioFade, AudioEffect
-from .video_segment import VideoSegment, StickerSegment, SegmentAnimations, VideoEffect, Transition, Filter, BackgroundFilling
+from .video_segment import VideoSegment, StickerSegment, SegmentAnimations, VideoEffect, Transition, Filter, BackgroundFilling, MixMode
 from .effect_segment import EffectSegment, FilterSegment
 from .text_segment import TextSegment, TextStyle, TextBubble
 from .track import TrackType, BaseTrack, Track
@@ -50,6 +50,8 @@ class ScriptMaterial:
     """转场效果列表"""
     filters: List[Union[Filter, TextBubble]]
     """滤镜/文本花字/文本气泡列表, 导出到`effects`中"""
+    mix_modes: List[MixMode]
+    """混合模式列表, 导出到`effects`中"""
     canvases: List[BackgroundFilling]
     """背景填充列表"""
 
@@ -68,6 +70,7 @@ class ScriptMaterial:
         self.masks = []
         self.transitions = []
         self.filters = []
+        self.mix_modes = []
         self.canvases = []
 
     @overload
@@ -94,6 +97,8 @@ class ScriptMaterial:
             return item.global_id in [transition.global_id for transition in self.transitions]
         elif isinstance(item, Filter):
             return item.global_id in [filter_.global_id for filter_ in self.filters]
+        elif isinstance(item, MixMode):
+            return item.global_id in [mix_mode.global_id for mix_mode in self.mix_modes]
         else:
             raise TypeError("Invalid argument type '%s'" % type(item))
 
@@ -111,7 +116,7 @@ class ScriptMaterial:
             "color_curves": [],
             "digital_humans": [],
             "drafts": [],
-            "effects": [_filter.export_json() for _filter in self.filters],
+            "effects": [_filter.export_json() for _filter in self.filters] + [mix_mode.export_json() for mix_mode in self.mix_modes],
             "flowers": [],
             "green_screens": [],
             "handwrites": [],
@@ -323,6 +328,9 @@ class ScriptFile:
             for filter_ in segment.filters:
                 if filter_ not in self.materials:
                     self.materials.filters.append(filter_)
+            # 混合模式
+            for mix_mode in segment.mix_modes:
+                self.materials.mix_modes.append(mix_mode)
             # 蒙版
             if segment.mask is not None:
                 self.materials.masks.append(segment.mask.export_json())

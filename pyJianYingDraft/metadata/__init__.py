@@ -1,9 +1,8 @@
 """记录各种特效/音效/滤镜等的元数据
 
 音频相关元数据更新时间：2024
-其余元数据更新时间：2025-08
+其余元数据更新时间：2026-03
 """
-
 from .effect_meta import EffectMeta, EffectParamInstance
 from .effect_meta import AnimationMeta
 
@@ -15,7 +14,6 @@ from .video_character_effect import VideoCharacterEffectType
 from .video_intro import IntroType
 from .video_outro import OutroType
 from .video_group_animation import GroupAnimationType
-
 # 音频特效
 from .audio_scene_effect import AudioSceneEffectType
 from .tone_effect import ToneEffectType
@@ -31,6 +29,7 @@ from .font_meta import FontType
 from .mask_meta import MaskType, MaskMeta
 from .filter_meta import FilterType
 from .transition_meta import TransitionType
+from .mix_mode_meta import MixModeType
 
 __all__ = [
     "AnimationMeta",
@@ -41,6 +40,7 @@ __all__ = [
     "FilterType",
     "FontType",
     "TransitionType",
+    "MixModeType",
     "IntroType",
     "OutroType",
     "GroupAnimationType",
