@@ -40,6 +40,7 @@
 - ☑️ 视频片段的[入场/出场/组合动画](#添加片段动画)
 - ☑️ 添加[蒙版](#蒙版)、[片段特效](#添加片段特效)和[滤镜](#添加片段滤镜)
 - ☑️ （项目700⭐️回馈功能）视频背景填充[(示例代码)](demo.py)
+- ☑️ （项目2k⭐️回馈功能）[视频混合模式](#视频混合模式)（正片叠底、滤色、叠加等）
 ### 贴纸
 - ☑️ 根据元信息[添加贴纸](#提取素材元数据)
 - ☑️ 贴纸的[关键帧](#关键帧)生成
@@ -458,9 +459,39 @@ video_segment2.add_mask(MaskType.圆形, size=0.5)
 - `MaskType`保存了剪映自带的蒙版类型
 - `center_x`和`center_y`参数表示蒙版中心点的坐标，与剪映中意义一致
 - `rotation`、`feather`、`round_corner`分别表示旋转、羽化、圆角参数，与剪映中意义一致
-- `size`参数表示蒙版的“主要尺寸”（镜面的可视部分高度/圆形直径/爱心高度等）占素材的比例
+- `size`参数表示蒙版的”主要尺寸”（镜面的可视部分高度/圆形直径/爱心高度等）占素材的比例
 
 更具体的参数说明请参见`add_mask`方法的注释。
+
+### 视频混合模式
+混合模式用于控制视频片段与下层内容的混合方式，实现正片叠底、滤色、叠加等效果。
+
+> ℹ 混合模式需要至少两个视频轨道：一个基础轨道和一个叠加轨道
+
+> ℹ 叠加轨道必须位于基础轨道上方，可通过`relative_index`参数控制层次
+
+使用`VideoSegment.set_mix_mode()`方法为视频片段设置混合模式：
+```python
+from pyJianYingDraft import MixModeType
+
+# 创建两个视频轨道，明确层次关系
+script.add_track(draft.TrackType.video, "base", relative_index=1)      # 基础轨道在下层
+script.add_track(draft.TrackType.video, "overlay", relative_index=2)   # 叠加轨道在上层
+
+# 基础视频片段
+base_video = draft.VideoSegment("base.mp4", trange("0s", "10s"))
+script.add_segment(base_video, track_name="base")
+
+# 叠加视频片段，使用”滤色”混合模式
+overlay_video = draft.VideoSegment("overlay.mp4", trange("0s", "10s"))
+overlay_video.set_mix_mode(MixModeType.滤色)
+script.add_segment(overlay_video, track_name="overlay")
+```
+
+`MixModeType`支持以下10种混合模式：
+- `正片叠底`、`颜色减淡`、`颜色加深`、`线性加深`
+- `柔光`、`强光`、`滤色`、`叠加`
+- `变亮`、`变暗`
 
 ### 特效、动画和滤镜
 #### 特效类型
