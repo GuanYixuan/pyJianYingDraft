@@ -1,0 +1,29 @@
+include pyJianYingDraft/**/*
+include pypi_readme.md
+include README.md
+include requirements.txt
+
+exclude *.log
+exclude demo.py
+exclude generate_example.py
+exclude temp.py
+exclude replace_example.py
+exclude CLAUDE.md
+exclude .flake8
+exclude *.lnk
+
+recursive-exclude tools *
+recursive-exclude readme_assets *
+recursive-exclude ignored *
+global-exclude *.pyc
+global-exclude *.pyo
+global-exclude *.pyd
+prune pyJianYingDraft/__pycache__
+prune .vscode
+prune .git
+prune build
+prune dist
+prune *.egg-info
+
+global-exclude .DS_Store
+global-exclude Thumbs.db

@@ -4,11 +4,7 @@ exclude =
     .git,
     __pycache__,
     ignored,
+    tools,
     build,
-    pyJianYingDraft/metadata/animation_meta.py,
-    pyJianYingDraft/metadata/audio_effect_meta.py,
-    pyJianYingDraft/metadata/filter_meta.py,
-    pyJianYingDraft/metadata/video_effect_meta.py,
-    pyJianYingDraft/metadata/transition_meta.py,
-    pyJianYingDraft\metadata\font_meta.py
+    pyJianYingDraft/metadata
 max-line-length = 140
