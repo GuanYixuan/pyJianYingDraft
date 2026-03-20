@@ -193,7 +193,8 @@ class MediaSegment(BaseSegment):
     extra_material_refs: List[str]
     """附加的素材id列表, 用于链接动画/特效等"""
 
-    def __init__(self, material_id: str, source_timerange: Optional[Timerange], target_timerange: Timerange, speed: float, volume: float, change_pitch: bool):
+    def __init__(self, material_id: str, source_timerange: Optional[Timerange], target_timerange: Timerange,
+                 speed: float, volume: float, change_pitch: bool):
         super().__init__(material_id, target_timerange)
 
         self.source_timerange = source_timerange
