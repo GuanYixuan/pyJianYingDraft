@@ -1,0 +1,1 @@
+# WeChat Channels integration module

@@ -25,7 +25,10 @@ class Draft(Base):
     metadata = Column(JSON, default={})  # {duration, track_count, segment_count}
 
     # Status
-    status = Column(String(20), default="draft")  # draft/published/archived
+    # Draft status: draft/published/archived
+    # For SaaS: draft/published/archived/processing/completed/failed
+    status = Column(String(20), default="draft")
+    processing_status = Column(String(20), default=None)  # pending/processing/completed/failed (for SaaS orders)
 
     created_by = Column(UUID(as_uuid=True), ForeignKey("users.id"))
     created_at = Column(DateTime, default=datetime.utcnow)

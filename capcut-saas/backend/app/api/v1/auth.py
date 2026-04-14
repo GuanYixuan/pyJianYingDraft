@@ -26,6 +26,9 @@ class UserCreate(BaseModel):
     email: EmailStr
     password: str
     full_name: str | None = None
+    industry: str | None = None  # 行业: "美妆", "餐饮", "电商"
+    product: str | None = None    # 产品名称
+    region: str | None = None    # 地区: "华东", "华北"
 
 
 class UserResponse(BaseModel):
@@ -33,6 +36,10 @@ class UserResponse(BaseModel):
     email: str
     full_name: str | None
     avatar_url: str | None
+    industry: str | None
+    product: str | None
+    region: str | None
+    role: str  # user/operator/admin
 
     class Config:
         from_attributes = True
@@ -81,6 +88,9 @@ async def register(
         email=user_data.email,
         password_hash=get_password_hash(user_data.password),
         full_name=user_data.full_name,
+        industry=user_data.industry,
+        product=user_data.product,
+        region=user_data.region,
     )
     db.add(user)
     await db.commit()
@@ -91,6 +101,10 @@ async def register(
         email=user.email,
         full_name=user.full_name,
         avatar_url=user.avatar_url,
+        industry=user.industry,
+        product=user.product,
+        region=user.region,
+        role=user.role,
     )
 
 
@@ -149,4 +163,8 @@ async def get_me(current_user: User = Depends(get_current_user)):
         email=current_user.email,
         full_name=current_user.full_name,
         avatar_url=current_user.avatar_url,
+        industry=current_user.industry,
+        product=current_user.product,
+        region=current_user.region,
+        role=current_user.role,
     )

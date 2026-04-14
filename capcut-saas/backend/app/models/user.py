@@ -18,5 +18,11 @@ class User(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
+    # SaaS extension fields
+    industry = Column(String(100))  # 行业: "美妆", "餐饮", "电商"
+    product = Column(String(255))    # 产品名称
+    region = Column(String(100))    # 地区: "华东", "华北"
+    role = Column(String(20), default="user")  # user/operator/admin
+
     # Relationships
     workspace_memberships = relationship("WorkspaceMember", back_populates="user")
