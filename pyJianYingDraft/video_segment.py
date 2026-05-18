@@ -11,7 +11,7 @@ from typing import Dict, List, Tuple, Any
 
 from .time_util import tim, Timerange
 from .segment import VisualSegment, ClipSettings, AudioFade
-from .local_materials import VideoMaterial
+from .local_materials import VideoMaterial, VideoMaterialMatting
 from .animation import SegmentAnimations, VideoAnimation
 
 from .metadata import EffectMeta, EffectParamInstance
@@ -497,6 +497,16 @@ class VideoSegment(VisualSegment):
         self.mix_modes.append(mix_mode_inst)
         self.extra_material_refs.append(mix_mode_inst.global_id)
 
+        return self
+
+    def add_smart_matting(self, *, path: str = "") -> "VideoSegment":
+        """为视频素材添加智能人像抠像标记
+
+        Args:
+            path (`str`, optional): 剪映生成的抠像缓存路径. 默认不写入缓存路径,
+                由剪映在打开或导出草稿时生成.
+        """
+        self.material_instance.matting = VideoMaterialMatting(path=path)
         return self
 
     def add_mask(self, mask_type: MaskType, *, center_x: float = 0.0, center_y: float = 0.0, size: float = 0.5,

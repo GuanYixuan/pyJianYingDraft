@@ -2,7 +2,7 @@ import os
 import uuid
 import pymediainfo
 
-from typing import Optional, Literal
+from typing import Optional, Literal, List
 from typing import Dict, Any
 
 class CropSettings:
@@ -43,6 +43,40 @@ class CropSettings:
             "lower_right_y": self.lower_right_y
         }
 
+class VideoMaterialMatting:
+    """视频素材的智能抠像设置"""
+
+    flag: int
+    """抠像标记, 3 表示智能人像抠像"""
+    path: str
+    """剪映生成的抠像缓存路径, 新建素材时通常为空"""
+    has_use_quick_brush: bool
+    has_use_quick_eraser: bool
+    interactive_time: List[Any]
+    strokes: List[Any]
+
+    def __init__(self, flag: int = 3, path: str = "",
+                 has_use_quick_brush: bool = False, has_use_quick_eraser: bool = False,
+                 interactive_time: Optional[List[Any]] = None, strokes: Optional[List[Any]] = None):
+        self.flag = flag
+        self.path = path
+        self.has_use_quick_brush = has_use_quick_brush
+        self.has_use_quick_eraser = has_use_quick_eraser
+        self.interactive_time = interactive_time if interactive_time is not None else []
+        self.strokes = strokes if strokes is not None else []
+
+    def export_json(self) -> Dict[str, Any]:
+        matting_json = {
+            "flag": self.flag,
+            "has_use_quick_brush": self.has_use_quick_brush,
+            "has_use_quick_eraser": self.has_use_quick_eraser,
+            "interactiveTime": self.interactive_time,
+            "strokes": self.strokes
+        }
+        if self.path:
+            matting_json["path"] = self.path
+        return matting_json
+
 class VideoMaterial:
     """本地视频素材（视频或图片）, 一份素材可以在多个片段中使用"""
 
@@ -64,6 +98,8 @@ class VideoMaterial:
     """素材裁剪设置"""
     material_type: Literal["video", "photo"]
     """素材类型: 视频或图片"""
+    matting: Optional[VideoMaterialMatting]
+    """智能抠像设置, 为空时不启用"""
 
     def __init__(self, path: str, material_name: Optional[str] = None, crop_settings: CropSettings = CropSettings()):
         """从指定位置加载视频（或图片）素材
@@ -87,6 +123,7 @@ class VideoMaterial:
         self.path = path
         self.crop_settings = crop_settings
         self.local_material_id = ""
+        self.matting = None
 
         if not pymediainfo.MediaInfo.can_parse():
             raise ValueError(f"不支持的视频素材类型 '{postfix}'")
@@ -134,6 +171,8 @@ class VideoMaterial:
             "type": self.material_type,
             "width": self.width
         }
+        if self.matting is not None:
+            video_material_json["matting"] = self.matting.export_json()
         return video_material_json
 
 class AudioMaterial:
