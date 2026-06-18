@@ -1,3 +1,4 @@
 pymediainfo
 imageio
+cryptography>=3.4
 uiautomation>=2

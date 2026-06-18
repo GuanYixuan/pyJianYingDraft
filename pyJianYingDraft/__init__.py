@@ -20,6 +20,7 @@ from .metadata import VideoSceneEffectType, VideoCharacterEffectType
 
 from .track import TrackType
 from .template_mode import ShrinkMode, ExtendMode
+from .draft_decrypt import decrypt_draft_file, decrypt_jianying_draft, decrypt_with_htwmedia_api, is_probably_encrypted
 from .script_file import ScriptFile
 from .draft_folder import DraftFolder
 
@@ -224,6 +225,10 @@ __all__ = [
     "TrackType",
     "ShrinkMode",
     "ExtendMode",
+    "decrypt_draft_file",
+    "decrypt_jianying_draft",
+    "decrypt_with_htwmedia_api",
+    "is_probably_encrypted",
     "ScriptFile",
     "DraftFolder",
     "SEC",

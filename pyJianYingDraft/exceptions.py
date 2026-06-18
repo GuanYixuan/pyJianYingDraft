@@ -17,6 +17,10 @@ class ExtensionFailed(ValueError):
 
 class DraftNotFound(NameError):
     """未找到草稿"""
+class DraftContentEncrypted(ValueError):
+    """草稿内容已加密"""
+class DraftDecryptFailed(ValueError):
+    """草稿内容解密失败"""
 class AutomationError(Exception):
     """自动化操作失败"""
 class ExportTimeout(Exception):

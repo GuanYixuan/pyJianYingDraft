@@ -25,6 +25,7 @@ setup(
     install_requires=[
         "pymediainfo",
         "imageio",
+        "cryptography>=3.4",
         "uiautomation>=2; sys_platform == 'win32'"
     ],
 )

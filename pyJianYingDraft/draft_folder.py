@@ -3,9 +3,10 @@
 import os
 import shutil
 
-from typing import List
+from typing import List, Optional
 
 from . import assets
+from .draft_decrypt import Decryptor
 from .script_file import ScriptFile
 
 class DraftFolder:
@@ -92,11 +93,21 @@ class DraftFolder:
 
         return script_file
 
-    def inspect_material(self, draft_name: str) -> None:
+    def inspect_material(
+        self,
+        draft_name: str,
+        *,
+        decryptor: Optional[Decryptor] = None,
+        decrypt_api_key: Optional[str] = None,
+        decrypt_api_url: Optional[str] = None,
+    ) -> None:
         """输出指定名称草稿中的贴纸素材元数据
 
         Args:
             draft_name (`str`): 草稿名称, 即相应文件夹名称
+            decryptor (Callable, optional): 本地自动解密失败时使用的自定义解密回调
+            decrypt_api_key (str, optional): 本地自动解密失败时使用的第三方草稿解密接口API Key
+            decrypt_api_url (str, optional): 自定义草稿解密接口地址
 
         Raises:
             `FileNotFoundError`: 对应的草稿不存在
@@ -105,14 +116,29 @@ class DraftFolder:
         if not os.path.exists(draft_path):
             raise FileNotFoundError(f"草稿文件夹 {draft_name} 不存在")
 
-        script_file = self.load_template(draft_name)
+        script_file = self.load_template(
+            draft_name,
+            decryptor=decryptor,
+            decrypt_api_key=decrypt_api_key,
+            decrypt_api_url=decrypt_api_url,
+        )
         script_file.inspect_material()
 
-    def load_template(self, draft_name: str) -> ScriptFile:
+    def load_template(
+        self,
+        draft_name: str,
+        *,
+        decryptor: Optional[Decryptor] = None,
+        decrypt_api_key: Optional[str] = None,
+        decrypt_api_url: Optional[str] = None,
+    ) -> ScriptFile:
         """在文件夹中打开一个草稿作为模板, 并在其上进行编辑
 
         Args:
             draft_name (`str`): 草稿名称, 即相应文件夹名称
+            decryptor (Callable, optional): 本地自动解密失败时使用的自定义解密回调
+            decrypt_api_key (str, optional): 本地自动解密失败时使用的第三方草稿解密接口API Key
+            decrypt_api_url (str, optional): 自定义草稿解密接口地址
 
         Returns:
             `ScriptFile`: 以模板模式打开的草稿对象
@@ -124,15 +150,32 @@ class DraftFolder:
         if not os.path.exists(draft_path):
             raise FileNotFoundError(f"草稿文件夹 {draft_name} 不存在")
 
-        return ScriptFile.load_template(os.path.join(draft_path, "draft_content.json"))
+        return ScriptFile.load_template(
+            os.path.join(draft_path, "draft_content.json"),
+            decryptor=decryptor,
+            decrypt_api_key=decrypt_api_key,
+            decrypt_api_url=decrypt_api_url,
+        )
 
-    def duplicate_as_template(self, template_name: str, new_draft_name: str, allow_replace: bool = False) -> ScriptFile:
+    def duplicate_as_template(
+        self,
+        template_name: str,
+        new_draft_name: str,
+        allow_replace: bool = False,
+        *,
+        decryptor: Optional[Decryptor] = None,
+        decrypt_api_key: Optional[str] = None,
+        decrypt_api_url: Optional[str] = None,
+    ) -> ScriptFile:
         """复制一份给定的草稿, 并在复制出的新草稿上进行编辑
 
         Args:
             template_name (`str`): 原草稿名称
             new_draft_name (`str`): 新草稿名称
             allow_replace (`bool`, optional): 是否允许覆盖与`new_draft_name`重名的草稿. 默认为否.
+            decryptor (Callable, optional): 本地自动解密失败时使用的自定义解密回调
+            decrypt_api_key (str, optional): 本地自动解密失败时使用的第三方草稿解密接口API Key
+            decrypt_api_url (str, optional): 自定义草稿解密接口地址
 
         Returns:
             `ScriptFile`: 以模板模式打开的**复制后的**草稿对象
@@ -152,4 +195,9 @@ class DraftFolder:
         shutil.copytree(template_path, new_draft_path, dirs_exist_ok=allow_replace)
 
         # 打开草稿
-        return self.load_template(new_draft_name)
+        return self.load_template(
+            new_draft_name,
+            decryptor=decryptor,
+            decrypt_api_key=decrypt_api_key,
+            decrypt_api_url=decrypt_api_url,
+        )

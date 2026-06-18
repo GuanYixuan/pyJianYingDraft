@@ -9,6 +9,7 @@ from typing import Type, Dict, List, Any
 from . import util
 from . import assets
 from . import exceptions
+from .draft_decrypt import Decryptor, load_draft_content
 from .template_mode import ImportedTrack, EditableTrack, ImportedMediaTrack, ImportedTextTrack, ShrinkMode, ExtendMode, import_track
 from .time_util import Timerange, tim, srt_tstamp
 from .local_materials import VideoMaterial, AudioMaterial
@@ -151,6 +152,21 @@ class ScriptMaterial:
             "vocal_separations": []
         }
 
+
+def _normalize_template_content(content: Dict[str, Any]) -> None:
+    """补齐新版草稿可能省略但模板模式需要读取的基础字段。"""
+    content.setdefault("fps", 30.0)
+    content.setdefault("duration", 0)
+    content.setdefault("config", {})
+    content["config"].setdefault("maintrack_adsorb", True)
+    content.setdefault("materials", {})
+    content.setdefault("tracks", [])
+
+    canvas_config = content.setdefault("canvas_config", {})
+    canvas_config.setdefault("width", 0)
+    canvas_config.setdefault("height", 0)
+
+
 class ScriptFile:
     """剪映草稿文件, 大部分接口定义在此"""
 
@@ -208,21 +224,36 @@ class ScriptFile:
             self.content = json.load(f)
 
     @staticmethod
-    def load_template(json_path: str) -> "ScriptFile":
+    def load_template(
+        json_path: str,
+        *,
+        decryptor: Optional[Decryptor] = None,
+        decrypt_api_key: Optional[str] = None,
+        decrypt_api_url: Optional[str] = None,
+    ) -> "ScriptFile":
         """从JSON文件加载草稿模板
 
         Args:
             json_path (str): JSON文件路径
+            decryptor (Callable, optional): 本地自动解密失败时使用的自定义解密回调, 接收`bytes`和文件路径并返回明文JSON
+            decrypt_api_key (str, optional): 本地自动解密失败时使用的第三方草稿解密接口API Key
+            decrypt_api_url (str, optional): 自定义草稿解密接口地址
 
         Raises:
             `FileNotFoundError`: JSON文件不存在
+            `DraftDecryptFailed`: 本地解密、解密接口或解密器返回失败
         """
         obj = ScriptFile(**util.provide_ctor_defaults(ScriptFile))
         obj.save_path = json_path
         if not os.path.exists(json_path):
             raise FileNotFoundError("JSON文件 '%s' 不存在" % json_path)
-        with open(json_path, "r", encoding="utf-8") as f:
-            obj.content = json.load(f)
+        obj.content = load_draft_content(
+            json_path,
+            decryptor=decryptor,
+            decrypt_api_key=decrypt_api_key,
+            decrypt_api_url=decrypt_api_url,
+        )
+        _normalize_template_content(obj.content)
 
         util.assign_attr_with_json(obj, ["fps", "duration"], obj.content)
         util.assign_attr_with_json(obj, ["maintrack_adsorb"], obj.content["config"])

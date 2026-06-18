@@ -15,11 +15,11 @@
 > 标注☑️的特性**已实现**，标注⬜的特性**待实现**
 
 ### 模板模式
-> ⚠️ 剪映6+版本对`draft_content.json`文件进行了加密，故**本系列功能目前仅支持剪映5.9及以下版本**
+> ⚠️ 剪映6+版本对`draft_content.json`文件进行了加密；当前已内置本地解密逻辑，会在加载模板时自动尝试解密。
 
-> ℹ 欢迎为本项目补充6+版本草稿文件的解密方式
+> ℹ 本地解密依赖`cryptography`。若遇到暂不兼容的新格式，仍可传入自定义解密器或第三方解密接口API Key作为兜底；使用第三方接口会上传草稿文件内容，请确认数据风险后再启用。
 
-- ☑️ [加载](#加载模板)（未加密的）`draft_content.json`文件作为模板
+- ☑️ [加载](#加载模板)未加密或剪映6+加密的`draft_content.json`文件作为模板
 - ☑️ [替换音视频片段的素材](#根据名称替换素材)
 - ☑️ [修改文本片段的文本内容](#替换文本片段的内容)
 - ☑️ [将模板草稿中的音视频/文本轨道整体导入到另一草稿中](#导入模板草稿中的轨道)
@@ -103,7 +103,7 @@ pip install pyJianYingDraft
 
 除此之外，对于某些没有特定名称的特性（贴纸、花字等），提供了[提取素材元数据](#提取素材元数据)的功能以提取其`resource_id`
 
-> ⚠️ 由于剪映6+版本对草稿文件进行了加密，故**暂不支持加载来自6+版本的草稿文件**作为模板
+> ⚠️ 剪映6+版本的`draft_content.json`通常是加密内容。pyJianYingDraft会默认在本地解密后再作为模板加载；如本地解密失败，可传入`decryptor`或`decrypt_api_key`作为兜底。
 
 > ℹ 若出现模板内容丢失的情况，欢迎反馈
 
@@ -119,6 +119,39 @@ script = draft_folder.duplicate_as_template("模板草稿", "新草稿")  # 复�
 # 对返回的ScriptFile对象进行编辑，如替换素材、添加轨道、片段等
 
 script.save()  # 保存你的"新草稿"
+```
+
+如需加载剪映6+的加密草稿，通常无需额外参数：
+
+```python
+import pyJianYingDraft as draft
+
+script = draft.ScriptFile.load_template(
+    "<草稿工程文件夹>/draft_content.json"
+)
+
+# 只想把加密文件解成明文JSON文件时
+draft.decrypt_draft_file(
+    "<草稿工程文件夹>/draft_content.json",
+    "<草稿工程文件夹>/draft_content_decrypted.json"
+)
+```
+
+如果遇到暂不兼容的新格式，也可以显式传入兜底解密方式。使用第三方接口时还可以通过环境变量`PYJY_DRAFT_DECRYPT_API_KEY`提供API Key：
+
+```python
+import pyJianYingDraft as draft
+
+# 使用你自己的本地/内网解密器, 返回明文JSON字符串、bytes或dict
+script = draft.ScriptFile.load_template(
+    "<草稿工程文件夹>/draft_content.json",
+    decryptor=lambda data, path: my_decrypt(data)
+)
+
+script = draft.ScriptFile.load_template(
+    "<草稿工程文件夹>/draft_content.json",
+    decrypt_api_key="<你的API Key>"
+)
 ```
 
 为了最大限度地兼容模板中的复杂特性，**导入的轨道与pyJianYingDraft创建的轨道是分离开的**，具体地讲：

@@ -83,9 +83,15 @@ class ImportedTrack(BaseTrack):
 
     def __init__(self, json_data: Dict[str, Any]):
         self.track_type = TrackType.from_name(json_data["type"])
-        self.name = json_data["name"]
+        self.name = json_data.get("name") or self.track_type.name
         self.track_id = json_data["id"]
-        self.render_index = max([int(seg["render_index"]) for seg in json_data["segments"]], default=0)
+        self.render_index = max(
+            [
+                int(seg.get("render_index", seg.get("track_render_index", 0)))
+                for seg in json_data["segments"]
+            ],
+            default=0,
+        )
 
         self.raw_data = deepcopy(json_data)
 
