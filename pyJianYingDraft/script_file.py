@@ -4,7 +4,10 @@ import math
 from copy import deepcopy
 
 from typing import Optional, Literal, Union, overload
-from typing import Type, Dict, List, Any
+from typing import Type, Dict, List, Any, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .twelvelabs_cut import CutPoint
 
 from . import util
 from . import assets
@@ -497,6 +500,85 @@ class ScriptFile:
         # 添加最后一个片段
         if len(text) > 0:
             __add_text_segment(text.strip(), text_trange)
+
+        return self
+
+    def import_pegasus_cuts(self, material: Union[VideoMaterial, str], track_name: str, *,
+                            video_url: Optional[str] = None,
+                            asset_id: Optional[str] = None,
+                            api_key: Optional[str] = None,
+                            time_offset: Union[str, float] = 0.0,
+                            min_clip_duration: Union[str, float] = "1s",
+                            cut_points: Optional[List["CutPoint"]] = None,
+                            **detect_kwargs: Any) -> "ScriptFile":
+        """(opt-in) 利用 TwelveLabs Pegasus 的内容感知切点, 将一段视频素材自动切分为多个片段
+
+        本方法是**可选**功能: 仅在调用时才会用到 `twelvelabs` 库与网络请求, 未配置 API key
+        时草稿生成的其余功能完全不受影响. 它会请求 Pegasus 分析视频中的场景切换点, 并据此把
+        给定素材切成若干顺次排布的 `VideoSegment`, 添加到指定视频轨道(若不存在则自动创建).
+
+        Use TwelveLabs Pegasus to detect content-aware scene boundaries and split a single
+        video material into consecutive `VideoSegment`s on the target video track. This is an
+        opt-in helper — it only touches the network when called, and never changes defaults.
+
+        API key 按以下顺序解析: 显式 `api_key` 参数 > 环境变量 `TWELVELABS_API_KEY`; 本方法不硬编码密钥.
+        免费 API key: https://twelvelabs.io
+
+        Args:
+            material (`VideoMaterial` or `str`): 待切分的本地视频素材实例或其路径.
+            track_name (`str`): 目标视频轨道名称, 若不存在则自动创建.
+            video_url (`str`, optional): 供 Pegasus 分析的公开视频URL(最大4GB). 与 `asset_id` 二选一;
+                若二者均未提供, 将默认使用本地素材路径(适用于已是公网可访问URL的情形).
+            asset_id (`str`, optional): 已上传到 TwelveLabs 的素材ID(本地直传上限200MB). 与 `video_url` 二选一.
+            api_key (`str`, optional): TwelveLabs API key, 缺省时读取环境变量 `TWELVELABS_API_KEY`.
+            time_offset (`Union[str, float]`, optional): 片段整体在轨道上的时间偏移, 默认为0.
+            min_clip_duration (`Union[str, float]`, optional): 切分后单个片段的最小时长, 过短的切点会被丢弃, 默认 `"1s"`.
+            cut_points (`List[CutPoint]`, optional): 直接提供切点列表(单位微秒), 提供后将跳过Pegasus分析,
+                便于离线测试或复用已有结果.
+            **detect_kwargs: 透传给 `twelvelabs_cut.detect_cut_points` 的其余参数(如 `model_name`, `prompt` 等).
+
+        Raises:
+            `ImportError`: 未安装可选依赖 `twelvelabs` 且未提供 `cut_points`.
+            `ValueError`: 缺少 API key、无法解析模型回复, 或素材无法被切分.
+            `NameError`: 已存在同名但类型不匹配的轨道.
+
+        Returns:
+            `ScriptFile`: 返回自身以便链式调用.
+        """
+        if isinstance(material, str):
+            material = VideoMaterial(material)
+
+        offset = tim(time_offset)
+        min_dur = tim(min_clip_duration)
+
+        # 获取切点: 优先使用调用方提供的列表, 否则请求 Pegasus
+        if cut_points is None:
+            from .twelvelabs_cut import detect_cut_points
+            source_url = video_url if (video_url is not None or asset_id is not None) else material.path
+            cut_points = detect_cut_points(
+                video_url=source_url if asset_id is None else None,
+                asset_id=asset_id,
+                api_key=api_key,
+                **detect_kwargs,
+            )
+
+        # 将切点转换为 [start, end] 边界(微秒), 限定在素材时长范围内
+        boundaries: List[int] = [0]
+        for cp in sorted(cut_points, key=lambda c: c.time):
+            if 0 < cp.time < material.duration:
+                boundaries.append(cp.time)
+        boundaries.append(material.duration)
+
+        if track_name not in self.tracks:
+            self.add_track(TrackType.video, track_name)
+
+        for start, end in zip(boundaries[:-1], boundaries[1:]):
+            duration = end - start
+            if duration < min_dur:
+                continue
+            source = Timerange(start, duration)
+            target = Timerange(start + offset, duration)
+            self.add_segment(VideoSegment(material, target, source_timerange=source), track_name)
 
         return self
 

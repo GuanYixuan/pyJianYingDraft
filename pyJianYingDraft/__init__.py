@@ -23,6 +23,9 @@ from .template_mode import ShrinkMode, ExtendMode
 from .script_file import ScriptFile
 from .draft_folder import DraftFolder
 
+# 可选的TwelveLabs Pegasus内容感知切点检测(仅在调用时才需要`twelvelabs`库)
+from .twelvelabs_cut import CutPoint, detect_cut_points
+
 # 仅在Windows系统下导入jianying_controller
 ISWIN = (sys.platform == 'win32')
 if ISWIN:
@@ -226,6 +229,8 @@ __all__ = [
     "ExtendMode",
     "ScriptFile",
     "DraftFolder",
+    "CutPoint",
+    "detect_cut_points",
     "SEC",
     "tim",
     "trange",
