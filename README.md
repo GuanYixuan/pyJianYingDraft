@@ -61,6 +61,8 @@
 - ☑️ 文字气泡效果和花字效果[(示例代码)](demo.py)
 - ☑️ 文本[自动换行](#文本自动换行)，支持设置最大行宽
 - ☑️ [导入`.srt`文件](#导入字幕)生成字幕并批量设置格式
+### AI内容理解（可选）
+- ☑️ （可选）[基于TwelveLabs Pegasus的内容感知自动切分](#内容感知自动切分twelvelabs-pegasus)，按场景切换点把一段视频拆为多个片段
 
 # 安装
 pyJianYingDraft现已支持pip安装（不含demo），推荐使用开发时测试的Python版本3.8或3.11
@@ -665,3 +667,41 @@ script.import_srt("subtitle.srt", track_name="subtitle", style_reference=seg1)  
 # 默认不会采用`style_reference`片段中的`clip_settings`设置，如果需要的话请显式传入`clip_settings=None`
 script.import_srt("subtitle.srt", track_name="subtitle", style_reference=seg1, clip_settings=None)  # 相当于clip_settings=seg1.clip_settings
 ```
+
+### 内容感知自动切分（TwelveLabs Pegasus）
+> ℹ 这是一个**可选**功能。它仅在被显式调用时才会用到 [TwelveLabs](https://twelvelabs.io) 的 Pegasus 视频理解模型与网络请求；未配置 API key 时，本库的其余功能不受任何影响。
+
+很多混剪流水线需要先确定“在哪里下刀”——即视频中场景、镜头或说话人发生切换的位置。`detect_cut_points` 会调用 Pegasus 分析视频内容并返回这些切点，`ScriptFile.import_pegasus_cuts` 则据此把一段素材自动切分为多个顺次排布的视频片段。
+
+使用前请安装可选依赖并准备好 API key（可在 https://twelvelabs.io 免费获取，有较为慷慨的免费额度）：
+
+```
+pip install "pyJianYingDraft[twelvelabs]"
+```
+
+API key 按以下顺序解析：显式 `api_key` 参数 > 环境变量 `TWELVELABS_API_KEY`；本库**不会硬编码任何密钥**。
+
+```python
+import os
+import pyJianYingDraft as draft
+
+# 方式一：仅获取切点（CutPoint.time 单位为微秒，与本库其余时间一致）
+cut_points = draft.detect_cut_points(
+    "https://your.cdn/clip.mp4",          # 公开可访问的视频URL（最大4GB）
+    api_key=os.environ["TWELVELABS_API_KEY"],
+)
+for cp in cut_points:
+    print(cp.time, cp.label)
+
+# 方式二：直接把本地素材按内容切点切分到视频轨道（轨道不存在则自动创建）
+script = draft.ScriptFile(1920, 1080, 30, True)
+script.import_pegasus_cuts(
+    "clip.mp4",                            # 本地素材（用于读取尺寸/时长并放入草稿）
+    track_name="auto_cut",
+    video_url="https://your.cdn/clip.mp4", # 供 Pegasus 分析的URL；若本地路径本身可公网访问可省略
+    min_clip_duration="1s",                # 丢弃过短的片段
+)
+script.save()
+```
+
+> ⚠️ 注意：Pegasus 需要可访问的视频来源——公开 URL（最大4GB）或已上传到 TwelveLabs 的素材ID（本地直传上限200MB），**不接受**纯本地文件路径作为分析输入；待分析的时长应不少于4秒。本地素材实例仍用于读取尺寸/时长并写入草稿。

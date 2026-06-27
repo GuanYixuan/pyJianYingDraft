@@ -27,4 +27,8 @@ setup(
         "imageio",
         "uiautomation>=2; sys_platform == 'win32'"
     ],
+    extras_require={
+        # 可选: 基于TwelveLabs Pegasus的内容感知切点检测
+        "twelvelabs": ["twelvelabs>=1.2.8"],
+    },
 )
