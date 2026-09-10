@@ -12,6 +12,8 @@
 # 功能清单
 
 > 🧪 目前处在的`0.3.0`版本经历了大规模更新，若有相关功能问题欢迎提出issue
+>
+> 📌 本仓库已针对**剪映 11.4.0（macOS）**实测校准：草稿主文件名改为 `draft_info.json`（6.0+ 不再读取 `draft_content.json`，放旧文件名会提示“草稿内容已损坏”）；新增 `script.save(inline_materials=True)`，把素材复制进草稿文件夹，规避 macOS 对桌面/文档/下载目录的访问限制。
 
 ### 视频与图片
 | 功能名称 | 5.9 支持状态 | 新版剪映支持状态 |
@@ -19,7 +21,7 @@
 | 本地视频/图片素材与[时间控制](#素材截取与整体变速) | ✅ | 10.8 ✅ |
 | [视频整体调节](#视频整体调节) | ✅ | 10.8 ✅ |
 | [视频关键帧](#关键帧) | ✅ | 10.8 ✅ |
-| [视频蒙版](#蒙版) | ✅ | 10.8 ❌<br>预计在`0.3.1`中修复 |
+| [视频蒙版](#蒙版) | ✅ | 11.4.0 ❌<br>写入的是 `materials.masks`，而新版键名为 `common_mask`，蒙版被静默丢弃 |
 | [视频色度抠图](#色度抠图) | ✅ | 10.8 ✅ |
 | 视频背景填充[(示例代码)](demo.py) | ✅ | 10.8 ✅ |
 | [视频混合模式](#视频混合模式) | ✅ | 10.8 ✅ |
@@ -74,11 +76,11 @@
 
 
 ### 模板模式
-> ⚠️ 新版剪映中的 `draft_content.json` 往往不是可直接读取的明文 JSON；因此“加载模板”相关能力在新版剪映上通常需要通过 `DraftFolder(..., fallback_loader=...)` 接入额外读取器，详情请参见[此处](https://github.com/GuanYixuan/pyJianYingDraft/releases)
+> ⚠️ 新版剪映的草稿主文件是 `draft_info.json`（6.0 起改名），且内容通常为密文；因此“加载模板”相关能力在新版剪映上通常需要通过 `DraftFolder(..., fallback_loader=...)` 接入额外读取器，详情请参见[此处](https://github.com/GuanYixuan/pyJianYingDraft/releases)
 
 | 功能名称 | 5.9 支持状态 | 新版剪映支持状态 |
 |---|---|---|
-| [加载](#加载模板) `draft_content.json` 文件作为模板 | ✅ | 10.8 🟡<br>需 `fallback_loader` |
+| [加载](#加载模板)草稿主文件作为模板 | ✅ | 11.4.0 🟡<br>需 `fallback_loader` |
 | [替换音视频片段的素材](#根据名称替换素材) | ✅ | 10.8 🟡<br>依赖模板可读 |
 | [修改文本片段的文本内容](#替换文本片段的内容) | ✅ | 10.8 🟡<br>依赖模板可读 |
 | [将模板草稿中的音视频/文本轨道整体导入到另一草稿中](#导入模板草稿中的轨道) | ✅ | 10.8 🟡<br>依赖模板可读 |
@@ -412,7 +414,7 @@ script.add_segment(seg2, "2")
 script.add_segment(seg3, "3")
 
 # 保存草稿
-script.dump("*你的草稿工程文件夹*/draft_content.json")
+script.dump("*你的草稿工程文件夹*/draft_info.json")
 ```
 
 #### 多轨道操作
@@ -486,7 +488,7 @@ video_segment.add_keyframe(KeyframeProperty.alpha, video_segment.duration, 0.0) 
 script.add_segment(video_segment)
 
 # 保存草稿
-script.dump("*你的草稿工程文件夹*/draft_content.json")
+script.dump("*你的草稿工程文件夹*/draft_info.json")
 ```
 
 除了`alpha`外，`KeyframeProperty`中还有平移、旋转、缩放、音量、饱和度等属性，它们都可以设置关键帧。
