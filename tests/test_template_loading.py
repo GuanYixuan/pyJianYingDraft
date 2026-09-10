@@ -12,7 +12,7 @@ def _create_template_draft(tmp_path: Path, draft_name: str) -> Path:
     folder = draft.DraftFolder(str(tmp_path))
     script = folder.create_draft(draft_name, 1920, 1080)
     script.save()
-    return tmp_path / draft_name / "draft_content.json"
+    return tmp_path / draft_name / "draft_info.json"
 
 
 def test_load_template_raises_stable_error_for_non_plain_content_without_fallback_loader(tmp_path):
@@ -69,8 +69,8 @@ def test_duplicate_as_template_reuses_fallback_loader(tmp_path):
     folder = draft.DraftFolder(str(tmp_path), fallback_loader=lambda _: plain_content)
     script = folder.duplicate_as_template("custom_format_template", "copied_template")
 
-    assert script.save_path.endswith("copied_template\\draft_content.json")
-    assert (tmp_path / "copied_template" / "draft_content.json").exists()
+    assert Path(script.save_path) == tmp_path / "copied_template" / "draft_info.json"
+    assert (tmp_path / "copied_template" / "draft_info.json").exists()
 
 
 def test_load_template_normalizes_sparse_template_content(tmp_path):
