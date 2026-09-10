@@ -7,7 +7,11 @@ draft folder under the legacy name is reported as corrupted.
 
 from __future__ import annotations
 
+import json
+
 import pyJianYingDraft as draft
+
+from tests.helpers import fake_audio_material, fake_video_material
 
 
 def test_create_draft_saves_as_draft_info_json(tmp_path):
@@ -39,3 +43,43 @@ def test_load_template_falls_back_to_legacy_file_name(tmp_path):
     loaded = folder.load_template("legacy")
 
     assert loaded.width == 1920
+
+
+def test_save_inline_materials_copies_files_into_draft_folder(tmp_path):
+    outside = tmp_path / "outside"
+    outside.mkdir()
+    (outside / "video.mp4").write_bytes(b"fake-video")
+    (outside / "audio.mp3").write_bytes(b"fake-audio")
+
+    folder = draft.DraftFolder(str(tmp_path))
+    script = folder.create_draft("inlined", 1920, 1080)
+    script.materials.videos.append(fake_video_material(path=str(outside / "video.mp4")))
+    script.materials.audios.append(fake_audio_material(path=str(outside / "audio.mp3")))
+
+    script.save(inline_materials=True)
+
+    materials_dir = tmp_path / "inlined" / "materials"
+    assert (materials_dir / "video.mp4").exists()
+    assert (materials_dir / "audio.mp3").exists()
+
+    content = json.loads((tmp_path / "inlined" / "draft_info.json").read_text(encoding="utf-8"))
+    exported = [item["path"] for item in content["materials"]["videos"]]
+    exported += [item["path"] for item in content["materials"]["audios"]]
+    assert exported, "expected materials in the exported draft"
+    assert all(path.startswith(str(materials_dir)) for path in exported)
+
+
+def test_save_without_inline_materials_keeps_original_paths(tmp_path):
+    outside = tmp_path / "outside"
+    outside.mkdir()
+    (outside / "video.mp4").write_bytes(b"fake-video")
+
+    folder = draft.DraftFolder(str(tmp_path))
+    script = folder.create_draft("plain", 1920, 1080)
+    script.materials.videos.append(fake_video_material(path=str(outside / "video.mp4")))
+
+    script.save()
+
+    assert not (tmp_path / "plain" / "materials").exists()
+    content = json.loads((tmp_path / "plain" / "draft_info.json").read_text(encoding="utf-8"))
+    assert content["materials"]["videos"][0]["path"] == str(outside / "video.mp4")
