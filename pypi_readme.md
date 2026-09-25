@@ -20,7 +20,7 @@
 | 本地视频/图片素材与时间控制 | ✅ | 10.8 ✅ |
 | 视频整体调节 | ✅ | 10.8 ✅ |
 | 视频关键帧 | ✅ | 10.8 ✅ |
-| 视频蒙版 | ✅ | 10.8 ✅ |
+| 视频蒙版 | ✅ | 10.8 ❌<br>预计在`0.3.1`中修复 |
 | 视频色度抠图 | ✅ | 10.8 ✅ |
 | 视频背景填充[(示例代码)](https://github.com/GuanYixuan/pyJianYingDraft/blob/main/demo.py) | ✅ | 10.8 ✅ |
 | 视频混合模式 | ✅ | 10.8 ✅ |
@@ -75,7 +75,7 @@
 
 
 ### 模板模式
-> ⚠️ 新版剪映中的 `draft_content.json` 往往不是可直接读取的明文 JSON；因此“加载模板”相关能力在新版剪映上通常需要通过 `DraftFolder(..., fallback_loader=...)` 接入额外读取器，详请请参见[此处](https://github.com/GuanYixuan/pyJianYingDraft/releases/tag/0.2.7)
+> ⚠️ 新版剪映中的 `draft_content.json` 往往不是可直接读取的明文 JSON；因此“加载模板”相关能力在新版剪映上通常需要通过 `DraftFolder(..., fallback_loader=...)` 接入额外读取器，详情请参见[此处](https://github.com/GuanYixuan/pyJianYingDraft/releases)
 
 | 功能名称 | 5.9 支持状态 | 新版剪映支持状态 |
 |---|---|---|
