@@ -1,3 +1,5 @@
+import pytest
+
 import pyJianYingDraft as draft
 
 
@@ -19,6 +21,29 @@ def test_trange_uses_duration_not_end_time():
     assert timerange.duration == 2_000_000
     assert timerange.end == 3_000_000
 
+
+def test_trange_seconds_accepts_end_or_duration():
+    by_end = draft.trange_seconds(1.25, end=2.5)
+    by_duration = draft.trange_seconds(1.25, duration=1.25)
+
+    assert by_end == by_duration == draft.Timerange(1_250_000, 1_250_000)
+    assert draft.trange_seconds(-1, end=0) == draft.Timerange(-1_000_000, 1_000_000)
+    assert draft.trange_seconds(1, duration=0) == draft.Timerange(1_000_000, 0)
+
+
+def test_trange_seconds_rounds_absolute_boundaries():
+    bar = 60 / 136 * 4
+    by_end = draft.trange_seconds(4 * bar, end=5 * bar)
+    by_duration = draft.trange_seconds(4 * bar, duration=bar)
+
+    assert by_end.start == 7_058_824
+    assert by_end.end == 8_823_529
+    assert by_end.duration == 1_764_705
+    assert by_duration == by_end
+
+def test_trange_seconds_requires_numeric_seconds():
+    with pytest.raises(TypeError):
+        draft.trange_seconds("1s", end=2)
 
 def test_timerange_overlap_semantics():
     base = draft.Timerange(1_000_000, 2_000_000)

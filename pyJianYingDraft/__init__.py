@@ -14,7 +14,7 @@ from .metadata import VideoCharacterEffectType, VideoSceneEffectType
 from .script_file import ScriptFile
 from .template_mode import ExtendMode, ShrinkMode
 from .text_segment import TextBackground, TextBorder, TextSegment, TextShadow, TextStyle
-from .time_util import SEC, Timerange, tim, trange
+from .time_util import SEC, Timerange, tim, trange, trange_seconds
 from .track import TrackRef, TrackSpec, TrackType
 from .video_segment import ClipSettings, StickerSegment, VideoSegment
 
@@ -66,6 +66,7 @@ __all__ = [
     "SEC",
     "tim",
     "trange",
+    "trange_seconds",
 ]
 
 if ISWIN:

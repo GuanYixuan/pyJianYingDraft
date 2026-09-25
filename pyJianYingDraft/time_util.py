@@ -1,7 +1,6 @@
 """定义时间范围类以及与时间相关的辅助函数"""
 
-from typing import Union
-from typing import Dict
+from typing import Dict, Optional, Union
 
 SEC = 1000000
 """一秒=1e6微秒"""
@@ -87,6 +86,50 @@ def trange(start: Union[str, float], duration: Union[str, float]) -> Timerange:
         duration (Union[str, float]): 持续长度, 注意**不是结束时间**
     """
     return Timerange(tim(start), tim(duration))
+
+
+def trange_seconds(start: Union[int, float], *,
+                   end: Optional[Union[int, float]] = None,
+                   duration: Optional[Union[int, float]] = None) -> Timerange:
+    """用**秒数**起点及终点或时长构造时间范围
+
+    分别将起点和终点取整到微秒，再计算整数微秒时长。相同的秒数时长在不同
+    起点处可能得到相差1微秒的结果；连续片段建议共用绝对终点作为下一段起点。
+
+    Args:
+        start (int or float): 起点，单位为秒，可为负数
+        end (int or float, optional): 终点，单位为秒，与duration只能提供一个
+        duration (int or float, optional): 时长，单位为秒，与end只能提供一个
+
+    Raises:
+        TypeError: 提供了非数值参数
+        ValueError: end和duration未提供或同时提供，数值非有限，或时间范围为负
+    """
+    if (end is None) == (duration is None):
+        raise ValueError("必须且只能提供end或duration其中一个参数")
+
+    for name, value in (("start", start), ("end", end), ("duration", duration)):
+        if value is None:
+            continue
+        if isinstance(value, bool) or not isinstance(value, (int, float)):
+            raise TypeError(f"{name}必须是以秒为单位的数值")
+
+    if duration is not None:
+        if duration < 0:
+            raise ValueError(f"duration不能为负数: {duration}")
+        end_seconds = start + duration
+    elif end is not None:
+        end_seconds = end
+    else:
+        raise ValueError("必须且只能提供end或duration其中一个参数")
+
+    if end_seconds < start:
+        raise ValueError(f"end不能早于start: start={start}, end={end_seconds}")
+
+    start_us = round(start * SEC)
+    end_us = round(end_seconds * SEC)
+    return Timerange(start_us, end_us - start_us)
+
 
 def srt_tstamp(srt_tstamp: str) -> int:
     """解析srt中的时间戳字符串, 返回微秒数"""
