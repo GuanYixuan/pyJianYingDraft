@@ -568,6 +568,9 @@ video_segment.add_chroma(
 > ℹ 叠加轨道必须位于基础轨道上方，可通过显式追加/插入控制顺序
 
 使用`VideoSegment.set_mix_mode()`方法为视频片段设置混合模式：
+
+同一片段的 `mix_mode` 属性只保存一个当前混合模式；重复调用时，以最后一次设置为准。
+
 ```python
 from pyJianYingDraft import MixModeType, trange_seconds
 

@@ -397,11 +397,8 @@ class VideoSegment(VisualSegment):
 
     在放入轨道时自动添加到素材列表中
     """
-    mix_modes: List[MixMode]
-    """混合模式列表
-
-    在放入轨道时自动添加到素材列表中
-    """
+    mix_mode: Optional[MixMode]
+    """当前混合模式，可能为空，在放入轨道时添加到素材列表中"""
     mask: Optional[Mask]
     """蒙版实例, 可能为空
 
@@ -461,7 +458,7 @@ class VideoSegment(VisualSegment):
         self.material_size = (material.width, material.height)
         self.effects = []
         self.filters = []
-        self.mix_modes = []
+        self.mix_mode = None
         self.transition = None
         self.mask = None
         self.background_filling = None
@@ -555,14 +552,17 @@ class VideoSegment(VisualSegment):
         return self
 
     def set_mix_mode(self, mode: MixModeType) -> "VideoSegment":
-        """为视频片段设置混合模式
+        """为视频片段设置混合模式，再次调用只保留最后一次设置
 
         Args:
             mode (`MixModeType`): 混合模式类型
         """
-        mix_mode_inst = MixMode(mode.value)
-        self.mix_modes.append(mix_mode_inst)
-        self.extra_material_refs.append(mix_mode_inst.global_id)
+        if self.mix_mode is not None:
+            # 保留素材 ID，使片段加入草稿后的再次设置也能更新同一条素材
+            self.mix_mode.effect_meta = mode.value
+        else:
+            self.mix_mode = MixMode(mode.value)
+            self.extra_material_refs.append(self.mix_mode.global_id)
 
         return self
 
