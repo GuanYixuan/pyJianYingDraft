@@ -11,7 +11,7 @@ def _load_template_script(tmp_path: Path, draft_name: str, tracks):
     script = folder.create_draft(draft_name, 1920, 1080)
     script.save()
 
-    draft_content_path = tmp_path / draft_name / "draft_content.json"
+    draft_content_path = tmp_path / draft_name / "draft_info.json"
     draft_content_path.write_bytes(b"custom payload")
 
     folder = draft.DraftFolder(
