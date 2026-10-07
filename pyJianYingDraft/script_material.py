@@ -36,6 +36,8 @@ class ScriptMaterial:
     """变速列表"""
     masks: List[Dict[str, Any]]
     """蒙版列表"""
+    common_mask: List[Dict[str, Any]]
+    """新版剪映的蒙版列表, 导出到`common_mask`中; 旧版剪映读取`masks`, 新版读取`common_mask`"""
     transitions: List[Transition]
     """转场效果列表"""
     filters: List[Union[Filter, TextBubble]]
@@ -59,6 +61,7 @@ class ScriptMaterial:
 
         self.speeds = []
         self.masks = []
+        self.common_mask = []
         self.transitions = []
         self.filters = []
         self.mix_modes = []
@@ -107,6 +110,7 @@ class ScriptMaterial:
             "beats": [],
             "canvases": [canvas.export_json() for canvas in self.canvases],
             "chromas": [chroma.export_json() for chroma in self.chromas],
+            "common_mask": self.common_mask,
             "color_curves": [],
             "digital_humans": [],
             "drafts": [],
