@@ -86,6 +86,7 @@ class _ScriptFileSegmentOps:
                 self.materials.mix_modes.append(segment.mix_mode)
             if segment.mask is not None:
                 self.materials.masks.append(segment.mask.export_json())
+                self.materials.common_mask.append(segment.mask.export_common_json())
             if segment.transition is not None and segment.transition not in self.materials:
                 self.materials.transitions.append(segment.transition)
             if segment.background_filling is not None:

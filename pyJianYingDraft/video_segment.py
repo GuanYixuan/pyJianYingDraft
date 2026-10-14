@@ -95,6 +95,40 @@ class Mask:
             # 不导出path字段
         }
 
+    def export_common_json(self) -> Dict[str, Any]:
+        """导出为新版剪映的蒙版条目格式, 应写入`materials.common_mask`中
+
+        新版剪映不再读取`materials.masks`, 而是读取`materials.common_mask`中的扩展格式条目;
+        条目`id`与`export_json`保持一致, 因此`extra_material_refs`无需修改.
+        """
+        json_data = self.export_json()
+        json_data.update({
+            "category": "video",
+            "category_id": "jichu",
+            "category_name": "基础",
+            "is_old_version": False,
+            "loader_work_space": "",
+            "panel": "",
+            "source_platform": 0,
+            "track_segment": "",
+            "text_config": {
+                "align_type": 15,
+                "bold_width": 0.0,
+                "char_spacing": 0.0,
+                "content": "",
+                "font_name": "",
+                "font_path": "",
+                "font_resource_id": "",
+                "font_size": 15.0,
+                "has_underline": False,
+                "italic_degree": 0,
+                "line_gap": 0.0,
+                "scale": 1.0,
+            },
+        })
+        json_data["config"] = dict(json_data["config"], expansion=0.0)
+        return json_data
+
 
 class Chroma:
     """色度抠图对象"""
