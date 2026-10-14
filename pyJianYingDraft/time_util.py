@@ -5,13 +5,10 @@ from typing import Dict, Optional, Union
 SEC = 1000000
 """一秒=1e6微秒"""
 
-def tim(inp: Union[str, float]) -> int:
-    """将输入的字符串转换为微秒, 也可直接输入微秒数
-
-    支持类似 "1h52m3s" 或 "0.15s" 这样的格式, 可包含负号以表示负偏移
-    """
+def _tim_float(inp: Union[str, float]) -> float:
+    """将输入转换为未取整的微秒数, 供`tim`与`trange`共用"""
     if isinstance(inp, (int, float)):
-        return int(round(inp))
+        return float(inp)
 
     sign: int = 1
     inp = inp.strip().lower()
@@ -28,7 +25,14 @@ def tim(inp: Union[str, float]) -> int:
         total_time += float(inp[last_index:unit_index]) * factor
         last_index = unit_index + 1
 
-    return int(round(total_time) * sign)
+    return total_time * sign
+
+def tim(inp: Union[str, float]) -> int:
+    """将输入的字符串转换为微秒, 也可直接输入微秒数
+
+    支持类似 "1h52m3s" 或 "0.15s" 这样的格式, 可包含负号以表示负偏移
+    """
+    return int(round(_tim_float(inp)))
 
 class Timerange:
     """记录了起始时间及持续长度的时间范围"""
@@ -85,7 +89,11 @@ def trange(start: Union[str, float], duration: Union[str, float]) -> Timerange:
         start (Union[str, float]): 起始时间
         duration (Union[str, float]): 持续长度, 注意**不是结束时间**
     """
-    return Timerange(tim(start), tim(duration))
+    # 对起止时间分别取整, 而非对起始时间和持续长度分别取整,
+    # 否则首尾相接的片段可能因舍入误差被判定为重叠1微秒
+    start_us = _tim_float(start)
+    start_int = int(round(start_us))
+    return Timerange(start_int, int(round(start_us + _tim_float(duration))) - start_int)
 
 
 def trange_seconds(start: Union[int, float], *,
